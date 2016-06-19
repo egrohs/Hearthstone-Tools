@@ -1,0 +1,88 @@
+graph hs {
+"deal & type==spell" [label="Damage Spells"]
+"spell damage \+\d+" [label="Spell Damage"]
+"battlecry" [label="Battlecry"]
+"return" [label="Return to Hand"]
+"(\+|\-)?\(?\d+\)?\%?" [label="Buff Stats"]
+"windfury" [label="Windfury"]
+"can\'t attack" [label="Can't Attack"]
+"silence" [label="Silence"]
+"(chance | set | become(s)?)" [label="Change Stats"]
+"destroy" [label="Destroy"]
+"control" [label="Control"]
+"charge" [label="Charge"]
+"combo" [label="Combo"]
+"cost < 3" [label="Low Cost Cards"]
+"copy" [label="Copy"]
+"cost > 5" [label="High Cost Cards"]
+"damage to all" [label="Damage All"]
+"deathrattle" [label="Deathrattle"]
+"hp > 5" [label="High HP Minions"]
+"divine shield" [label="Divine Shield"]
+"draw (\d+|a)" [label="Draw Cards"]
+"enrage" [label="Enrage"]
+"e" [label="Low Dmg Low Attack"]
+"restore" [label="Restore Health"]
+"(re)?summon" [label="Invoca"]
+"taunt" [label="Taunt"]
+"transform" [label="Transform"]
+"hp < 3" [label="Low HP Minions"]
+"(takes|survives) damage" [label="Mazoc"]
+"cost(s)?" [label="Cost Change"]
+"g" [label="Damage Enemies"]
+"deal \d+ damage" [label="Single Target Damage"]
+"h" [label="Grant"]
+"immune" [label="Immune"]
+"att > 5" [label="High Attack"]
+"stealth" [label="Stealth"]
+"j" [label="Perma Trigger"]
+"minion && cost > 5" [label="Low Cost Minions"]
+"spell && cost < 3" [label="Low Cost Spells"]
+"choose one" [label="Choose One"]
+
+"deal & type==spell" -- "spell damage \+\d+"
+"battlecry" -- "return"
+"battlecry" -- "(\+|\-)?\(?\d+\)?\%?"
+"(\+|\-)?\(?\d+\)?\%?" -- "windfury"
+"silence" -- "can\'t attack"
+"(chance | set | become(s)?)" -- "destroy"
+"(chance | set | become(s)?)" -- "control"
+"charge" -- "return"
+"charge" -- "(\+|\-)?\(?\d+\)?\%?"
+"charge" -- "windfury"
+"combo" -- "cost < 3"
+"copy" -- "cost > 5"
+"damage to all" -- "deathrattle"
+"destroy" -- "deathrattle"
+"destroy" -- "hp > 5"
+"destroy" -- "divine shield"
+"cost < 3" -- "draw (\d+|a)"
+"enrage" -- "Low Dmg Low Attack"
+"hp > 5" -- "restore"
+"return" -- "cost > 5"
+"minion && cost > 5" -- "(re)?summon"
+"destroy" -- "control"
+"control" -- "return"
+"hp > 5" -- "taunt"
+"cost > 5" -- "transform"
+"divine shield" -- "hp < 3"
+"Low Dmg Low Attack" -- "(takes|survives) damage"
+"silence" -- "cost > 5"
+"(takes|survives) damage" -- "transform"
+"(takes|survives) damage" -- "(chance | set | become(s)?)"
+"minion && cost > 5" -- "(\+|\-)?\(?\d+\)?\%?"
+"cost(s)?" -- "cost < 3"
+"cost(s)?" -- "deal & type==spell"
+"hp > 5" -- "Grant"
+"immune" -- "att > 5"
+"charge" -- "(re)?summon"
+"immune" -- "hp < 3"
+"stealth" -- "hp < 3"
+"stealth" -- "Perma Trigger"
+"(takes|survives) damage" -- "damage to all"
+"deathrattle" -- "(re)?summon"
+"choose one" -- "transform"
+"hp < 3" -- "Damage Enemies"
+"spell damage \+\d+" -- "spell && cost < 3"
+"deal \d+ damage" -- "hp > 5"
+}

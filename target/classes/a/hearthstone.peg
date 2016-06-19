@@ -1,0 +1,209 @@
+S =
+	ABS SPACE S2 !_
+	/S2 !_
+	/ABS !_
+	/AC !_
+	;
+
+S2 =
+	ABS SPACE OP
+	/WHEN"," SPACE OP
+	/WHILE SPACE OP
+	;
+	
+OP = AC (SPACE OPERATORS SPACE AC)*;
+	
+WHEN =
+	TRIGGERS SPACE TG SPACE "summon"("s")? SPACE QT SPACE TG
+	/TRIGGERS (SPACE QT)? SPACE TG SPACE EVENTS (SPACE Q)?
+	/TRIGGERS (SPACE TIME)?
+	;
+	
+AC =
+	DEAL
+	/RESTORE
+	/ACTIONS (SPACE QT)? (SPACE TG)? (SPACE QT)? (SPACE OBJS)? (SPACE Q)? (SPACE TIME)?
+	/(QT SPACE)? TG SPACE ACTIONS (SPACE QT)? (SPACE OBJS)? (SPACE TIME)?
+	/OBJS
+	;
+
+R = "damaged by this minion";
+Q = "with" SPACE OBJS;
+
+OBJS =
+	STAT
+	/CREAT
+	/ATRIBUTES
+	/ABS
+	/ZONES
+	;
+	
+TIME =
+	"this turn"
+	/"each turn"
+	/"next turn"
+	/TG SPACE "turn"
+	;
+	
+DEAL = "deal" SPACE NUMBER SPACE "damage" (SPACE "to")? (SPACE QT)? (SPACE TG)?;
+RESTORE = "restore" SPACE NUMBER SPACE "health" (SPACE "to")? (SPACE QT)? (SPACE TG)?;
+	
+WHILE =
+	"enrage"
+	/"while"
+	;
+
+ABS = ABILITIES (SPACE NUMBER)? ("," SPACE ABILITIES)*;
+	
+TG = TARGETS (SPACE TARGETS)*;
+QT = QUANTIFIERS
+	/NUMBER
+	;
+
+SPACE = " "*;
+	
+ABILITIES =
+	"can't attack"
+	/"can't be targeted by spells or hero powers"
+	/"charge"
+	/"divine shield"
+	/"overload"
+	/"spell damage"
+	/"stealth"
+	/"taunt"
+	/"windfury"
+	;
+
+ACTIONS =
+	"cost" "s"? SPACE NUMBER SPACE ("more"/"less")
+	/"remove" (SPACE "from" SPACE ZONES)? (SPACE "into"/"to" SPACE ZONES)?
+	/"return" SPACE QT (SPACE "from" SPACE ZONES)? (SPACE "into"/"to" SPACE ZONES)?
+	/"put 1" (SPACE "from" SPACE ZONES)? (SPACE "into"/"to" SPACE ZONES)?
+	/"become 1 copy"
+	/"change"
+	/"choose"
+	/"put 1 copy"
+	/"destroy"
+	/"discard"
+	/"double the"
+	/"draw" "s"?
+	/"equip"
+	/"freeze"
+	/"gain"
+	/"give"
+	/"has"
+	/"have"
+	/"heal"
+	/"lose"
+	/"replace"
+	/"restore"
+	/"set"
+	/"silence"
+	/"summon"
+	/"swap"
+	/"take control of"
+	/"transform"
+	;
+	
+ATRIBUTES =
+	"armor"
+	/"attack"
+	/"durability"
+	/"health"
+	/"mana crystal"
+	;
+CONDS =
+	"control 1"
+	/"for each"
+	/"if"
+	/"played earlier"
+	/"until"
+	/"weapon equipped"
+	/"with"
+	;
+	
+EVENTS =
+	"cast"("s")? SPACE "1 spell"
+	/"play"("s")? SPACE "1 card"
+	/"dies"
+	/"is healed"
+	/"is played"
+	/"is summoned"
+	/"play"
+	/"takes damage"
+	;
+OPERATORS =
+	"and"
+	/"or"
+	/"but not less than"
+	/"equal to"
+	;
+
+TARGETS =
+	"another"
+	/"other" "s"?
+	/"adjacent"
+	/"beast" "s"?
+	/"card" "s"?
+	/"character" "s"?
+	/"demon" "s"?
+	/"dragon" "s"?
+	/"enem"("y"/"ies")
+	/"friend"("ly")?
+	/"hero" "s"?
+	/"himself"
+	/"into"
+	/"minion" "s"?
+	/"murloc" "s"?
+	/"on either side"
+	/"opponent" "'s"?
+	/"owner"
+	/"pirate" "s"?
+	/"player" "s"?
+	/"power" "s"?
+	/"random"("ly")?
+	/"secret" "s"?
+	/"spell" "s"?
+	/"totem"
+	/"weapon" "s"?
+	/"your"
+	/"you"
+	/"it"
+	;
+	
+TRIGGERS =
+	"battlecry"
+	/"choose one "("-"/"–")
+	/"combo"
+	/"deathrattle"
+	/"after"
+	/"at the start of"
+	/"at the end of"
+	/"whenever"
+	;
+ZONES =
+	"deck"
+	/"hand"
+	/"the battlefield"
+	;
+
+QUANTIFIERS =
+	"randomly split between"
+	/"damage to"
+	/"all"
+	/"any"
+	/"both"
+	/"each"
+	/"first"
+	/"more"
+	/"less"
+	/"next"
+	/"one"
+	/"the"
+	/"this"
+	/"two"
+	;
+	
+NUMBER = "+"?[0-9]+;
+CREAT = "["NUMBER "/" NUMBER"]";
+STAT = "[""+"NUMBER "/" "+"NUMBER"]";
