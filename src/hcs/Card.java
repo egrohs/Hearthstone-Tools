@@ -1,4 +1,4 @@
-package a;
+package hcs;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,7 +7,7 @@ import org.jsoup.Jsoup;
 
 public class Card {
 	String name, set, faction, playerClass, function, type, rarity, text;
-	Long cost, attack, health, popularity, combats, wins, draws, loses;
+	Long cost, attack, health, dur, popularity, combats, wins, draws, loses;
 	List<Mechanic> mechanics = new ArrayList<Mechanic>();
 //	List<String> triggers = new ArrayList<String>();
 //	List<String> actions = new ArrayList<String>();
@@ -15,7 +15,7 @@ public class Card {
 //	List<String> targets = new ArrayList<String>();
 
 	public Card(String name, String set, String faction, String playerClass, String type, String text, Long cost,
-			Long attack, Long health) {
+			Long attack, Long health, Long dur, String rarity) {
 		super();
 		this.name = name;
 		this.set = set;
@@ -26,6 +26,8 @@ public class Card {
 		this.cost = cost;
 		this.attack = attack;
 		this.health = health;
+		this.dur = dur;
+		this.rarity = rarity;
 		trim();
 	}
 
