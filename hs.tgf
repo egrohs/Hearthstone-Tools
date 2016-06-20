@@ -10,7 +10,7 @@
 10 Low Cost Cards
 11 cop(y|ies)
 12 High Cost Cards
-13 ( damage to all )
+13 damage to all (friendly |other )?(minions|characters)
 14 deathrattle
 15 High HP Minions
 16 divine shield
@@ -43,7 +43,7 @@
 43 mana crystal(s)?
 44 ((^|\: |\, |\. )resummon |return it to life)
 45 ( you summon a minion(?! with)| minion is summoned)
-46 ( \+\d attack)
+46 (give (\w\s)*|have |has )\+\d(\/| attack)
 47 charge
 48 (mega\-)?windfury
 49 (\+\d |double )(\w\s)*health
@@ -76,7 +76,6 @@
 10 17
 15 19
 8 4
-15 20
 16 22
 24 10
 47 44
@@ -154,3 +153,4 @@
 65 19
 49 15
 61 63
+20 15 give taunt

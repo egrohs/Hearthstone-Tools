@@ -23,4 +23,9 @@ public class Mechanic {
 	public boolean eval(Card c) {
 		return true;
 	}
+	
+	@Override
+	public String toString() {
+		return this.regex;
+	}
 }
