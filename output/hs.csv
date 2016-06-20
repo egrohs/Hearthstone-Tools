@@ -1,1 +1,72 @@
-Whirlwind;deal 1 damage to all minions.;Warbot, Chillmaw, Tentacle of N'Zoth, Clockwork Gnome, Explosive Sheep, Corrupted Healbot, Tentacles for Arms, Flesheating Ghoul, Piloted Sky Golem, Loot Hoarder, Twilight Summoner, The Skeleton Knight, Sneed's Old Shredder, Grim Patron, Dragon Egg, Deathlord, Acolyte of Pain, Leper Gnome, Kel'Thuzad, Polluted Hoarder, Sylvanas Windrunner, Aberrant Berserker, Sludge Belcher, Baron Rivendare, Deathwing, Dragonlord, Mekgineer Thermaplugg, Abomination, N'Zoth, the Corruptor, Infested Tauren, Zombie Chow, Mechanical Yeti, Stalagg, Feugen, Armorsmith, Anubisath Sentinel, Bloodmage Thalnos, Dancing Swords, Angry Chicken, Crazed Worshipper, Hogger, Doom of Elwynn, Undertaker, Zealous Initiate, Haunted Creeper, Cult Master, Frothing Berserker, Junkbot, Spiteful Smith, Piloted Shredder, Majordomo Executus, Axe Flinger, Bloodhoof Brave, Cairne Bloodhoof, Gurubashi Berserker, Spawn of N'Zoth, Unstable Ghoul, Death's Bite, Volcanic Drake, Wobbling Runts, Mad Scientist, Grommash Hellscream, Lil' Exorcist, Toshley, Bolf Ramshield, Nerubian Egg, Huge Toad, Amani Berserker, Tauren Warrior, Raging Worgen, Bouncing Blade, The Beast, Harvest Golem, ;71
+Whirlwind;deal 1 damage to all minions.;Warbot;WARRIOR;enrage: +1 attack.
+Chillmaw;null;taunt deathrattle: if you're holding a dragon, deal 3 damage to all minions.
+Tentacle of N'Zoth;null;deathrattle: deal 1 damage to all minions.
+Clockwork Gnome;null;deathrattle: add a spare part card to your hand.
+Explosive Sheep;null;deathrattle: deal 2 damage to all minions.
+Corrupted Healbot;null;deathrattle: restore 8 health to the enemy hero.
+Tentacles for Arms;WARRIOR;deathrattle: return this to your hand.
+Flesheating Ghoul;null;whenever a minion dies, gain +1 attack.
+Piloted Sky Golem;null;deathrattle: summon a random 4-cost minion.
+Loot Hoarder;null;deathrattle: draw a card.
+Twilight Summoner;null;deathrattle: summon a 5/5 faceless destroyer.
+The Skeleton Knight;null;deathrattle: reveal a minion in each deck. if yours costs more, return this to your hand.
+Sneed's Old Shredder;null;deathrattle: summon a random legendary minion.
+Grim Patron;null;whenever this minion survives damage, summon another grim patron.
+Dragon Egg;null;whenever this minion takes damage, summon a 2/1 whelp.
+Deathlord;null;taunt. deathrattle: your opponent puts a minion from their deck into the battlefield.
+Acolyte of Pain;null;whenever this minion takes damage, draw a card.
+Leper Gnome;null;deathrattle: deal 2 damage to the enemy hero.
+Kel'Thuzad;null;at the end of each turn, summon all friendly minions that died this turn.
+Polluted Hoarder;null;deathrattle: draw a card.
+Sylvanas Windrunner;null;deathrattle: take control of a random enemy minion.
+Aberrant Berserker;null;enrage: +2 attack.
+Sludge Belcher;null;taunt deathrattle: summon a 1/2 slime with taunt.
+Baron Rivendare;null;your minions trigger their deathrattles twice.
+Deathwing, Dragonlord;null;deathrattle: put all dragons from your hand into the battlefield.
+Mekgineer Thermaplugg;null;whenever an enemy minion dies, summon a leper gnome.
+Abomination;null;taunt. deathrattle: deal 2 damage to all characters.
+N'Zoth, the Corruptor;null;battlecry: summon your deathrattle minions that died this game.
+Infested Tauren;null;taunt deathrattle: summon a 2/2 slime.
+Zombie Chow;null;deathrattle: restore 5 health to the enemy hero.
+Mechanical Yeti;null;deathrattle: give each player a spare part.
+Stalagg;null;deathrattle: if feugen also died this game, summon thaddius.
+Feugen;null;deathrattle: if stalagg also died this game, summon thaddius.
+Armorsmith;WARRIOR;whenever a friendly minion takes damage, gain 1 armor.
+Anubisath Sentinel;null;deathrattle: give a random friendly minion +3/+3.
+Bloodmage Thalnos;null;spell damage +1. deathrattle: draw a card.
+Dancing Swords;null;deathrattle: your opponent draws a card.
+Angry Chicken;null;enrage: +5 attack.
+Crazed Worshipper;null;taunt. whenever this minion takes damage, give your c'thun +1/+1 (wherever it is).
+Hogger, Doom of Elwynn;null;whenever this minion takes damage, summon a 2/2 gnoll with taunt.
+Undertaker;null;whenever you summon a minion with deathrattle, gain +1 attack.
+Zealous Initiate;null;deathrattle: give a random friendly minion +1/+1.
+Haunted Creeper;null;deathrattle: summon two 1/1 spectral spiders.
+Cult Master;null;whenever one of your other minions dies, draw a card.
+Frothing Berserker;WARRIOR;whenever a minion takes damage, gain +1 attack.
+Junkbot;null;whenever a friendly mech dies, gain +2/+2.
+Spiteful Smith;null;enrage: your weapon has +2 attack.
+Piloted Shredder;null;deathrattle: summon a random 2-cost minion.
+Majordomo Executus;null;deathrattle: replace your hero with ragnaros, the firelord.
+Axe Flinger;WARRIOR;whenever this minion takes damage, deal 2 damage to the enemy hero.
+Bloodhoof Brave;WARRIOR;taunt enrage: +3 attack.
+Cairne Bloodhoof;null;deathrattle: summon a 4/5 baine bloodhoof.
+Gurubashi Berserker;null;whenever this minion takes damage, gain +3 attack.
+Spawn of N'Zoth;null;deathrattle: give your minions +1/+1.
+Unstable Ghoul;null;taunt. deathrattle: deal 1 damage to all minions.
+Death's Bite;WARRIOR;deathrattle: deal 1 damage to all minions.
+Volcanic Drake;null;costs (1) less for each minion that died this turn.
+Wobbling Runts;null;deathrattle: summon three 2/2 runts.
+Mad Scientist;null;deathrattle: put a secret from your deck into the battlefield.
+Grommash Hellscream;WARRIOR;charge enrage: +6 attack
+Lil' Exorcist;null;taunt battlecry: gain +1/+1 for each enemy deathrattle minion.
+Toshley;null;battlecry and deathrattle: add a spare part card to your hand.
+Bolf Ramshield;null;whenever your hero takes damage, this minion takes it instead.
+Nerubian Egg;null;deathrattle: summon a 4/4 nerubian.
+Huge Toad;null;deathrattle: deal 1 damage to a random enemy.
+Amani Berserker;null;enrage: +3 attack
+Tauren Warrior;null;taunt. enrage: +3 attack
+Raging Worgen;null;enrage: windfury and +1 attack
+Bouncing Blade;WARRIOR;deal 1 damage to a random minion. repeat until a minion dies.
+The Beast;null;deathrattle: summon a 3/3 finkle einhorn for your opponent.
+Harvest Golem;null;deathrattle: summon a 2/1 damaged golem.
+;71
