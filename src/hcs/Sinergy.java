@@ -21,7 +21,6 @@ public class Sinergy {
 	static List<Card> cards = new ArrayList<Card>();
 	private static Long atta = 0l;
 	private static int cont = 0;
-	static FileWriter fw = null;
 
 	private static void printCards() {
 		System.out.println("Cost|Name|Set|Rariry|Type|Race|Class|Attack|Health|Text");
@@ -32,46 +31,25 @@ public class Sinergy {
 	}
 
 	public static void main(String[] args) {
-		try {
-			fw = new FileWriter("output/hs.csv");
+		init();
+		readCombos();
+	}
 
-			// buildMechanics();
-			readCards();
-			// printCards();
+	public static void main2(String[] args) {
+		String card = "Whirlwind";
+		System.out.println("Sinergy for " + card);
+		getSinergies(card);
+		// printCardMechanics();
+	}
 
-			TGFParser.readMechanics("input/hs.tgf");
-			// buildCards();
-			parseCards();
+	private static void init() {
+		// buildMechanics();
+		readCards();
+		// printCards();
 
-			// readCombos();
-
-			// for (Card c : cards) {
-			// getSinergies(c.name);
-			// }
-			String card = "Whirlwind";
-			System.out.println("Sinergy for " + card);
-			getSinergies(card);
-			// printCardMechanics();
-
-			// for (Card c : cards) {
-			// printCard(c);
-			// }
-			// System.out.println(cont);
-			// System.out.println(atta);
-			// for (Mechanic m : mechanics) {
-			// System.out.println(m.name);
-			// }
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-			try {
-				fw.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+		TGFParser.readMechanics("input/hs.tgf");
+		// buildCards();
+		parseCards();
 	}
 
 	private static void countClassCards() {
@@ -144,19 +122,22 @@ public class Sinergy {
 
 	private static List<String> getSinergies(String cardName) {
 		List<String> sin = new ArrayList<String>();
+		// FileWriter fw = null;
 		try {
+			// fw = new FileWriter("output/hs.csv");
 			Card c1 = getCard(cardName);
 			// TODO remover
 			if (c1 != null && c1.text != null) {
 				cont = 0;
-				fw.write(c1.name + ";" + c1.text + ";");
+				// fw.write(c1.name + ";" + c1.text + ";");
 				for (Mechanic m1 : c1.mechanics) {
 					for (Card c2 : cards) {
 						if (c1.playerClass == null || c2.playerClass == null || c2.playerClass.equals(c1.playerClass)) {
 							for (Mechanic m2 : c2.mechanics) {
 								if (m1.aff.contains(m2)) {
-									fw.write(c2.name + ";" + c2.playerClass + ";" + c2.text + "\n");
-									System.out.println(c2.name + ";" + c2.playerClass + ";" + c2.text);
+									// fw.write(c2.name + ";" + c2.playerClass +
+									// ";" + c2.text + "\n");
+									//System.out.println(c2.name + ";" + c2.playerClass + ";" + c2.text);
 									sin.add(c2.name);
 									cont++;
 									break;
@@ -165,12 +146,19 @@ public class Sinergy {
 						}
 					}
 				}
-				fw.write(";" + cont + "\n");
+				// fw.write(";" + cont + "\n");
 			} else {
 				System.out.println(cardName + " NÃO ENCONTRADA");
 			}
 		} catch (Exception e) {
 			System.err.println(e);
+		} finally {
+			// try {
+			// fw.close();
+			// } catch (IOException e) {
+			// TODO Auto-generated catch block
+			// e.printStackTrace();
+			// }
 		}
 		return sin;
 	}
