@@ -43,7 +43,7 @@
 43 mana crystal(s)?
 44 ((^|\: |\, |\. )resummon |return it to life)
 45 ( you summon a minion(?! with)| minion is summoned)
-46 (give (\w\s)*|have |has )\+\d(\/| attack)
+46 (give (\w*\s)*|have |has )\+\d(\/| attack)
 47 charge
 48 (mega\-)?windfury
 49 (\+\d |double )(\w\s)*health
@@ -58,11 +58,12 @@
 58 play(s)? a (.+ )*minion
 59 at the (start|end) of your
 60 damaged by
-61 (^|\: |\. |\, |\- |and |or )summon
+61 (\: |\. |\, |\- |and |or |^)summon
 62 beast
 63 minions (.+ )*\+\d(\/\+\d)?
 64 double (.+ )+attack
 65 restore health now deal damage instead
+66 give (all|your) (minions|characters)
 #
 1 2
 3 4
@@ -154,3 +155,4 @@
 49 15
 61 63
 20 15 give taunt
+61 66
