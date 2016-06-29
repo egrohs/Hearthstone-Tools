@@ -5,18 +5,27 @@ import java.util.List;
 
 import org.jsoup.Jsoup;
 
+/**
+ * Objeto carta.
+ * 
+ * @author 99689650068
+ *
+ */
 public class Card {
 	String name, set, faction, playerClass, function, type, rarity, text;
-	Long cost, attack, health, dur, popularity, combats, wins, draws, loses;
+	Long id, numid, cost, attack, health, dur, popularity, combats, wins, draws, loses;
+	boolean aggro;
 	List<Mechanic> mechanics = new ArrayList<Mechanic>();
-//	List<String> triggers = new ArrayList<String>();
-//	List<String> actions = new ArrayList<String>();
-//	List<String> entities = new ArrayList<String>();
-//	List<String> targets = new ArrayList<String>();
+	// List<String> triggers = new ArrayList<String>();
+	// List<String> actions = new ArrayList<String>();
+	// List<String> entities = new ArrayList<String>();
+	// List<String> targets = new ArrayList<String>();
 
-	public Card(String name, String set, String faction, String playerClass, String type, String text, Long cost,
+	public Card(Long id, /*Long numid,*/ String name, String set, String faction, String playerClass, String type, String text, Long cost,
 			Long attack, Long health, Long dur, String rarity) {
 		super();
+		this.id = id;
+		//this.numid = numid;
 		this.name = name;
 		this.set = set;
 		this.faction = faction;
@@ -28,9 +37,16 @@ public class Card {
 		this.health = health;
 		this.dur = dur;
 		this.rarity = rarity;
+		if (cost > 0 && attack != null && attack / cost > 2) {
+			aggro = true;
+		}
 		trim();
 	}
 
+	/*
+	 * TODO talvez os textos não devem ir pra lowercase, pois palavras curtas
+	 * como "all" podem ser dificeis de identificar.
+	 */
 	private void trim() {
 		if (text != null) {
 			// text =
@@ -40,98 +56,12 @@ public class Card {
 		}
 	}
 	
+	public void setNumid(Long numid) {
+		this.numid = numid;
+	}
+
 	@Override
 	public String toString() {
 		return name;
-	}
-
-//	public void parse(List<String> l) {
-//		if (text != null) {
-//			String t = " "
-//					+ text.toLowerCase().replaceAll("\\)", "").replaceAll("\\(", "").replaceAll("\"", "")
-//							.replaceAll("\\’", "").replaceAll("\\'", "").replaceAll("\\;", "").replaceAll("\\:", "")
-//							.replaceAll("\\.", "").replaceAll(",", "") + " ";
-//			String s = t;
-//			for (String k : l) {
-//				// adiciona espaço e plural no inicio e final das tags.
-//				s = s.replaceAll("\\s" + k + "(s)?\\s", "  ");
-//				if (!s.equals(t)) {
-//					triggers.add(k);
-//				}
-//				t = s;
-//			}
-//		}
-//	}
-	
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getRace() {
-		return faction;
-	}
-
-	public void setRace(String race) {
-		this.faction = race;
-	}
-
-	public String getClazz() {
-		return playerClass;
-	}
-
-	public void setClazz(String class1) {
-		playerClass = class1;
-	}
-
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
-
-	public String getRarity() {
-		return rarity;
-	}
-
-	public void setRarity(String rarity) {
-		this.rarity = rarity;
-	}
-
-	public String getText() {
-		return text;
-	}
-
-	public void setText(String text) {
-		this.text = text;
-	}
-
-	public Long getCost() {
-		return cost;
-	}
-
-	public void setCost(Long cost) {
-		this.cost = cost;
-	}
-
-	public Long getAttack() {
-		return attack;
-	}
-
-	public void setAttack(Long attack) {
-		this.attack = attack;
-	}
-
-	public Long getHealth() {
-		return health;
-	}
-
-	public void setHealth(Long health) {
-		this.health = health;
 	}
 }

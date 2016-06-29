@@ -1,4 +1,4 @@
-1 DMG SPELLS
+1 DMG SPELL
 2 spell damage \+\d+
 3 battlecry
 4 return (a|all) (friendly )?minion(s)? (.+ )*to (your|their owner's) hand
@@ -7,26 +7,26 @@
 7 (destroy all )
 8 (take|gain) control of
 9 combo\:
-10 Low Cost Cards
+10 LOW COST CARD
 11 cop(y|ies)
-12 High Cost Cards
+12 HIGH COST CARD
 13 damage to all (friendly |other )?(minions|characters)
 14 deathrattle
-15 High HP Minions
+15 HIGH HP MINION
 16 divine shield
 17 draw(s)? (\d+ |a |one |an extra )?card(s)?
 18 enrage\:
 19 restore (.+ )+health
 20 taunt
 21 transform a ((another )?random |friendly )?minion into
-22 Low HP Minions
+22 LOW HP MINION
 23 (takes|survives) damage
 24 (cost(s)? \(\d+\) less|reduce the cost )
 25 immune
-26 High Attack Minions
+26 HIGH ATTACK MINION
 27 (give|have|has) (.+ )*stealth
-28 Low Cost Minions
-29 Low Cost Spells
+28 LOW COST MINION
+29 LOW COST SPELL
 30 choose one \-
 31 inspire
 32 die(s|d)
@@ -49,9 +49,9 @@
 49 (\+\d |double )(\w\s)*health
 50 ( \-\d attack)
 51 overload
-52 OTHER DISADVANTAGES "attack the wrong enemy"
+52 DISADVANTAGES
 53 target this minion with a spell
-54 AGGRO MINION attack/cost >2
+54 AGGRO MINION
 55 attacks
 56 discard a card
 57 equip a weapon
@@ -64,6 +64,7 @@
 64 double (.+ )+attack
 65 restore health now deal damage instead
 66 give (all|your) (minions|characters)
+67 c\'thun
 #
 1 2
 3 4
@@ -78,7 +79,6 @@
 15 19
 8 4
 16 22
-24 10
 47 44
 25 22
 27 22
@@ -90,7 +90,6 @@
 28 21
 5 20
 24 12
-24 29
 25 13
 2 20 to be protected
 34 20
@@ -156,3 +155,4 @@
 61 63
 20 15 give taunt
 61 66
+67 67

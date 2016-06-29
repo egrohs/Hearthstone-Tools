@@ -13,6 +13,11 @@ public class TGFParser {
 		readMechanics("hs.tgf");
 	}
 
+	/**
+	 * Lê arquivo de grafo tgf contendo relacionamento entre as mecanicas.
+	 * 
+	 * @param file Arquivo tgf das mecanicas.
+	 */
 	public static void readMechanics(String file) {
 		Scanner sc = null;
 		try {
