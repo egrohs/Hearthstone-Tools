@@ -6,6 +6,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Tentativa de calcular sinergia das cartas usando db de decks. Pares de cartas
+ * com alta sinergia devem aparecer em varios decks.
+ * 
+ * @author 99689650068
+ *
+ */
 public class Probs {
 	// matrix de afinidade de cartas dos decks hunter
 	// 288 neutral + 45 warrior

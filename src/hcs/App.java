@@ -20,6 +20,13 @@ import org.supercsv.io.CsvBeanReader;
 import org.supercsv.io.ICsvBeanReader;
 import org.supercsv.prefs.CsvPreference;
 
+/**
+ * Tentativa de parser heartstone usando gramaticas peg identificando os tokens
+ * semanticos.
+ * 
+ * @author 99689650068
+ *
+ */
 public class App {
 	static List<Card> cards = new ArrayList<Card>();
 	static Scanner file = null;
@@ -275,32 +282,33 @@ public class App {
 		}
 	}
 
-//	private static void synergy() {
-//		for (Card card : cards) {
-//			if (card.playerClass == null || card.playerClass.equals("Warlock")) {
-//				if (card.triggers.contains("deathrattle")) {
-//					System.out.println("DEATH: " + card.name + " = " + card.text);
-//				}
-//				if (card.triggers.contains("deal") && card.triggers.contains("all")
-//						&& (card.triggers.contains("minion") || card.triggers.contains("character"))) {
-//					System.out.println("SELF DAMAGE: " + card.name + " = " + card.text);
-//				}
-//			}
-//		}
-//	}
+	// private static void synergy() {
+	// for (Card card : cards) {
+	// if (card.playerClass == null || card.playerClass.equals("Warlock")) {
+	// if (card.triggers.contains("deathrattle")) {
+	// System.out.println("DEATH: " + card.name + " = " + card.text);
+	// }
+	// if (card.triggers.contains("deal") && card.triggers.contains("all")
+	// && (card.triggers.contains("minion") ||
+	// card.triggers.contains("character"))) {
+	// System.out.println("SELF DAMAGE: " + card.name + " = " + card.text);
+	// }
+	// }
+	// }
+	// }
 
-//	public static void main(String[] args) {
-//		readExcel();
-//		for (Card card : cards) {
-//			card.parse(l);
-//			// System.out.println(card.Name);
-//			// for (String t : card.tags) {
-//			// System.out.print(t + ", ");
-//			// }
-//			// System.out.println();
-//		}
-//		synergy();
-//	}
+	// public static void main(String[] args) {
+	// readExcel();
+	// for (Card card : cards) {
+	// card.parse(l);
+	// // System.out.println(card.Name);
+	// // for (String t : card.tags) {
+	// // System.out.print(t + ", ");
+	// // }
+	// // System.out.println();
+	// }
+	// synergy();
+	// }
 
 	public static void main2(String[] args) {
 		// System.out.println(tags.keySet().size());
@@ -316,10 +324,9 @@ public class App {
 		String line = null;
 		if (file.hasNextLine()) {
 			// add espaço no inicio e final da linha para contemplar " tag ".
-			line = " "
-					+ file.nextLine().toLowerCase().replaceAll("\\)", "").replaceAll("\\(", "").replaceAll("\"", "")
-							.replaceAll("\\’", "").replaceAll("\\'", "").replaceAll("\\;", "").replaceAll("\\:", "")
-							.replaceAll("\\.", "").replaceAll(",", "") + " ";
+			line = " " + file.nextLine().toLowerCase().replaceAll("\\)", "").replaceAll("\\(", "").replaceAll("\"", "")
+					.replaceAll("\\’", "").replaceAll("\\'", "").replaceAll("\\;", "").replaceAll("\\:", "")
+					.replaceAll("\\.", "").replaceAll(",", "") + " ";
 			// .replaceAll("'s", "");
 		}
 		return line;
