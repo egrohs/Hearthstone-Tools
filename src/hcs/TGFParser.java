@@ -9,16 +9,24 @@ import java.util.Scanner;
 public class TGFParser {
 	public static Map<String, Mechanic> mechs = new HashMap<String, Mechanic>();
 
-	public static void main(String[] args) {
-		readMechanics("hs.tgf");
+	public TGFParser() {
+		readMechanics("input/hs.tgf");
+		loop();
+	}
+
+	private void loop() {
+		for (Mechanic m : mechs.values()) {
+			m.aff.add(m);
+		}
 	}
 
 	/**
 	 * Lê arquivo de grafo tgf contendo relacionamento entre as mecanicas.
 	 * 
-	 * @param file Arquivo tgf das mecanicas.
+	 * @param file
+	 *            Arquivo tgf das mecanicas.
 	 */
-	public static void readMechanics(String file) {
+	private void readMechanics(String file) {
 		Scanner sc = null;
 		try {
 			sc = new Scanner(new FileReader(file));

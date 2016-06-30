@@ -1,0 +1,840 @@
+DONE
+loop
+battlecry:			whenever you play a card with battlecry
+beasts				your beasts have charge.
+draw				costs (1) less for each other card in your hand.		whenever you draw a card,
+secret:				if you control a secret at the end of your turn, restore 4 health to your hero.		whenever a friendly secret is revealed, gain +1 durability.		the next secret you play this turn costs (0)		deathrattle: put a secret from your deck into the battlefield.
+then, it dies. horribly.	deathrattle:
+deal .. damage randomly SPLIT between ALL	whenever this minion takes damage,		whenever this minion survives damage,
+while you have a mech.		MECH			at the end of your turn, give another friendly mech +2/+2.	if you have a mech,		give your other mechs +2 attack.
+??hero power costs 0?? 		you can use your hero power any number of times.	battlecry: replace your starting hero power with a better one.		your hero power can target minions.
+spell damage +5			CHEAP? DMG SPELLS
+COMBO INIMIGO, NAO ROLA! change an enemy minion's attack to 1.	destroy a random enemy minion with 2 or less attack.
+murlocs				murloc
+COMBO INIMIGO, NAO ROLA! set|change ...attack		destroy a minion with 3 or less attack.
+opponent draws|each player draws			costs (1) less for each card in your opponent's hand.
+dragon type			dragon
+overload			whenever you play a card with overload, gain +1/+1.
+SUMMON				give your other minions +1/+1.
+GIVE WEAPON			WEAPON
+COMBO INIMIGO, NAO ROLA! +ATTACK				destroy a minion with an attack of 5 or more.
+LOW COST CARD			gain +2/+2 for each card played earlier this turn.
+
+ONESHOTHABILITIES (stealth, divine shield,charge)			at the end of each turn, summon all friendly minions that died this turn.	dies	
+Kel'Thuzadat the end of each turn, summon all friendly minions that died this turn.	Reincarnatedestroy a minion, then return it to life with full health.
+BAD BATTLECRY			RESSURECT|RESUMMON		summon a random friendly minion that died this game.
+give ... stealth		good perma hability minion
+summon beast, snakes, hounds, hyenas...		whenever a friendly beast dies, gain +2/+1.		costs (1) less for each minion that died this turn.
+deathrattle:			battlecry: destroy the minions on either side of this minion
+GOOD NON-BATTLE CRY MINION	when a friendly minion dies, put 2 copies of it into your hand.
+destroy your opponent's weapon		equip a random weapon for each player.
+HIGHCOSTMINION(NON-BATTLECRY)	swap this minion with a random one in your hand.	when a friendly minion dies, summon a random minion with the same cost.
+HIGH ATTACK WEAPON		gain attack equal to the attack of your weapon.		costs (1) less per attack of your weapon.
+taunt				give your taunt minions +2/+2.
+GOOD MINION SPELLS		when an enemy casts a spell on a minion, summon a 1/3 as the new target.
+HIGH COST CARD			draw a card and deal damage equal to its cost.
+
+
+
+LOW COST SPELL			whenever you target this minion with a spell,
+windfury			choose a minion. whenever it attacks, draw a card.
+
+Ironforge Rifleman			battlecry: deal 1 damage.
+Execute			destroy a damaged enemy minion.
+
+Ironforge Rifleman			battlecry: deal 1 damage.
+Defender of Argus			battlecry: give adjacent minions +1/+1 and taunt.
+
+Mogor the Ogre			all minions have a 50% chance to attack the wrong enemy.
+Sea Reaver			when you draw this, deal 1 damage to your minions.
+
+Sinister Strike			deal 3 damage to the enemy hero.
+Nexus-Champion Saraad			inspire: add a random spell to your hand.
+
+Bloodsail Raider			battlecry: gain attack equal to the attack of your weapon.
+Powermace			deathrattle: give a random friendly mech +2/+2.
+
+Bloodsail Raider			battlecry: gain attack equal to the attack of your weapon.
+Ogre Warmaul			50% chance to attack the wrong enemy.
+
+Tinkmaster Overspark			battlecry: transform another random minion into a 5/5 devilsaur or a 1/1 squirrel.
+Scarlet Purifier			battlecry: deal 2 damage to all minions with deathrattle.
+
+Acidic Swamp Ooze			battlecry: destroy your opponent's weapon.
+Blingtron 3000			battlecry: equip a random weapon for each player.
+
+Shadow Word: Pain			destroy a minion with 3 or less attack.
+Shrinkmeister			battlecry: give a minion -2 attack this turn.
+
+Counterspell			secret: when your opponent casts a spell, counter it.
+Kirin Tor Mage			battlecry: the next secret you play this turn costs (0).
+
+Auchenai Soulpriest			your cards and powers that restore health now deal damage instead.
+Malygos			spell damage +5
+
+Imp Master			at the end of your turn, deal 1 damage to this minion and summon a 1/1 imp.
+Lightbomb			deal damage to each minion equal to its attack.
+
+Crazed Alchemist			battlecry: swap the attack and health of a minion.
+Humility			change a minion's attack to 1.
+
+Battle Rage			draw a card for each damaged friendly character.
+Frothing Berserker			whenever a minion takes damage, gain +1 attack.
+
+Demonfire			deal 2 damage to a minion. if it’s a friendly demon, give it +2/+2 instead.
+Void Terror			battlecry: destroy the minions on either side of this minion and gain their attack and health.
+
+Murloc Tidecaller			whenever a murloc is summoned, gain +1 attack.
+Screwjank Clunker			battlecry: give a friendly mech +2/+2.
+
+Leeroy Jenkins			charge. battlecry: summon two 1/1 whelps for your opponent.
+Duplicate			secret: when a friendly minion dies, put 2 copies of it into your hand.
+
+Leeroy Jenkins			charge. battlecry: summon two 1/1 whelps for your opponent.
+Unleash the Hounds			for each enemy minion, summon a 1/1 hound with charge.
+
+Core Hound			null
+Feugen			deathrattle: if stalagg also died this game, summon thaddius.
+
+Inner Rage			deal 1 damage to a minion and give it +2 attack.
+Grim Patron			whenever this minion survives damage, summon another grim patron.
+
+Inner Rage			deal 1 damage to a minion and give it +2 attack.
+Gurubashi Berserker			whenever this minion takes damage, gain +3 attack.
+
+Dire Wolf Alpha			adjacent minions have +1 attack.
+Druid of the Fang			battlecry: if you have a beast, transform this minion into a 7/7.
+
+Silvermoon Guardian			divine shield
+Demonwrath			deal 2 damage to all non-demon minions.
+
+Silvermoon Guardian			divine shield
+Mind Blast			deal 5 damage to the enemy hero.
+
+Force of Nature			summon three 2/2 treants.
+Emperor Thaurissan			at the end of your turn, reduce the cost of cards in your hand by (1).
+
+Force of Nature			summon three 2/2 treants.
+Cult Master			whenever one of your other minions dies, draw a card.
+
+Lightbomb			deal damage to each minion equal to its attack.
+Goblin Sapper			has +4 attack while your opponent has 6 or more cards in hand.
+
+Ysera			at the end of your turn, add a dream card to your hand.
+Blackwing Technician			battlecry: if you're holding a dragon, gain +1/+1.
+
+Ysera			at the end of your turn, add a dream card to your hand.
+Alarm-o-Bot			at the start of your turn, swap this minion with a random one in your hand.
+
+Ogre Brute			50% chance to attack the wrong enemy.
+Axe Flinger			whenever this minion takes damage, deal 2 damage to the enemy hero.
+
+Doomsayer			at the start of your turn, destroy all minions.
+Frost Nova			freeze all enemy minions.
+
+Snowchugger			freeze any character damaged by this minion.
+Mechwarper			your mechs cost (1) less.
+
+Snowchugger			freeze any character damaged by this minion.
+Cogmaster			has +2 attack while you have a mech.
+
+Shadowform			your hero power becomes 'deal 2 damage'. if already in shadowform: 3 damage.
+Jeeves			at the end of each player's turn, that player draws until they have 3 cards.
+
+Flametongue Totem			adjacent minions have +2 attack.
+Stoneskin Gargoyle			at the start of your turn, restore this minion to full health.
+
+Betrayal			force an enemy minion to deal its damage to the minions next to it.
+Knife Juggler			after you summon a minion, deal 1 damage to a random enemy.
+
+Inner Fire			change a minion's attack to be equal to its health.
+Twilight Whelp			battlecry: if you're holding a dragon, gain +2 health.
+
+Inner Fire			change a minion's attack to be equal to its health.
+Ysera			at the end of your turn, add a dream card to your hand.
+
+Inner Fire			change a minion's attack to be equal to its health.
+Mogu'shan Warden			taunt
+
+Inner Fire			change a minion's attack to be equal to its health.
+Malygos			spell damage +5
+
+Inner Fire			change a minion's attack to be equal to its health.
+Thrallmar Farseer			windfury
+
+Lava Burst			deal 5 damage. overload: (2)
+Gadgetzan Auctioneer			whenever you cast a spell, draw a card.
+
+Lava Burst			deal 5 damage. overload: (2)
+Crackle			deal 3-6 damage. overload: (1)
+
+Silverback Patriarch			taunt
+Holy Nova			deal 2 damage to all enemies. restore 2 health to all friendly characters.
+
+Silverback Patriarch			taunt
+Houndmaster			battlecry: give a friendly beast +2/+2 and taunt.
+
+Screwjank Clunker			battlecry: give a friendly mech +2/+2.
+Piloted Shredder			deathrattle: summon a random 2-cost minion.
+
+Deathwing			battlecry: destroy all other minions and discard your hand.
+Eaglehorn Bow			whenever a friendly secret is revealed, gain +1 durability.
+
+Deathwing			battlecry: destroy all other minions and discard your hand.
+Core Rager			battlecry: if your hand is empty, gain +3/+3.
+
+Deathwing			battlecry: destroy all other minions and discard your hand.
+Blackwing Corruptor			battlecry: if you're holding a dragon, deal 3 damage.
+
+Deathwing			battlecry: destroy all other minions and discard your hand.
+Shieldmaiden			battlecry: gain 5 armor.
+
+Divine Spirit			double a minion's health.
+Lightbomb			deal damage to each minion equal to its attack.
+
+Divine Spirit			double a minion's health.
+Boulderfist Ogre			null
+
+Assassin's Blade			null
+Tinker's Sharpsword Oil			give your weapon +3 attack. combo: give a random friendly minion +3 attack.
+
+Assassin's Blade			null
+Bloodsail Raider			battlecry: gain attack equal to the attack of your weapon.
+
+Assassin's Blade			null
+Deadly Poison			give your weapon +2 attack.
+
+Powermace			deathrattle: give a random friendly mech +2/+2.
+Foe Reaper 4000			also damages the minions next to whomever he attacks.
+
+Powermace			deathrattle: give a random friendly mech +2/+2.
+Spider Tank			null
+
+Powermace			deathrattle: give a random friendly mech +2/+2.
+Junkbot			whenever a friendly mech dies, gain +2/+2.
+
+Shadowbomber			battlecry: deal 3 damage to each hero.
+Resurrect			summon a random friendly minion that died this game.
+
+Shadowbomber			battlecry: deal 3 damage to each hero.
+Clockwork Giant			costs (1) less for each card in your opponent's hand.
+
+Frost Elemental			battlecry: freeze a character.
+Mechanical Yeti			deathrattle: give each player a spare part.
+
+Conceal			give your minions stealth until your next turn.
+Beneath the Grounds			shuffle 3 ambushes into your opponent's deck. when drawn, you summon a 4/4 nerubian.
+
+Kill Command			deal 3 damage. if you have a beast, deal 5 damage instead.
+Savannah Highmane			deathrattle: summon two 2/2 hyenas.
+
+Kill Command			deal 3 damage. if you have a beast, deal 5 damage instead.
+Dire Wolf Alpha			adjacent minions have +1 attack.
+
+Kill Command			deal 3 damage. if you have a beast, deal 5 damage instead.
+Gahz'rilla			whenever this minion takes damage, double its attack.
+
+Kill Command			deal 3 damage. if you have a beast, deal 5 damage instead.
+Jungle Panther			stealth
+
+Bloodmage Thalnos			spell damage +1. deathrattle: draw a card.
+Lava Burst			deal 5 damage. overload: (2)
+
+Archmage			spell damage +1
+Arcane Shot			deal 2 damage.
+
+Archmage			spell damage +1
+Flamestrike			deal 4 damage to all enemy minions.
+
+Archmage			spell damage +1
+Arcane Blast			deal 2 damage to a minion. this spell gets double bonus from spell damage.
+
+Razorfen Hunter			battlecry: summon a 1/1 boar.
+Power Overwhelming			give a friendly minion +4/+4 until end of turn. then, it dies. horribly.
+
+Annoy-o-Tron			taunt divine shield
+Gang Up			choose a minion. shuffle 3 copies of it into your deck.
+
+Flame Imp			battlecry: deal 3 damage to your hero.
+Floating Watcher			whenever your hero takes damage on your turn, gain +2/+2.
+
+Flame Imp			battlecry: deal 3 damage to your hero.
+Demonfire			deal 2 damage to a minion. if it’s a friendly demon, give it +2/+2 instead.
+
+Foe Reaper 4000			also damages the minions next to whomever he attacks.
+Holy Champion			whenever a character is healed, gain +2 attack.
+
+Grimscale Oracle			all other murlocs have +1 attack.
+Powermace			deathrattle: give a random friendly mech +2/+2.
+
+Grimscale Oracle			all other murlocs have +1 attack.
+Murloc Tidehunter			battlecry: summon a 1/1 murloc scout.
+
+Grimscale Oracle			all other murlocs have +1 attack.
+Murloc Warleader			all other murlocs have +2/+1.
+
+Grimscale Oracle			all other murlocs have +1 attack.
+Sir Finley Mrrgglton			battlecry: discover a new basic hero power.
+
+Mana Wyrm			whenever you cast a spell, gain +1 attack.
+Duplicate			secret: when a friendly minion dies, put 2 copies of it into your hand.
+
+Mana Wyrm			whenever you cast a spell, gain +1 attack.
+Sorcerer's Apprentice			your spells cost (1) less.
+
+Mana Wyrm			whenever you cast a spell, gain +1 attack.
+Clockwork Gnome			deathrattle: add a spare part card to your hand.
+
+Mana Wyrm			whenever you cast a spell, gain +1 attack.
+Flamestrike			deal 4 damage to all enemy minions.
+
+Mana Wyrm			whenever you cast a spell, gain +1 attack.
+Blizzard			deal 2 damage to all enemy minions and freeze them.
+
+Void Crusher			inspire: destroy a random minion for each player.
+Elise Starseeker			battlecry: shuffle the 'map to the golden monkey' into your deck.
+
+Bloodfen Raptor			null
+Tundra Rhino			your beasts have charge.
+
+River Crocolisk			null
+Knight of the Wild			whenever you summon a beast, reduce the cost of this card by (1).
+
+Eaglehorn Bow			whenever a friendly secret is revealed, gain +1 durability.
+Kezan Mystic			battlecry: take control of a random enemy secret.
+
+Savage Roar			give your characters +2 attack this turn.
+Unstable Ghoul			taunt. deathrattle: deal 1 damage to all minions.
+
+Magma Rager			null
+Core Rager			battlecry: if your hand is empty, gain +3/+3.
+
+Magma Rager			null
+Warbot			enrage: +1 attack.
+
+Faceless Manipulator			battlecry: choose a minion and become a copy of it.
+Feugen			deathrattle: if stalagg also died this game, summon thaddius.
+
+Faceless Manipulator			battlecry: choose a minion and become a copy of it.
+Sludge Belcher			taunt deathrattle: summon a 1/2 slime with taunt.
+
+Faceless Manipulator			battlecry: choose a minion and become a copy of it.
+Target Dummy			taunt
+
+Bluegill Warrior			charge
+Salty Dog			null
+
+Bluegill Warrior			charge
+Neptulon			battlecry: add 4 random murlocs to your hand. overload: (3)
+
+Ancient Brewmaster			battlecry: return a friendly minion from the battlefield to your hand.
+Conceal			give your minions stealth until your next turn.
+
+Goldshire Footman			taunt
+Gang Up			choose a minion. shuffle 3 copies of it into your deck.
+
+Demolisher			at the start of your turn, deal 2 damage to a random enemy.
+Iron Sensei			at the end of your turn, give another friendly mech +2/+2.
+
+Quick Shot			deal 3 damage. if your hand is empty, draw a card.
+Frigid Snobold			spell damage +1
+
+Dread Corsair			taunt. costs (1) less per attack of your weapon.
+Death's Bite			deathrattle: deal 1 damage to all minions.
+
+Dread Corsair			taunt. costs (1) less per attack of your weapon.
+Powermace			deathrattle: give a random friendly mech +2/+2.
+
+Goblin Blastmage			battlecry: if you have a mech, deal 4 damage randomly split among all enemies.
+Piloted Shredder			deathrattle: summon a random 2-cost minion.
+
+Goblin Blastmage			battlecry: if you have a mech, deal 4 damage randomly split among all enemies.
+Junkbot			whenever a friendly mech dies, gain +2/+2.
+
+Goblin Blastmage			battlecry: if you have a mech, deal 4 damage randomly split among all enemies.
+Target Dummy			taunt
+
+Starfall			choose one - deal 5 damage to a minion; or 2 damage to all enemy minions.
+Malygos			spell damage +5
+
+Patient Assassin			stealth. destroy any minion damaged by this minion.
+Clockwork Giant			costs (1) less for each card in your opponent's hand.
+
+Cult Master			whenever one of your other minions dies, draw a card.
+Imp Gang Boss			whenever this minion takes damage, summon a 1/1 imp.
+
+Cult Master			whenever one of your other minions dies, draw a card.
+Imp-losion			deal 2-4 damage to a minion. summon a 1/1 imp for each damage dealt.
+
+Equality			change the health of all minions to 1.
+Argent Squire			divine shield
+
+Equality			change the health of all minions to 1.
+Avenging Wrath			deal 8 damage randomly split among all enemies.
+
+Equality			change the health of all minions to 1.
+Imp Master			at the end of your turn, deal 1 damage to this minion and summon a 1/1 imp.
+
+Equality			change the health of all minions to 1.
+Angry Chicken			enrage: +5 attack.
+
+Druid of the Claw			choose one - charge; or +2 health and taunt.
+Druid of the Fang			battlecry: if you have a beast, transform this minion into a 7/7.
+
+Frothing Berserker			whenever a minion takes damage, gain +1 attack.
+Grim Patron			whenever this minion survives damage, summon another grim patron.
+
+Cruel Taskmaster			battlecry: deal 1 damage to a minion and give it +2 attack.
+Unstable Ghoul			taunt. deathrattle: deal 1 damage to all minions.
+
+Cruel Taskmaster			battlecry: deal 1 damage to a minion and give it +2 attack.
+Nerubian Egg			deathrattle: summon a 4/4 nerubian.
+
+Cruel Taskmaster			battlecry: deal 1 damage to a minion and give it +2 attack.
+Dragon Egg			whenever this minion takes damage, summon a 2/1 whelp.
+
+Keeper of the Grove			choose one - deal 2 damage; or silence a minion.
+Fel Reaver			whenever your opponent plays a card, remove the top 3 cards of your deck.
+
+Southsea Captain			your other pirates have +1/+1.
+Bloodsail Raider			battlecry: gain attack equal to the attack of your weapon.
+
+Southsea Captain			your other pirates have +1/+1.
+Dread Corsair			taunt. costs (1) less per attack of your weapon.
+
+Mark of Nature			choose one - give a minion +4 attack; or +4 health and taunt.
+Goblin Sapper			has +4 attack while your opponent has 6 or more cards in hand.
+
+Northshire Cleric			whenever a minion is healed, draw a card.
+Sneed's Old Shredder			deathrattle: summon a random legendary minion.
+
+Northshire Cleric			whenever a minion is healed, draw a card.
+Velen's Chosen			give a minion +2/+4 and spell damage +1.
+
+Swipe			deal 4 damage to an enemy and 1 damage to all other enemies.
+Kobold Geomancer			spell damage +1
+
+Swipe			deal 4 damage to an enemy and 1 damage to all other enemies.
+Malygos			spell damage +5
+
+Swipe			deal 4 damage to an enemy and 1 damage to all other enemies.
+Leeroy Jenkins			charge. battlecry: summon two 1/1 whelps for your opponent.
+
+Quartermaster			battlecry: give your silver hand recruits +2/+2.
+Muster for Battle			summon three 1/1 silver hand recruits. equip a 1/4 weapon.
+
+Power of the Wild			choose one - give your minions +1/+1; or summon a 3/2 panther.
+Druid of the Fang			battlecry: if you have a beast, transform this minion into a 7/7.
+
+Argent Commander			charge divine shield
+Earth Elemental			taunt. overload: (3)
+
+Argent Commander			charge divine shield
+Lightspawn			this minion's attack is always equal to its health.
+
+Murloc Raider			null
+Murloc Warleader			all other murlocs have +2/+1.
+
+Divine Favor			draw cards until you have as many in hand as your opponent.
+King Mukla			battlecry: give your opponent 2 bananas.
+
+Spiteful Smith			enrage: your weapon has +2 attack.
+Light's Justice			null
+
+Sabotage			destroy a random enemy minion. combo: and your opponent's weapon.
+Blingtron 3000			battlecry: equip a random weapon for each player.
+
+Nefarian			battlecry: add 2 random spells to your hand (from your opponent's class).
+Flamewaker			after you cast a spell, deal 2 damage randomly split among all enemies.
+
+Nefarian			battlecry: add 2 random spells to your hand (from your opponent's class).
+Blackwing Corruptor			battlecry: if you're holding a dragon, deal 3 damage.
+
+Young Dragonhawk			windfury
+Druid of the Fang			battlecry: if you have a beast, transform this minion into a 7/7.
+
+Moonfire			deal 1 damage.
+Mini-Mage			stealth spell damage +1
+
+Convert			put a copy of an enemy minion into your hand.
+Gadgetzan Jouster			battlecry: reveal a minion in each deck. if yours costs more, gain +1/+1.
+
+Upgraded Repair Bot			battlecry: give a friendly mech +4 health.
+Micro Machine			at the start of each turn, gain +1 attack.
+
+Earth Shock			silence a minion, then deal 1 damage to it.
+Ancient Mage			battlecry: give adjacent minions spell damage +1.
+
+Spellbreaker			battlecry: silence a minion.
+Spectral Knight			can't be targeted by spells or hero powers.
+
+Spellbreaker			battlecry: silence a minion.
+Amani Berserker			enrage: +3 attack
+
+Spellbreaker			battlecry: silence a minion.
+Deathlord			taunt. deathrattle: your opponent puts a minion from their deck into the battlefield.
+
+Dragonkin Sorcerer			whenever you target this minion with a spell, gain +1/+1.
+Alexstrasza's Champion			battlecry: if you're holding a dragon, gain +1 attack and charge.
+
+Commanding Shout			your minions can't be reduced below 1 health this turn. draw a card.
+Argent Horserider			charge divine shield
+
+Commanding Shout			your minions can't be reduced below 1 health this turn. draw a card.
+Grim Patron			whenever this minion survives damage, summon another grim patron.
+
+Mana Wraith			all minions cost (1) more.
+Twisting Nether			destroy all minions.
+
+Mimiron's Head			at the start of your turn, if you have at least 3 mechs, destroy them all and form v-07-tr-0n.
+Murloc Knight			inspire: summon a random murloc.
+
+Rockbiter Weapon			give a friendly character +3 attack this turn.
+Volcanic Drake			costs (1) less for each minion that died this turn.
+
+Rockbiter Weapon			give a friendly character +3 attack this turn.
+Charged Hammer			deathrattle: your hero power becomes 'deal 2 damage.'
+
+Mana Tide Totem			at the end of your turn, draw a card.
+Kezan Mystic			battlecry: take control of a random enemy secret.
+
+Mana Tide Totem			at the end of your turn, draw a card.
+Deathwing			battlecry: destroy all other minions and discard your hand.
+
+Youthful Brewmaster			battlecry: return a friendly minion from the battlefield to your hand.
+Eye for an Eye			secret: when your hero takes damage, deal that much damage to the enemy hero.
+
+Youthful Brewmaster			battlecry: return a friendly minion from the battlefield to your hand.
+Violet Teacher			whenever you cast a spell, summon a 1/1 violet apprentice.
+
+Fireball			deal 6 damage.
+Gnomish Experimenter			battlecry: draw a card. if it's a minion, transform it into a chicken.
+
+Fireball			deal 6 damage.
+Haunted Creeper			deathrattle: summon two 1/1 spectral spiders.
+
+Mirror Entity			secret: after your opponent plays a minion, summon a copy of it.
+Kirin Tor Mage			battlecry: the next secret you play this turn costs (0).
+
+Crush			destroy a minion. if you have a damaged minion, this costs (4) less.
+Blackwing Technician			battlecry: if you're holding a dragon, gain +1/+1.
+
+Mechwarper			your mechs cost (1) less.
+Powermace			deathrattle: give a random friendly mech +2/+2.
+
+Mechwarper			your mechs cost (1) less.
+Spider Tank			null
+
+Mechwarper			your mechs cost (1) less.
+Goblin Auto-Barber			battlecry: give your weapon +1 attack.
+
+Mechwarper			your mechs cost (1) less.
+Upgraded Repair Bot			battlecry: give a friendly mech +4 health.
+
+Mechwarper			your mechs cost (1) less.
+Cogmaster's Wrench			has +2 attack while you have a mech.
+
+Dark Iron Skulker			battlecry: deal 2 damage to all undamaged enemy minions.
+Icehowl			charge can't attack heroes.
+
+Voidwalker			taunt
+Demonheart			deal 5 damage to a minion. if it's a friendly demon, give it +5/+5 instead.
+
+Wailing Soul			battlecry: silence your other minions.
+Majordomo Executus			deathrattle: replace your hero with ragnaros, the firelord.
+
+One-eyed Cheat			whenever you summon a pirate, gain stealth.
+Salty Dog			null
+
+One-eyed Cheat			whenever you summon a pirate, gain stealth.
+Gang Up			choose a minion. shuffle 3 copies of it into your deck.
+
+Holy Fire			deal 5 damage. restore 5 health to your hero.
+Unstable Ghoul			taunt. deathrattle: deal 1 damage to all minions.
+
+Captain's Parrot			battlecry: put a random pirate from your deck into your hand.
+Worgen Infiltrator			stealth
+
+Captain's Parrot			battlecry: put a random pirate from your deck into your hand.
+Tundra Rhino			your beasts have charge.
+
+Cobalt Guardian			whenever you summon a mech, gain divine shield.
+Mimiron's Head			at the start of your turn, if you have at least 3 mechs, destroy them all and form v-07-tr-0n.
+
+Spider Tank			null
+Wilfred Fizzlebang			cards you draw from your hero power cost (0).
+
+Blessing of Kings			give a minion +4/+4. (+4 attack/+4 health)
+Angry Chicken			enrage: +5 attack.
+
+Abusive Sergeant			battlecry: give a minion +2 attack this turn.
+Sense Demons			put 2 random demons from your deck into your hand.
+
+Unstable Ghoul			taunt. deathrattle: deal 1 damage to all minions.
+Lightbomb			deal damage to each minion equal to its attack.
+
+Cogmaster's Wrench			has +2 attack while you have a mech.
+Annoy-o-Tron			taunt divine shield
+
+Cogmaster's Wrench			has +2 attack while you have a mech.
+Arcane Nullifier X-21			taunt can't be targeted by spells or hero powers.
+
+Cogmaster's Wrench			has +2 attack while you have a mech.
+Clockwork Gnome			deathrattle: add a spare part card to your hand.
+
+Cogmaster's Wrench			has +2 attack while you have a mech.
+Spider Tank			null
+
+Cogmaster's Wrench			has +2 attack while you have a mech.
+Micro Machine			at the start of each turn, gain +1 attack.
+
+Consecration			deal 2 damage to all enemies.
+Equality			change the health of all minions to 1.
+
+Consecration			deal 2 damage to all enemies.
+Mekgineer Thermaplugg			whenever an enemy minion dies, summon a leper gnome.
+
+Defender of Argus			battlecry: give adjacent minions +1/+1 and taunt.
+Lava Shock			deal 2 damage. unlock your overloaded mana crystals.
+
+Claw			give your hero +2 attack this turn and 2 armor.
+Knife Juggler			after you summon a minion, deal 1 damage to a random enemy.
+
+Murloc Warleader			all other murlocs have +2/+1.
+Neptulon			battlecry: add 4 random murlocs to your hand. overload: (3)
+
+Darkscale Healer			battlecry: restore 2 health to all friendly characters.
+Silent Knight			stealth divine shield
+
+Multi-Shot			deal 3 damage to two random enemy minions.
+Stormwind Champion			your other minions have +1/+1.
+
+Animal Companion			summon a random beast companion.
+Summoning Stone			whenever you cast a spell, summon a random minion of the same cost.
+
+Mad Scientist			deathrattle: put a secret from your deck into the battlefield.
+Duplicate			secret: when a friendly minion dies, put 2 copies of it into your hand.
+
+Savagery			deal damage equal to your hero's attack to a minion.
+Bite			give your hero +4 attack this turn and 4 armor.
+
+Fiery War Axe			null
+Bloodsail Raider			battlecry: gain attack equal to the attack of your weapon.
+
+Fiery War Axe			null
+Southsea Deckhand			has charge while you have a weapon equipped.
+
+Fiery War Axe			null
+Dread Corsair			taunt. costs (1) less per attack of your weapon.
+
+Nozdormu			players only have 15 seconds to take their turns.
+Youthful Brewmaster			battlecry: return a friendly minion from the battlefield to your hand.
+
+Nozdormu			players only have 15 seconds to take their turns.
+Mogor the Ogre			all minions have a 50% chance to attack the wrong enemy.
+
+Cold Blood			give a minion +2 attack. combo: +4 attack instead.
+Big Game Hunter			battlecry: destroy a minion with an attack of 7 or more.
+
+Cold Blood			give a minion +2 attack. combo: +4 attack instead.
+Arcane Golem			battlecry: give your opponent a mana crystal.
+
+Onyxia			battlecry: summon 1/1 whelps until your side of the battlefield is full.
+Mogor the Ogre			all minions have a 50% chance to attack the wrong enemy.
+
+Onyxia			battlecry: summon 1/1 whelps until your side of the battlefield is full.
+Holy Wrath			draw a card and deal damage equal to its cost.
+
+Onyxia			battlecry: summon 1/1 whelps until your side of the battlefield is full.
+Poison Seeds			destroy all minions and summon 2/2 treants to replace them.
+
+Onyxia			battlecry: summon 1/1 whelps until your side of the battlefield is full.
+Frostwolf Warlord			battlecry: gain +1/+1 for each other friendly minion on the battlefield.
+
+Fel Reaver			whenever your opponent plays a card, remove the top 3 cards of your deck.
+Tinkertown Technician			battlecry: if you have a mech, gain +1/+1 and add a spare part to your hand.
+
+Lightwell			at the start of your turn, restore 3 health to a damaged friendly character.
+Jeeves			at the end of each player's turn, that player draws until they have 3 cards.
+
+Salty Dog			null
+Sparring Partner			taunt battlecry: give a minion taunt.
+
+Hogger			at the end of your turn, summon a 2/2 gnoll with taunt.
+Execute			destroy a damaged enemy minion.
+
+Hogger			at the end of your turn, summon a 2/2 gnoll with taunt.
+Recombobulator			battlecry: transform a friendly minion into a random minion with the same cost.
+
+Demonheart			deal 5 damage to a minion. if it's a friendly demon, give it +5/+5 instead.
+Floating Watcher			whenever your hero takes damage on your turn, gain +2/+2.
+
+Stampeding Kodo			battlecry: destroy a random enemy minion with 2 or less attack.
+Druid of the Flame			choose one - transform into a 5/2 minion; or a 2/5 minion.
+
+Priestess of Elune			battlecry: restore 4 health to your hero.
+Sabotage			destroy a random enemy minion. combo: and your opponent's weapon.
+
+Prophet Velen			double the damage and healing of your spells and hero power.
+Majordomo Executus			deathrattle: replace your hero with ragnaros, the firelord.
+
+Prophet Velen			double the damage and healing of your spells and hero power.
+Mind Blast			deal 5 damage to the enemy hero.
+
+Prophet Velen			double the damage and healing of your spells and hero power.
+Auchenai Soulpriest			your cards and powers that restore health now deal damage instead.
+
+Prophet Velen			double the damage and healing of your spells and hero power.
+Bloodsail Corsair			battlecry: remove 1 durability from your opponent's weapon.
+
+Fire Elemental			battlecry: deal 3 damage.
+Nexus-Champion Saraad			inspire: add a random spell to your hand.
+
+Lil' Exorcist			taunt battlecry: gain +1/+1 for each enemy deathrattle minion.
+Druid of the Flame			choose one - transform into a 5/2 minion; or a 2/5 minion.
+
+Execute			destroy a damaged enemy minion.
+Death's Bite			deathrattle: deal 1 damage to all minions.
+
+Toshley			battlecry and deathrattle: add a spare part card to your hand.
+Gazlowe			whenever you cast a 1-mana spell, add a random mech to your hand.
+
+Puddlestomper			null
+Majordomo Executus			deathrattle: replace your hero with ragnaros, the firelord.
+
+Lightning Storm			deal 2-3 damage to all enemy minions. overload: (2)
+Azure Drake			spell damage +1. battlecry: draw a card.
+
+Lightning Storm			deal 2-3 damage to all enemy minions. overload: (2)
+Kobold Geomancer			spell damage +1
+
+Corruption			choose an enemy minion. at the start of your turn, destroy it.
+Raging Worgen			enrage: windfury and +1 attack
+
+Nerubian Egg			deathrattle: summon a 4/4 nerubian.
+Dark Iron Skulker			battlecry: deal 2 damage to all undamaged enemy minions.
+
+Nerubian Egg			deathrattle: summon a 4/4 nerubian.
+Fel Cannon			at the end of your turn, deal 2 damage to a non-mech minion.
+
+Stormwind Knight			charge
+Lightspawn			this minion's attack is always equal to its health.
+
+Young Priestess			at the end of your turn, give another random friendly minion +1 health.
+Ancestor's Call			put a random minion from each player's hand into the battlefield.
+
+Amani Berserker			enrage: +3 attack
+Murloc Knight			inspire: summon a random murloc.
+
+Azure Drake			spell damage +1. battlecry: draw a card.
+Drain Life			deal 2 damage. restore 2 health to your hero.
+
+Ice Block			secret: when your hero takes fatal damage, prevent it and become immune this turn.
+Illuminator			if you control a secret at the end of your turn, restore 4 health to your hero.
+
+Druid of the Fang			battlecry: if you have a beast, transform this minion into a 7/7.
+Savage Combatant			inspire: give your hero +2 attack this turn.
+
+Malygos			spell damage +5
+Gadgetzan Auctioneer			whenever you cast a spell, draw a card.
+
+Malygos			spell damage +5
+Arcane Shot			deal 2 damage.
+
+Malygos			spell damage +5
+Mind Blast			deal 5 damage to the enemy hero.
+
+Malygos			spell damage +5
+Moonfire			deal 1 damage.
+
+Malygos			spell damage +5
+Lightning Storm			deal 2-3 damage to all enemy minions. overload: (2)
+
+Malygos			spell damage +5
+Flamestrike			deal 4 damage to all enemy minions.
+
+Malygos			spell damage +5
+Archmage Antonidas			whenever you cast a spell, add a 'fireball' spell to your hand.
+
+Malygos			spell damage +5
+Dart Trap			secret: after an opposing hero power is used, deal 5 damage to a random enemy.
+
+Malygos			spell damage +5
+Darkbomb			deal 3 damage.
+
+Malygos			spell damage +5
+Arcane Explosion			deal 1 damage to all enemy minions.
+
+Malygos			spell damage +5
+Headcrack			deal 2 damage to the enemy hero. combo: return this to your hand next turn.
+
+Malygos			spell damage +5
+Shield Slam			deal 1 damage to a minion for each armor you have.
+
+Malygos			spell damage +5
+Fan of Knives			deal 1 damage to all enemy minions. draw a card.
+
+Twilight Drake			battlecry: gain +1 health for each card in your hand.
+Blackwing Corruptor			battlecry: if you're holding a dragon, deal 3 damage.
+
+Tauren Warrior			taunt. enrage: +3 attack
+Cruel Taskmaster			battlecry: deal 1 damage to a minion and give it +2 attack.
+
+Dragon Consort			battlecry: the next dragon you play costs (2) less.
+Dragonkin Sorcerer			whenever you target this minion with a spell, gain +1/+1.
+
+Dragon Consort			battlecry: the next dragon you play costs (2) less.
+Blackwing Corruptor			battlecry: if you're holding a dragon, deal 3 damage.
+
+Worgen Infiltrator			stealth
+Jeeves			at the end of each player's turn, that player draws until they have 3 cards.
+
+Ironbeak Owl			battlecry: silence a minion.
+Majordomo Executus			deathrattle: replace your hero with ragnaros, the firelord.
+
+Ironbeak Owl			battlecry: silence a minion.
+Starving Buzzard			whenever you summon a beast, draw a card.
+
+Ironbeak Owl			battlecry: silence a minion.
+Anima Golem			at the end of each turn, destroy this minion if it's your only one.
+
+Ethereal Arcanist			if you control a secret at the end of your turn, gain +2/+2.
+Duplicate			secret: when a friendly minion dies, put 2 copies of it into your hand.
+
+Shield Slam			deal 1 damage to a minion for each armor you have.
+Shieldmaiden			battlecry: gain 5 armor.
+
+Arcane Intellect			draw 2 cards.
+Emperor Thaurissan			at the end of your turn, reduce the cost of cards in your hand by (1).
+
+Defias Ringleader			combo: summon a 2/1 defias bandit.
+Majordomo Executus			deathrattle: replace your hero with ragnaros, the firelord.
+
+Defias Ringleader			combo: summon a 2/1 defias bandit.
+Deathwing			battlecry: destroy all other minions and discard your hand.
+
+Ancestor's Call			put a random minion from each player's hand into the battlefield.
+Target Dummy			taunt
+
+The Beast			deathrattle: summon a 3/3 finkle einhorn for your opponent.
+Core Hound			null
+
+Southsea Deckhand			has charge while you have a weapon equipped.
+Ogre Warmaul			50% chance to attack the wrong enemy.
+
+Stranglethorn Tiger			stealth
+Boulderfist Ogre			null
+
+Millhouse Manastorm			battlecry: enemy spells cost (0) next turn.
+Lorewalker Cho			whenever a player casts a spell, put a copy into the other player’s hand.
+
+Voidcaller			deathrattle: put a random demon from your hand into the battlefield.
+Floating Watcher			whenever your hero takes damage on your turn, gain +2/+2.
+
+Hobgoblin			whenever you play a 1-attack minion, give it +2/+2.
+Charged Hammer			deathrattle: your hero power becomes 'deal 2 damage.'
+
+Harvest Golem			deathrattle: summon a 2/1 damaged golem.
+Iron Sensei			at the end of your turn, give another friendly mech +2/+2.
+
+

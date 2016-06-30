@@ -1,7 +1,7 @@
 package hcs;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Objeto de sinergia das cartas.
@@ -11,13 +11,14 @@ import java.util.List;
  */
 public class Mechanic {
 	String id, name, regex, cathegory;
-	List<Mechanic> aff = new ArrayList<Mechanic>();
+	Set<Mechanic> aff = new HashSet<Mechanic>();
 
 	public Mechanic(String id, String regex) {
 		this.id = id;
 		this.regex = regex;
 	}
 
+	// TODO usar ou nao esse eval para testar expressoes como HIGH ATTACK?
 	public boolean eval(Card c) {
 		return true;
 	}

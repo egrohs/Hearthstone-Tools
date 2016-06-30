@@ -4,11 +4,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,12 +18,24 @@ public class Synergy {
 	static List<Card> cards = new ArrayList<Card>();
 	private static int cont = 0;
 
-	public static void main2(String[] args) {
+	public static void main(String[] args) {
 		init();
-		testCombos();
+		// testCombos();
+		readSynergies();
+		// printCards();
+		for (Card card : cards) {
+			List<Card> sins = generateTextSynergies(card.name);
+			// System.out.println(card.name + "\t" + card.text);
+			for (Card card2 : card.synergies.keySet()) {
+				if (!sins.contains(card2)) {
+					System.out.println(card.name + ";" + card.text + ";" + card2.name + ";" + card2.text);
+					//System.out.println(card.race+" *** "+card2.race);
+				}
+			}
+		}
 	}
 
-	public static void main(String[] args) {
+	public static void main2(String[] args) {
 		init();
 		String card = "Frothing Berserker";
 		System.out.println("Sinergy for " + card);
@@ -38,16 +47,27 @@ public class Synergy {
 		// buildMechanics();
 		readCards();
 		// printCards();
-		TGFParser.readMechanics("input/hs.tgf");
+		new TGFParser();
 		// buildCards();
 		parseCards();
 	}
 
 	private static void printCards() {
-		System.out.println("Cost|Name|Set|Rariry|Type|Race|Class|Attack|Health|Text");
+		// System.out.println("Cost|Name|Set|Rariry|Type|Race|Class|Attack|Health|Text");
 		for (Card c : cards) {
-			System.out.println(c.cost + "|" + c.name + "|" + c.set + "|" + c.rarity + "|" + c.type + "|" + c.faction
-					+ "|" + c.playerClass + "|" + c.attack + "|" + c.health + "|" + c.dur + "|" + c.text);
+			// System.out.println(c.cost + "|" + c.name + "|" + c.set + "|" +
+			// c.rarity + "|" + c.type + "|" + c.faction
+			// + "|" + c.playerClass + "|" + c.attack + "|" + c.health + "|" +
+			// c.dur + "|" + c.text);
+			// System.out.println(c.name + "\t" +c.text + "\t"
+			// +c.synergies.size());
+			for (Card card : c.synergies.keySet()) {
+				Float val = c.synergies.get(card);
+				if (val > 4.0) {
+					System.out.println(c.name + "\t" + c.text);
+					System.out.println(card.name + "\t" + card.text + "\n");
+				}
+			}
 		}
 	}
 
@@ -77,42 +97,15 @@ public class Synergy {
 		// }
 	}
 
-	/**
-	 * Lê arquivo de combos, testando quais o algoritmo consegue encontrar.
-	 */
-	private static void testCombos() {
-		Scanner sc = null;
-		try {
-			sc = new Scanner(new FileReader("input/combos.csv"));
-			while (sc.hasNextLine()) {
-				String line = sc.nextLine();
-				List<String> ccs = new LinkedList<String>(Arrays.asList(line.split(";")));
-				String bse = ccs.remove(0);
-				List<String> sin = generateTextSynergies(bse);
-				// cards[0] = cards[1];
-				for (String c : ccs) {
-					if (!sin.contains(c)) {
-						System.out.println(bse + "\tnão contem\t" + c);
-						System.out.println(getCard(bse).text);
-						Card ccc = getCard(c);
-						System.out.println(ccc == null ? "" : ccc.text);
-						System.out.println();
-					}
-				}
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			sc.close();
-		}
-	}
-
 	private static Card getCard(String idORname) {
 		for (Card c : cards) {
 			if (c.name.equals(idORname)) {
 				return c;
 			}
 			if (c.id.equals(idORname)) {
+				return c;
+			}
+			if (idORname.equals(c.numid)) {
 				return c;
 			}
 		}
@@ -126,8 +119,9 @@ public class Synergy {
 	 *            Nome da carta consultada.
 	 * @return Lista das sinergias.
 	 */
-	private static List<String> generateTextSynergies(String cardName) {
-		List<String> sin = new ArrayList<String>();
+	private static List<Card> generateTextSynergies(String cardName) {
+		// TODO auto loops sinergies
+		List<Card> sin = new ArrayList<Card>();
 		// FileWriter fw = null;
 		try {
 			// fw = new FileWriter("output/hs.csv");
@@ -142,8 +136,9 @@ public class Synergy {
 								if (m1.aff.contains(m2)) {
 									// fw.write(c2.name + ";" + c2.playerClass +
 									// ";" + c2.text + "\n");
-									System.out.println(c2.name + ";" + c2.playerClass + ";" + c2.text);
-									sin.add(c2.name);
+									// System.out.println(c2.name + ";" +
+									// c2.playerClass + ";" + c2.text);
+									sin.add(c2);
 									cont++;
 									break;
 								}
@@ -188,12 +183,32 @@ public class Synergy {
 		while (iterator.hasNext()) {
 			JSONObject o = iterator.next();
 			String id = (String) o.get("id");
-			Long numid = (Long) o.get("numid");
+			String numid = (String) o.get("numid");
 			Card c = getCard(id);
 			c.setNumid(numid);
+
+		}
+		iterator = sets.iterator();
+		while (iterator.hasNext()) {
+			JSONObject o = iterator.next();
+			String id = (String) o.get("id");
+			Card c = getCard(id);
+			JSONArray sin = (JSONArray) o.get("synergies");
+			if (sin != null) {
+				Iterator<JSONArray> iterator2 = sin.iterator();
+				while (iterator2.hasNext()) {
+					JSONArray o2 = iterator2.next();
+					Card c2 = getCard((String) o2.get(0));
+					Float value = Float.parseFloat(o2.get(1).toString());
+					// TODO remover esse if
+					if (value > 4.0) {
+						c.synergies.put(c2, value);
+					}
+				}
+			}
 		}
 	}
-	
+
 	/**
 	 * Lê os textos das cartas, gerando suas listas de sinergia.
 	 */
@@ -203,7 +218,7 @@ public class Synergy {
 				if ("AGGRO MINION".equals(m.regex) && c.aggro) {
 					c.mechanics.add(m);
 				} else if ("DMG SPELL".equals(m.regex) && "SPELL".equals(c.type)
-						&& c.text.contains("deal \\d+ damage")) {
+						&& Pattern.compile("deal \\d+ damage").matcher(c.text).find()) {
 					c.mechanics.add(m);
 				} else if ("HIGH ATTACK MINION".equals(m.regex) && "MINION".equals(c.type) && c.attack > 4) {
 					c.mechanics.add(m);
@@ -220,7 +235,7 @@ public class Synergy {
 				} else if ("LOW COST SPELL".equals(m.regex) && "SPELL".equals(c.type) && c.cost < 3) {
 					c.mechanics.add(m);
 				} else if (c.text != null) {
-					if ("DISADVANTAGES".equals(m.regex) && c.text.contains("attack the wrong enemy")) {
+					if ("DISADVANTAGES".equals(m.regex) && c.text.toString().contains("attack the wrong enemy")) {
 						c.mechanics.add(m);
 					} else {
 						Matcher ma = Pattern.compile(m.regex).matcher(c.text);
@@ -261,7 +276,7 @@ public class Synergy {
 			JSONObject o = iterator.next();
 			Boolean col = (Boolean) o.get("collectible");
 			if (col != null && col == true && !"HERO".equals((String) o.get("type"))) {
-				cards.add(new Card((Long) o.get("id"), (String) o.get("name"), (String) o.get("set"),
+				cards.add(new Card((String) o.get("id"), (String) o.get("name"), (String) o.get("set"),
 						(String) o.get("race"), (String) o.get("playerClass"), (String) o.get("type"),
 						(String) o.get("text"), (Long) o.get("cost"), (Long) o.get("attack"), (Long) o.get("health"),
 						(Long) o.get("durability"), (String) o.get("rarity")));
@@ -296,21 +311,6 @@ public class Synergy {
 				fw.close();
 			} catch (IOException e) {
 				e.printStackTrace();
-			}
-		}
-	}
-
-	private static void buildCards() {
-		for (Card c : cards) {
-			String text = (String) c.text;
-			if (text != null) {
-				for (Mechanic m : TGFParser.mechs.values()) {
-					Matcher ma = Pattern.compile(m.regex).matcher(text);
-					// TODO usar ou nao esse eval de Card?
-					if (m.eval(c) && ma.find()) {
-						c.mechanics.add(m);
-					}
-				}
 			}
 		}
 	}
