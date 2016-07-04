@@ -56,7 +56,7 @@ public class Card {
 			// text =
 			// StringEscapeUtils.escapeHtml4(text).toLowerCase().replaceAll("\\$",
 			// "").replaceAll("\\#", "").trim();
-			text.append(" - "+race);
+			text.append(" - " + type + " - " + race);
 			text = new StringBuilder(Jsoup.parse(text.toString()).text().toLowerCase().replaceAll("\\$", "")
 					.replaceAll("\\#", "").trim());
 		}

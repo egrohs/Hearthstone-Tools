@@ -17,8 +17,9 @@ import org.json.simple.parser.ParseException;
 public class Synergy {
 	static List<Card> cards = new ArrayList<Card>();
 	private static int cont = 0;
+	private static TGFParser tgfp;
 
-	public static void main(String[] args) {
+	public static void main2(String[] args) {
 		init();
 		// testCombos();
 		readSynergies();
@@ -28,28 +29,36 @@ public class Synergy {
 			// System.out.println(card.name + "\t" + card.text);
 			for (Card card2 : card.synergies.keySet()) {
 				if (!sins.contains(card2)) {
-					System.out.println(card.name + ";" + card.text + ";" + card2.name + ";" + card2.text);
-					//System.out.println(card.race+" *** "+card2.race);
+					System.out.println(card.name + "\t"
+							+ /* card.text + ";" + */ card2.name /*
+																	 * + ";" +
+																	 * card2.
+																	 * text
+																	 */);
+					// System.out.println(card.race+" *** "+card2.race);
 				}
 			}
 		}
 	}
 
-	public static void main2(String[] args) {
+	public static void main(String[] args) {
 		init();
-		String card = "Frothing Berserker";
-		System.out.println("Sinergy for " + card);
-		generateTextSynergies(card);
+		// String card = "Frothing Berserker";
+		// System.out.println("Sinergy for " + card);
+		// generateTextSynergies(card);
 		// printCardMechanics();
+		// TGFToMatrix();
+		countCMechanics();
+		//countMAffinities();
 	}
 
 	private static void init() {
 		// buildMechanics();
 		readCards();
 		// printCards();
-		new TGFParser();
+		tgfp = new TGFParser();
 		// buildCards();
-		parseCards();
+		parseCardsText2Mechanics();
 	}
 
 	private static void printCards() {
@@ -63,7 +72,7 @@ public class Synergy {
 			// +c.synergies.size());
 			for (Card card : c.synergies.keySet()) {
 				Float val = c.synergies.get(card);
-				if (val > 4.0) {
+				if (val > 4.0){
 					System.out.println(c.name + "\t" + c.text);
 					System.out.println(card.name + "\t" + card.text + "\n");
 				}
@@ -71,30 +80,14 @@ public class Synergy {
 		}
 	}
 
-	private static void countClassCards() {
-		int warrior = 0, neutral = 0;
+	private static void countCMechanics() {
 		for (Card c : cards) {
-			// getSinergies(c.name);
-			if (c.playerClass == null) {
-				warrior++;
-			} else if (c.playerClass.equals("Warrior")) {
-				neutral++;
+			System.out.print(c.name + "\t" + c.mechanics.size() + "\t");
+			for (Mechanic m : c.mechanics) {
+				System.out.print(m.regex + "\t");
 			}
+			System.out.println();
 		}
-		System.out.println(warrior);
-		System.out.println(neutral);
-		// getSinergies("Wild Pyromancer");
-
-		// printCardMechanics();
-
-		// for (Card c : cards) {
-		// printCard(c);
-		// }
-		// System.out.println(cont);
-		// System.out.println(atta);
-		// for (Mechanic m : mechanics) {
-		// System.out.println(m.name);
-		// }
 	}
 
 	private static Card getCard(String idORname) {
@@ -212,13 +205,14 @@ public class Synergy {
 	/**
 	 * Lê os textos das cartas, gerando suas listas de sinergia.
 	 */
-	private static void parseCards() {
+	private static void parseCardsText2Mechanics() {
 		for (Card c : cards) {
+			int a = 0;
 			for (Mechanic m : TGFParser.mechs.values()) {
 				if ("AGGRO MINION".equals(m.regex) && c.aggro) {
 					c.mechanics.add(m);
 				} else if ("DMG SPELL".equals(m.regex) && "SPELL".equals(c.type)
-						&& Pattern.compile("deal \\d+ damage").matcher(c.text).find()) {
+						&& Pattern.compile("deal \\d+(\\-\\d+)? damage").matcher(c.text).find()) {
 					c.mechanics.add(m);
 				} else if ("HIGH ATTACK MINION".equals(m.regex) && "MINION".equals(c.type) && c.attack > 4) {
 					c.mechanics.add(m);
@@ -234,17 +228,30 @@ public class Synergy {
 					c.mechanics.add(m);
 				} else if ("LOW COST SPELL".equals(m.regex) && "SPELL".equals(c.type) && c.cost < 3) {
 					c.mechanics.add(m);
-				} else if (c.text != null) {
-					if ("DISADVANTAGES".equals(m.regex) && c.text.toString().contains("attack the wrong enemy")) {
+				} else if (m.regex.contains("DISADVANTAGES") && "MINION".equals(c.type)
+						&& Pattern.compile(m.regex).matcher(c.text).find()) {
+					//if (!c.text.toString().contains("battlecry"))
+					{
 						c.mechanics.add(m);
-					} else {
-						Matcher ma = Pattern.compile(m.regex).matcher(c.text);
-						if (ma.find()) {
-							c.mechanics.add(m);
-						}
 					}
+				} else if (Pattern.compile(m.regex).matcher(c.text).find()) {
+					c.mechanics.add(m);
 				}
 			}
+		}
+	}
+
+	private static void TGFToMatrix() {
+		for (Mechanic m : tgfp.mechs.values()) {
+			System.out.print(m.regex + "\t");
+			for (Mechanic m2 : tgfp.mechs.values()) {
+				if (m.aff.contains(m2) || m2.aff.contains(m)) {
+					System.out.print("1\t");
+				} else {
+					System.out.print("0\t");
+				}
+			}
+			System.out.println();
 		}
 	}
 
@@ -284,34 +291,9 @@ public class Synergy {
 		}
 	}
 
-	/**
-	 * Imprime em arquivo as mecanicas mapeadas.
-	 */
-	private static void printCardMechanics() {
-		FileWriter fw = null;
-		try {
-			fw = new FileWriter("output/hs.csv");
-			for (Card c : cards) {
-				int acum = 0;
-				System.out.print(c.name + "§");
-				fw.write(c.name + "§");
-				fw.write(c.text + "§");
-				for (Mechanic m : c.mechanics) {
-					System.out.print(m.regex + "--");
-					fw.write(m.regex + "--");
-					acum++;
-				}
-				System.out.println("§" + acum);
-				fw.write("§" + acum + "\r\n");
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				fw.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+	private static void countMAffinities() {
+		for (Mechanic m : TGFParser.mechs.values()) {
+			System.out.println(m.regex + "\t" + m.aff.size());
 		}
 	}
 }
