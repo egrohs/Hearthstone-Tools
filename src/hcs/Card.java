@@ -20,16 +20,10 @@ public class Card {
 	boolean aggro;
 	List<Mechanic> mechanics = new ArrayList<Mechanic>();
 	Map<Card, Float> synergies = new HashMap<Card, Float>();
-	// List<String> triggers = new ArrayList<String>();
-	// List<String> actions = new ArrayList<String>();
-	// List<String> entities = new ArrayList<String>();
-	// List<String> targets = new ArrayList<String>();
-
 	public Card(String id, /* Long numid, */ String name, String set, String faction, String playerClass, String type,
 			String text, Long cost, Long attack, Long health, Long dur, String rarity) {
 		super();
 		this.id = id;
-		// this.numid = numid;
 		this.name = name;
 		this.set = set;
 		this.race = faction;
