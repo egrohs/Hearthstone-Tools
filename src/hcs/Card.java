@@ -20,7 +20,6 @@ public class Card {
 	boolean aggro;
 	List<Mechanic> mechanics = new ArrayList<Mechanic>();
 	Map<Card, Float> synergies = new HashMap<Card, Float>();
-
 	public Card(String id, /* Long numid, */ String name, String set, String faction, String playerClass, String type,
 			String text, Long cos, Long atta, Long health, Long dur, String rarity) {
 		super();
