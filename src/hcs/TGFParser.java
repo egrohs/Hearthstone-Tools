@@ -14,9 +14,12 @@ public class TGFParser {
 		loop();
 	}
 
+	// TODO mecanicas devem se autoconter????
 	private void loop() {
 		for (Mechanic m : mechs.values()) {
-			m.aff.add(m);
+			if (!Character.isUpperCase(m.regex.charAt(0))) {
+				m.aff.add(m);
+			}
 		}
 	}
 

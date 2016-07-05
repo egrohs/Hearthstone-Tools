@@ -1,8 +1,8 @@
 1 DMG SPELL
 2 spell damage
 3 battlecr(y|ies)
-4 return (a|all) (friendly )?minion(s)? (.+\s)*to (your|their owner's) hand
-5 PERM DISADVANTAGES| can\'t attack| your minions cost \d+ more| attack the wrong enemy| your opponent draws| destroy this minion if it's your only one| remove the top \d+ cards of your deck| deal that amount to your hero
+4 return (.+\s)*(this |minion(s)? )(.+\s)*to (your|(its |their )owner's) hand
+5 PERM DISADVANTAGES| can\'t attack| your minions cost \(\d+\) more| attack the wrong enemy| your opponent draws| destroy this minion if it's your only one| remove the top \d+ cards of your deck| deal that amount to your hero
 6 silence
 7 (destroy all )
 8 (take|gain) control of
@@ -14,9 +14,9 @@
 14 deathrattle(s)?
 15 HIGH HP MINION
 16 divine shield
-17 draw (\d+ |a |one |an extra )?card(s)?
+17 (?<!you) draw(s)? (until they have )?(\d+ |a |one |an extra )?card(s)?
 18 enrage\:
-19 restore (.+\s)+health
+19 restore (.+\s)*health
 20 taunt
 21 transform (.+\s)+minion(s)? into
 22 LOW HP MINION
@@ -26,7 +26,7 @@
 26 HIGH ATTACK MINION
 27 LOW COST MINION
 28 LOW COST SPELL
-29 choose one \-
+29 choose one
 30 inspire
 31 (when(ever)?) (.+\s)+dies
 32 (hero)? power(s)?
@@ -35,39 +35,35 @@
 35 ( is healed)
 36 ( you draw )
 37 target this minion with a spell|(you|player) cast(s)?
-38 ( card( is)? played|(you|player) play(s)? a card)
+38 ( played|you play )
 39 secret
 40 (gain|unlock|give each player) (.+\s)+mana crystal(s)?
 41 (return it to life|resummon|summon (.+\s)+that died)
 42 (play(s)?|you summon) a (.+\s)*minion| minion is summoned
-43 (give (.+\s)*|have |has )\+\d(\/| attack)
+43 (double (.+\s)+minion\'s attack|(give (.+\s)*|have |has )\+\d(\/| attack))
 44 charge
 45 (mega\-)?windfury
 46 (\+\d |double )(.+\s)*health
-47 ( \-\d attack)
-48 AGGRO MINION
-49 attacks
-50 (\: |\. |\,(you )? |\- |and |or |^)summon
-51 beast(s)?
-52 double (.+\s)+attack
-53 restore health now deal damage instead
-54 give (all|your( other)?) (minions|characters)
-55 c\'thun
-56 (mech(s)?|mechanical)
-57 murloc(s)?
-58 dragon(s)?
-59 (opponent|(each|that) player) draws
-60 for each card in your opponent\'s hand
-61 demon(s)?
-62 pirate(s)?
-63 totem(s)?
-64 silver hand recruit(s)?
-65 add (.+\s)+spell(s)? to (your|each player\'s) hand
-66 change (.+\s)+health (.+\s)+to 1
-67 for each card in your hand
-68 add (a|\d+) (.+\s)+card(s)?
-69 or less attack
-70 QUICK DISADVANTAGES| overload| discard (a|\d+) card| restore \d+ health to the enemy hero| give your opponent| summon (.+\s)+ for your opponent| your opponent puts a minion from their deck into the battlefield
+47 AGGRO MINION
+48 attacks
+49 (\: |\. |\,(you )? |\- |and |or |^)summon
+50 beast(s)?
+51 give (all|your( other)?) (minions|characters)
+52 c\'thun
+53 (mech(s)?|mechanical)
+54 murloc(s)?
+55 dragon(s)?
+56 demon(s)?
+57 pirate(s)?
+58 totem(s)?
+59 silver hand recruit(s)?
+60 add (.+\s)+spell(s)? to (your|each player\'s) hand
+61 (set|change) (.+\s)*minion(\')?s (.+\s)*health (.+\s)*to (1|2|3)
+62 for each (other )?card in your hand
+63 (add|put) (.+\s)+(to|into) (your|(each |the other )player\'s) hand
+64 QUICK DISADVANTAGES| overload| discard (a|\d+) card| restore \d+ health to the enemy hero| give your opponent| summon (.+\s)+ for your opponent| your opponent puts a minion from their deck into the battlefield
+65 on the battlefield
+66 put (.+\s)+into the battlefield
 #
 1 2
 3 4
@@ -110,8 +106,7 @@
 4 27
 19 23
 46 23
-47 69
-34 70 BATTLECRY
+34 64 BATTLECRY
 8 7
 21 3
 11 43
@@ -123,30 +118,30 @@
 12 34
 45 26
 4 42
-42 50
-52 26
-43 52
-53 19
+42 49
 46 15
 20 15 give
-50 54
+49 51
 31 14
-59 60
-31 50
-65 38
-65 37
-66 13
-67 17
-49 45
-68 67
-68 38
-20 48 protects
+31 49
+60 38
+60 37
+61 13
+62 17
+48 45
+63 62
+63 38
+20 47 protects
 20 2 protects
 16 2 protects
-16 48 protects
-49 44
-49 4
+16 47 protects
 48 44
-48 45
+48 4
+47 44
+47 45
 20 18 protects
-65 67
+60 62
+43 26
+65 49
+65 66
+66 12
