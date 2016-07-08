@@ -1,9 +1,21 @@
+	// "your (other )?minions", AoE effect
+	// Aoe dmg? adjacent?
+	// all minions cost (1) more.
+	// your minions cost (1).
+	// force an enemy minion to deal its damage to the (minions next to it).
+	// this minion's attack is always equal to its health.
+	// swap the attack and health of all minions.
+	// "at the start of your turn, swap this minion with a random one in your hand.", return hand? hand into the battlefield?
+	// your cards and powers that restore health now deal damage instead.
+	// at the start of your turn, restore this minion to full health.
+	// also damages the minions next to whomever he attacks.
+	// deal damage to each minion equal to its attack. AoE dmg?
+	// restore all characters to full health.
+	// whenever you summon a minion, give it (+1/+1) and this loses 1 durability.//detectar o +1/+1!
+
 DONE
 loop
-battlecry:			whenever you play a card with battlecry
-beasts				your beasts have charge.
 draw				costs (1) less for each other card in your hand.		whenever you draw a card,
-secret:				if you control a secret at the end of your turn, restore 4 health to your hero.		whenever a friendly secret is revealed, gain +1 durability.		the next secret you play this turn costs (0)		deathrattle: put a secret from your deck into the battlefield.
 then, it dies. horribly.	deathrattle:
 deal .. damage randomly SPLIT between ALL	whenever this minion takes damage,		whenever this minion survives damage,
 while you have a mech.		MECH			at the end of your turn, give another friendly mech +2/+2.	if you have a mech,		give your other mechs +2 attack.

@@ -1,9 +1,7 @@
 package hcs;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.jsoup.Jsoup;
 
@@ -13,13 +11,14 @@ import org.jsoup.Jsoup;
  * @author 99689650068
  *
  */
-public class Card {
+public class Card extends Entidade {
 	StringBuilder text = new StringBuilder();
-	String id, numid, name, set, race, playerClass, function, type, rarity;
+	String id, numid, set, race, playerClass, function, type, rarity;
 	Integer cost, attack, health, dur, popularity, combats, wins, draws, loses;
 	boolean aggro;
-	List<Mechanic> mechanics = new ArrayList<Mechanic>();
-	Map<Card, Float> synergies = new HashMap<Card, Float>();
+	Set<Mechanic> mechanics = new HashSet<Mechanic>();
+//	Map<Card, Float> synergies = new LinkedHashMap<Card, Float>();
+
 	public Card(String id, /* Long numid, */ String name, String set, String faction, String playerClass, String type,
 			String text, Long cos, Long atta, Long health, Long dur, String rarity) {
 		super();
@@ -35,7 +34,7 @@ public class Card {
 		this.health = (health == null ? null : Integer.parseInt(health.toString()));
 		this.dur = (dur == null ? null : Integer.parseInt(dur.toString()));
 		this.rarity = rarity;
-		if (this.cost > 0 && this.attack != null) {
+		if (this.cost > 0 && this.attack != null && this.attack > 2) {
 			float agg = ((float) this.attack / this.cost);
 			if (agg > 1.5f) {
 				aggro = true;
@@ -53,7 +52,9 @@ public class Card {
 			// text =
 			// StringEscapeUtils.escapeHtml4(text).toLowerCase().replaceAll("\\$",
 			// "").replaceAll("\\#", "").trim();
-			text.append(" - " + type + " - " + race);
+			text.append(" - " + race);
+			if ("WEAPON".equals(type))
+				text.append(" - " + type);
 			text = new StringBuilder(Jsoup.parse(text.toString()).text().toLowerCase().replaceAll("\\$", "")
 					.replaceAll("\\#", "").trim());
 		}
