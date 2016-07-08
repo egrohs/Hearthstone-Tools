@@ -60,7 +60,7 @@ public class TGFParser {
 					}
 					// TODO cria vinculo bidirecional?
 					mechanicsSynergies.add(new Synergy(mechanics.get(s[0]), mechanics.get(s[1]), v));
-					mechanicsSynergies.add(new Synergy(mechanics.get(s[1]), mechanics.get(s[0]), v));
+					//mechanicsSynergies.add(new Synergy(mechanics.get(s[1]), mechanics.get(s[0]), v));
 				}
 			}
 		} catch (FileNotFoundException e) {

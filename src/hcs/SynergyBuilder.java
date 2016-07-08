@@ -18,7 +18,7 @@ import org.json.simple.parser.ParseException;
 
 public class SynergyBuilder {
 	static List<Card> cards = new ArrayList<Card>();
-	static List<Synergy> sins = new ArrayList<Synergy>();
+	static List<Synergy> cardSynergies = new ArrayList<Synergy>();
 	// private static int cont = 0;
 	private static TGFParser tgfp;
 	// private static List<Card> deck = new ArrayList<Card>();
@@ -27,7 +27,7 @@ public class SynergyBuilder {
 		WARRIOR, DRUID, HUNTER, PRIEST, MAGE, SHAMAN, ROGUE, PALADIN, WARLOCK;
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		init();
 		// String card = "Frothing Berserker";
 		// System.out.println("Sinergy for " + card);
@@ -37,7 +37,7 @@ public class SynergyBuilder {
 		// generateTextSynergies("Azure Drake");
 		// countMAffinities();
 		// printCard("Acidic Swamp Ooze");
-		printDeck(buildDeck(CLASS.WARRIOR, "Whirlwind", new HashSet<Card>()));
+		printDeck(buildDeck(null, new String[] { "Grim Patron" }, new HashSet<Card>(), 0));
 		// printCard("Dread Corsair");
 		// printM2M();
 		// for (Sinergia s : sins) {
@@ -47,9 +47,17 @@ public class SynergyBuilder {
 	}
 
 	private static void printDeck(Collection<Card> deck) {
-		for (Card card : deck) {
-			System.out
-					.println(card.mechanics.size() + "\t" + card.name + "\t\t\t" + card.playerClass + "\t" + card.text);
+		for (int i = 0; i < deck.size(); i++) {
+			Card c1 = (Card) deck.toArray()[i];
+			int cont = 0;
+			Float acum = 0f;
+			for (int j = i; j < deck.size(); j++) {
+				Card c2 = (Card) deck.toArray()[j];
+				Synergy s = getSinergy(c1, c2);
+				acum += s != null ? s.valor : 0f;
+				cont++;
+			}
+			System.out.println(acum / cont + "\t" + c1.name + "\t" + c1.playerClass + "\t" + c1.text);
 		}
 	}
 
@@ -69,17 +77,22 @@ public class SynergyBuilder {
 		// generateCardSynergies();
 	}
 
-	private static Set<Card> buildDeck(CLASS classe, String cardname, Set<Card> deck) {
-		Card c = getCard(cardname);
-		for (Synergy s : sins) {
-			if (c == s.e1) {
-				if (((Card) s.e2).playerClass == null || classe.toString().equals(((Card) s.e2).playerClass)) {
-					if (s.valor > 2) {
-						deck.add((Card) s.e2);
+	private static Set<Card> buildDeck(CLASS classe, String[] initialCards, Set<Card> deck, int depth)
+			throws Exception {
+		for (String cardname : initialCards) {
+			Card c = getCard(cardname);
+			if (c == null) {
+				throw new Exception("Carta não encontrada, " + cardname);
+			}
+			for (Synergy s : cardSynergies) {
+				Card c1 = (Card) s.e1;
+				Card c2 = (Card) s.e2;
+				if (c == c1 || c == c2) {
+					if (classe == null || (c1.playerClass == null || classe.toString().equals(c1.playerClass))
+							&& (c2.playerClass == null || classe.toString().equals(c2.playerClass))) {
+						deck.add(c1);
+						deck.add(c2);
 					}
-					// if (deck.size() < 20) {
-					// buildDeck(classe, s.name, deck);
-					// }
 				}
 			}
 		}
@@ -116,9 +129,10 @@ public class SynergyBuilder {
 	 */
 	private static void printCardSynergies(String cardName) {
 		Card card = getCard(cardName);
-		for (Synergy s : sins) {
+		for (Synergy s : cardSynergies) {
 			if (s.e1 == card || s.e2 == card) {
-				System.out.println(s.e1.name + "\t");// + s.e1.playerClass + "\t" + s.e1.text);
+				System.out.println(s.e1.name + "\t");// + s.e1.playerClass +
+														// "\t" + s.e1.text);
 			}
 		}
 	}
@@ -163,7 +177,7 @@ public class SynergyBuilder {
 					Float value = Float.parseFloat(o2.get(1).toString());
 					// TODO remover esse if
 					if (value > 4.0) {
-						sins.add(new Synergy(c, c2, value));
+						cardSynergies.add(new Synergy(c, c2, value));
 					}
 				}
 			}
@@ -200,7 +214,7 @@ public class SynergyBuilder {
 							Synergy ss = getSinergy(c, c2);
 							if (ss == null) {
 								ss = new Synergy(c, c2, s.valor);
-								sins.add(ss);
+								cardSynergies.add(ss);
 							} else {
 								ss.valor += s.valor;
 							}
@@ -209,12 +223,12 @@ public class SynergyBuilder {
 				}
 			}
 		}
-		Collections.sort(sins);
+		Collections.sort(cardSynergies);
 	}
 
 	private static Synergy getSinergy(Entidade e1, Entidade e2) {
-		for (Synergy s : sins) {
-			if (e1 == s.e1 && e2 == s.e2) {
+		for (Synergy s : cardSynergies) {
+			if ((e1 == s.e1 && e2 == s.e2) || (e1 == s.e2 && e2 == s.e1)) {
 				return s;
 			}
 		}

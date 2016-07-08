@@ -15,7 +15,7 @@ public class Card extends Entidade {
 	StringBuilder text = new StringBuilder();
 	String id, numid, set, race, playerClass, function, type, rarity;
 	Integer cost, attack, health, dur, popularity, combats, wins, draws, loses;
-	boolean aggro;
+	boolean aggro/*, visited*/;
 	Set<Mechanic> mechanics = new HashSet<Mechanic>();
 //	Map<Card, Float> synergies = new LinkedHashMap<Card, Float>();
 
