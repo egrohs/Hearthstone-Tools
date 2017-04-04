@@ -6,11 +6,11 @@ package hcs;
  * @author 99689650068
  *
  */
-public class Mechanic extends Entidade {
+public class Mecanica extends Entidade {
 	String id, regex, cathegory;
 	// Map<Mechanic, Float> aff = new LinkedHashMap<Mechanic, Float>();
 
-	public Mechanic(String id, String regex) {
+	public Mecanica(String id, String regex) {
 		this.id = id;
 		this.regex = regex;
 	}

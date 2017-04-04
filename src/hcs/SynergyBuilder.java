@@ -17,8 +17,8 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 public class SynergyBuilder {
-	static List<Card> cards = new ArrayList<Card>();
-	static List<Synergy> cardSynergies = new ArrayList<Synergy>();
+	static List<Carta> cards = new ArrayList<Carta>();
+	static List<Sinergia> cardSynergies = new ArrayList<Sinergia>();
 	// private static int cont = 0;
 	private static TGFParser tgfp;
 	// private static List<Card> deck = new ArrayList<Card>();
@@ -37,7 +37,7 @@ public class SynergyBuilder {
 		// generateTextSynergies("Azure Drake");
 		// countMAffinities();
 		// printCard("Acidic Swamp Ooze");
-		printDeck(buildDeck(null, new String[] { "Grim Patron" }, new HashSet<Card>(), 0));
+		printDeck(buildDeck(CLASS.SHAMAN, new String[] { "Tunnel Trogg" }, new HashSet<Carta>(), 0));
 		// printCard("Dread Corsair");
 		// printM2M();
 		// for (Sinergia s : sins) {
@@ -46,14 +46,14 @@ public class SynergyBuilder {
 		// System.out.println(sins.size());
 	}
 
-	private static void printDeck(Collection<Card> deck) {
+	private static void printDeck(Collection<Carta> deck) {
 		for (int i = 0; i < deck.size(); i++) {
-			Card c1 = (Card) deck.toArray()[i];
+			Carta c1 = (Carta) deck.toArray()[i];
 			int cont = 0;
 			Float acum = 0f;
 			for (int j = i; j < deck.size(); j++) {
-				Card c2 = (Card) deck.toArray()[j];
-				Synergy s = getSinergy(c1, c2);
+				Carta c2 = (Carta) deck.toArray()[j];
+				Sinergia s = Sinergia.getSinergy(cardSynergies, c1, c2);
 				acum += s != null ? s.valor : 0f;
 				cont++;
 			}
@@ -62,14 +62,14 @@ public class SynergyBuilder {
 	}
 
 	private static void printM2M() {
-		for (Synergy s : TGFParser.mechanicsSynergies) {
-			System.out.println(((Mechanic) s.e1).regex + "\t" + ((Mechanic) s.e2).regex);
+		for (Sinergia s : TGFParser.mechanicsSynergies) {
+			System.out.println(((Mecanica) s.e1).regex + "\t" + ((Mecanica) s.e2).regex);
 		}
 	}
 
 	private static void init() {
 		// buildMechanics();
-		readCards();
+		cards = LeCartas.readCards();
 		// printCards();
 		tgfp = new TGFParser();
 		// buildCards();
@@ -77,16 +77,16 @@ public class SynergyBuilder {
 		// generateCardSynergies();
 	}
 
-	private static Set<Card> buildDeck(CLASS classe, String[] initialCards, Set<Card> deck, int depth)
+	private static Set<Carta> buildDeck(CLASS classe, String[] initialCards, Set<Carta> deck, int depth)
 			throws Exception {
 		for (String cardname : initialCards) {
-			Card c = getCard(cardname);
+			Carta c = LeCartas.getCard(cardname);
 			if (c == null) {
 				throw new Exception("Carta não encontrada, " + cardname);
 			}
-			for (Synergy s : cardSynergies) {
-				Card c1 = (Card) s.e1;
-				Card c2 = (Card) s.e2;
+			for (Sinergia s : cardSynergies) {
+				Carta c1 = (Carta) s.e1;
+				Carta c2 = (Carta) s.e2;
 				if (c == c1 || c == c2) {
 					if (classe == null || (c1.playerClass == null || classe.toString().equals(c1.playerClass))
 							&& (c2.playerClass == null || classe.toString().equals(c2.playerClass))) {
@@ -100,25 +100,10 @@ public class SynergyBuilder {
 	}
 
 	private static void printCard(String n) {
-		Card card = getCard(n);
-		for (Mechanic m : card.mechanics) {
+		Carta card = LeCartas.getCard(n);
+		for (Mecanica m : card.mechanics) {
 			System.out.println(m.regex);
 		}
-	}
-
-	private static Card getCard(String idORname) {
-		for (Card c : cards) {
-			if (c.name.equals(idORname)) {
-				return c;
-			}
-			if (c.id.equals(idORname)) {
-				return c;
-			}
-			if (idORname.equals(c.numid)) {
-				return c;
-			}
-		}
-		return null;
 	}
 
 	/**
@@ -128,12 +113,18 @@ public class SynergyBuilder {
 	 *            Nome da carta consultada.
 	 */
 	private static void printCardSynergies(String cardName) {
-		Card card = getCard(cardName);
-		for (Synergy s : cardSynergies) {
+		Carta card = LeCartas.getCard(cardName);
+		List<Sinergia> minhaS = new ArrayList<>();
+		for (Sinergia s : cardSynergies) {
 			if (s.e1 == card || s.e2 == card) {
-				System.out.println(s.e1.name + "\t");// + s.e1.playerClass +
+				minhaS.add(s);
+				// + s.e1.playerClass +
 														// "\t" + s.e1.text);
 			}
+		}
+		Collections.sort(minhaS);
+		for (Sinergia s : minhaS) {			
+			System.out.println(s.e1.name + "\t");
 		}
 	}
 
@@ -159,7 +150,7 @@ public class SynergyBuilder {
 			JSONObject o = iterator.next();
 			String id = (String) o.get("id");
 			String numid = (String) o.get("numid");
-			Card c = getCard(id);
+			Carta c = LeCartas.getCard(id);
 			c.setNumid(numid);
 
 		}
@@ -167,17 +158,17 @@ public class SynergyBuilder {
 		while (iterator.hasNext()) {
 			JSONObject o = iterator.next();
 			String id = (String) o.get("id");
-			Card c = getCard(id);
+			Carta c = LeCartas.getCard(id);
 			JSONArray sin = (JSONArray) o.get("synergies");
 			if (sin != null) {
 				Iterator<JSONArray> iterator2 = sin.iterator();
 				while (iterator2.hasNext()) {
 					JSONArray o2 = iterator2.next();
-					Card c2 = getCard((String) o2.get(0));
+					Carta c2 = LeCartas.getCard((String) o2.get(0));
 					Float value = Float.parseFloat(o2.get(1).toString());
 					// TODO remover esse if
 					if (value > 4.0) {
-						cardSynergies.add(new Synergy(c, c2, value));
+						cardSynergies.add(new Sinergia(c, c2, value));
 					}
 				}
 			}
@@ -188,10 +179,10 @@ public class SynergyBuilder {
 	 * Lê os textos das cartas, gerando suas listas de sinergia.
 	 */
 	private static void parseCardsText2Mechanics() {
-		List<Synergy> cardSynergies = new ArrayList<>();
+		List<Sinergia> cardSynergies = new ArrayList<Sinergia>();
 
-		for (Mechanic m : TGFParser.mechanics.values()) {
-			for (Card c : cards) {
+		for (Mecanica m : TGFParser.mechanics.values()) {
+			for (Carta c : cards) {
 				if (Pattern.compile(m.regex).matcher(c.text).find()) {
 					c.mechanics.add(m);
 				}
@@ -204,16 +195,16 @@ public class SynergyBuilder {
 	 * Gera as sinergias de todas as cartas.
 	 */
 	private static void generateCardSynergies() {
-		for (Synergy s : TGFParser.mechanicsSynergies) {
-			Mechanic m1 = (Mechanic) s.e1;
-			Mechanic m2 = (Mechanic) s.e2;
-			for (Card c : cards) {
+		for (Sinergia s : TGFParser.mechanicsSynergies) {
+			Mecanica m1 = (Mecanica) s.e1;
+			Mecanica m2 = (Mecanica) s.e2;
+			for (Carta c : cards) {
 				if (c.mechanics.contains(m1)) {
-					for (Card c2 : cards) {
+					for (Carta c2 : cards) {
 						if (c2.mechanics.contains(m2)) {
-							Synergy ss = getSinergy(c, c2);
+							Sinergia ss = Sinergia.getSinergy(cardSynergies, c, c2);
 							if (ss == null) {
-								ss = new Synergy(c, c2, s.valor);
+								ss = new Sinergia(c, c2, s.valor);
 								cardSynergies.add(ss);
 							} else {
 								ss.valor += s.valor;
@@ -226,18 +217,9 @@ public class SynergyBuilder {
 		Collections.sort(cardSynergies);
 	}
 
-	private static Synergy getSinergy(Entidade e1, Entidade e2) {
-		for (Synergy s : cardSynergies) {
-			if ((e1 == s.e1 && e2 == s.e2) || (e1 == s.e2 && e2 == s.e1)) {
-				return s;
-			}
-		}
-		return null;
-	}
-
 	private static void parseCardsText2Mechanics2() {
-		for (Card c : cards) {
-			for (Mechanic m : TGFParser.mechanics.values()) {
+		for (Carta c : cards) {
+			for (Mecanica m : TGFParser.mechanics.values()) {
 				if ("AGGRO MINION".equals(m.regex) && c.aggro) {
 					c.mechanics.add(m);
 				} else if ("DMG SPELL".equals(m.regex) && "SPELL".equals(c.type)
@@ -269,47 +251,13 @@ public class SynergyBuilder {
 		}
 	}
 
-	/**
-	 * Carrega o db json de cartas em memória.
-	 */
-	private static void readCards() {
-		JSONParser parser = new JSONParser();
-		try {
-			JSONArray sets = (JSONArray) parser.parse(new FileReader("input/cards.collectible.json"));
-			generateCards(sets);
-			System.out.println(cards.size() + " cards imported");
-		} catch (ParseException e1) {
-			e1.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * Instancia os objetos cards.
-	 * 
-	 * @param array
-	 *            JSONObject contendo o db de cartas.
-	 */
-	private static void generateCards(JSONArray array) {
-		Iterator<JSONObject> iterator = array.iterator();
-		while (iterator.hasNext()) {
-			JSONObject o = iterator.next();
-			Boolean col = (Boolean) o.get("collectible");
-			if (col != null && col == true && !"HERO".equals((String) o.get("type"))) {
-				cards.add(new Card((String) o.get("id"), (String) o.get("name"), (String) o.get("set"),
-						(String) o.get("race"), (String) o.get("playerClass"), (String) o.get("type"),
-						(String) o.get("text"), (Long) o.get("cost"), (Long) o.get("attack"), (Long) o.get("health"),
-						(Long) o.get("durability"), (String) o.get("rarity")));
-			}
-		}
-	}
+	
 
 	private static void countMAffinities() {
-		for (Mechanic m : TGFParser.mechanics.values()) {
+		for (Mecanica m : TGFParser.mechanics.values()) {
 			int cont = 0;
 			// System.out.println(m.regex + "\t" + m.aff.size());
-			for (Card card : cards) {
+			for (Carta card : cards) {
 				if (card.mechanics.contains(m)) {
 					cont++;
 				}

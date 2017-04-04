@@ -1,5 +1,5 @@
 package hcs;
 
-public class Entidade {
+public abstract class Entidade {
 	protected String name;
 }

@@ -1,6 +1,7 @@
 package hcs;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.StandardWatchEventKinds;
@@ -30,7 +31,7 @@ public class LogReader {
 		}
 	}
 
-	private void ww() {
+	private void ww() throws IOException, InterruptedException {
 		final Path path = FileSystems.getDefault().getPath(System.getProperty("user.home"), "Desktop");
 		System.out.println(path);
 		try (final WatchService watchService = FileSystems.getDefault().newWatchService()) {
