@@ -1,5 +1,6 @@
 package hcs;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -15,36 +16,49 @@ import org.json.simple.parser.ParseException;
 public class LeJogos {
 	static List<Carta> cards = new ArrayList<Carta>();
 	static List<Sinergia> sin = new ArrayList<Sinergia>();
+	static JSONArray games = new JSONArray();
 
 	public static void main(String[] args) {
 		cards = LeCartas.readCards();
-		LeJogos.leJogos1();
+		LeJogos.leJogos();
 	}
 
-	private static void leJogos1() {
+	private static void leJogos() {
 		JSONParser parser = new JSONParser();
-		try {
-			JSONObject jo = (JSONObject) parser.parse(new FileReader("input/2017-04-03.json"));
-			leJogos(jo);
-			System.out.println(sin.size() + " sinergias");
-		} catch (ParseException e1) {
-			e1.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+		File folder = new File("jogos");
+		File[] listOfFiles = folder.listFiles();
+		for (File file : listOfFiles) {
+			try {
+				JSONObject jo = (JSONObject) parser.parse(new FileReader(file));
+				games.addAll((JSONArray) jo.get("games"));
+			} catch (ParseException e1) {
+				e1.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
+		System.out.println(games.size() + " games");
+		geraSinergias();
+		System.out.println(sin.size() + " sinergias");
 		imprimSins();
 	}
 
 	private static void imprimSins() {
 		Collections.sort(sin);
+		StringBuilder sb = new StringBuilder();
 		for (Sinergia s : sin) {
-			System.out.println(s.e1 + "\t" + s.e2 + "\t" + s.valor);
+			String line = s.e1 + "\t" + s.e2 + "\t" + s.valor;
+			sb.append(line + "\r\n");
+			System.out.println(line);
 		}
-
+		EscreveArquivo.escreveArquivo("output/sinergias.csv", sb.toString());
 	}
 
-	private static void leJogos(JSONObject jo) {
-		Iterator<JSONObject> iterator = ((JSONArray) jo.get("games")).iterator();
+	/**
+	 * Gera sinergias dos pares de cartas jogadas.
+	 */
+	private static void geraSinergias() {
+		Iterator<JSONObject> iterator = games.iterator();
 		while (iterator.hasNext()) {
 			JSONObject game = iterator.next();
 			Iterator<JSONObject> card_history = ((JSONArray) game.get("card_history")).iterator();

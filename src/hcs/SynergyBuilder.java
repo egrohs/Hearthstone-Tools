@@ -79,6 +79,7 @@ public class SynergyBuilder {
 
 	private static Set<Carta> buildDeck(CLASS classe, String[] initialCards, Set<Carta> deck, int depth)
 			throws Exception {
+		System.out.println("Sinergias para " + initialCards[0]);
 		for (String cardname : initialCards) {
 			Carta c = LeCartas.getCard(cardname);
 			if (c == null) {
@@ -119,11 +120,11 @@ public class SynergyBuilder {
 			if (s.e1 == card || s.e2 == card) {
 				minhaS.add(s);
 				// + s.e1.playerClass +
-														// "\t" + s.e1.text);
+				// "\t" + s.e1.text);
 			}
 		}
 		Collections.sort(minhaS);
-		for (Sinergia s : minhaS) {			
+		for (Sinergia s : minhaS) {
 			System.out.println(s.e1.name + "\t");
 		}
 	}
@@ -250,8 +251,6 @@ public class SynergyBuilder {
 			}
 		}
 	}
-
-	
 
 	private static void countMAffinities() {
 		for (Mecanica m : TGFParser.mechanics.values()) {

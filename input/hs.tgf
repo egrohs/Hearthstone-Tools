@@ -64,6 +64,7 @@
 64 QUICK DISADVANTAGES| overload| discard (a|\d+) card| restore \d+ health to the enemy hero| give your opponent| summon (.+\s)+ for your opponent| your opponent puts a minion from their deck into the battlefield
 65 on the battlefield
 66 put (.+\s)+into the battlefield
+67 overload
 #
 1 2
 3 4 1.2
@@ -155,3 +156,4 @@
 33 33 0.5
 16 13 -1.0
 22 13 -1.0
+67 67 0.2
