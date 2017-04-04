@@ -10,7 +10,7 @@
 10 LOW COST CARD
 11 cop(y|ies)
 12 HIGH COST CARD
-13 deal \d+ damage (to all|randomly split) (friendly |other )?(minions|characters)
+13 deal \d+ damage (to al?l?|randomly split) (friendly |other )?(minion|character)s?
 14 deathrattle(s)?
 15 HIGH HP MINION
 16 divine shield

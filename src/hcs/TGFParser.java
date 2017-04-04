@@ -9,17 +9,17 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class TGFParser {
-	static Map<String, Mechanic> mechanics = new HashMap<>();
-	public static List<Synergy> mechanicsSynergies = new ArrayList<>();
+	static Map<String, Mecanica> mechanics = new HashMap<String, Mecanica>();
+	public static List<Sinergia> mechanicsSynergies = new ArrayList<Sinergia>();
 
 	public TGFParser() {
 		readMechanics("input/hs.tgf");
 		// loop();
 	}
 
-	// TODO mecanicas devem se autoconter????
+	// TODO mecanicas devem ter (sinergia com elas mesmas?????
 	private void loop() {
-		for (Mechanic m : mechanics.values()) {
+		for (Mecanica m : mechanics.values()) {
 			// exclui as mecanicas calculadas
 			if (!Character.isUpperCase(m.regex.charAt(0))) {
 				m.aff.put(m, 0f);
@@ -49,7 +49,7 @@ public class TGFParser {
 					String regex = line.substring(line.indexOf(" ") + 1);
 					// cria nodo
 					// ns.put(s[0], new Mechanic());
-					mechanics.put(id, new Mechanic(id, regex));
+					mechanics.put(id, new Mecanica(id, regex));
 				} else {
 					String[] s = line.split(" ");
 					Float v = 0f;
@@ -59,7 +59,7 @@ public class TGFParser {
 
 					}
 					// TODO cria vinculo bidirecional?
-					mechanicsSynergies.add(new Synergy(mechanics.get(s[0]), mechanics.get(s[1]), v));
+					mechanicsSynergies.add(new Sinergia(mechanics.get(s[0]), mechanics.get(s[1]), v));
 					//mechanicsSynergies.add(new Synergy(mechanics.get(s[1]), mechanics.get(s[0]), v));
 				}
 			}

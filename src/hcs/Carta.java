@@ -11,15 +11,15 @@ import org.jsoup.Jsoup;
  * @author 99689650068
  *
  */
-public class Card extends Entidade {
+public class Carta extends Entidade {
 	StringBuilder text = new StringBuilder();
 	String id, numid, set, race, playerClass, function, type, rarity;
 	Integer cost, attack, health, dur, popularity, combats, wins, draws, loses;
 	boolean aggro/*, visited*/;
-	Set<Mechanic> mechanics = new HashSet<Mechanic>();
+	Set<Mecanica> mechanics = new HashSet<Mecanica>();
 //	Map<Card, Float> synergies = new LinkedHashMap<Card, Float>();
 
-	public Card(String id, /* Long numid, */ String name, String set, String faction, String playerClass, String type,
+	public Carta(String id, /* Long numid, */ String name, String set, String faction, String playerClass, String type,
 			String text, Long cos, Long atta, Long health, Long dur, String rarity) {
 		super();
 		this.id = id;

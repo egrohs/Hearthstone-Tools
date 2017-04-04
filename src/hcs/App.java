@@ -28,7 +28,7 @@ import org.supercsv.prefs.CsvPreference;
  *
  */
 public class App {
-	static List<Card> cards = new ArrayList<Card>();
+	static List<Carta> cards = new ArrayList<Carta>();
 	static Scanner file = null;
 	static Map<String, String> tags = new TreeMap<String, String>();
 	static List<String> l = null;
@@ -227,9 +227,9 @@ public class App {
 	}
 
 	private static void calcCombats() {
-		for (Card attacker : cards) {
+		for (Carta attacker : cards) {
 			if (!attacker.type.equals("Spell")) {// && Wearpon!!!
-				for (Card defender : cards) {
+				for (Carta defender : cards) {
 					if (!defender.type.equals("Spell")) {// && Wearpon!!!
 						if (attacker.cost == defender.cost) {
 							attacker.combats++;
@@ -256,9 +256,9 @@ public class App {
 			// must match)
 			final String[] header = beanReader.getHeader(true);
 			final CellProcessor[] processors = getProcessors();
-			Card card;
+			Carta card;
 			while (true) {
-				card = beanReader.read(Card.class, header, processors);
+				card = beanReader.read(Carta.class, header, processors);
 				if (card == null) {
 					break;
 				}
