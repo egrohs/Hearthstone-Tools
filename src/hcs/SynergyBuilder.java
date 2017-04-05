@@ -23,7 +23,7 @@ public class SynergyBuilder {
 	private static TGFParser tgfp;
 	// private static List<Card> deck = new ArrayList<Card>();
 
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
 		init();
 		// String card = "Frothing Berserker";
 		// System.out.println("Sinergy for " + card);
@@ -65,7 +65,7 @@ public class SynergyBuilder {
 
 	private static void init() {
 		// buildMechanics();
-		cards = LeCartas.readCards();
+		cards = Universo.leCards();
 		// printCards();
 		tgfp = new TGFParser();
 		// buildCards();
@@ -85,16 +85,11 @@ public class SynergyBuilder {
 	 * @param depth
 	 *            Limita profundidade de busca no grafo das sinergias.
 	 * @return Lista de cartas com sinergia às informadas.
-	 * @throws Exception
 	 */
-	private static Set<Carta> buildDeck(Carta.CLASS classe, String[] initialCards, Set<Carta> deck, int depth)
-			throws Exception {
+	private static Set<Carta> buildDeck(Carta.CLASS classe, String[] initialCards, Set<Carta> deck, int depth) {
 		System.out.println("Sinergias para " + initialCards[0]);
 		for (String cardname : initialCards) {
-			Carta c = LeCartas.getCard(cardname);
-			if (c == null) {
-				throw new Exception("Carta não encontrada, " + cardname);
-			}
+			Carta c = Universo.getCard(cardname);
 			for (Sinergia s : cardSynergies) {
 				Carta c1 = (Carta) s.e1;
 				Carta c2 = (Carta) s.e2;
@@ -110,7 +105,7 @@ public class SynergyBuilder {
 	}
 
 	private static void printCard(String n) {
-		Carta card = LeCartas.getCard(n);
+		Carta card = Universo.getCard(n);
 		for (Mecanica m : card.mechanics) {
 			System.out.println(m.regex);
 		}
@@ -123,7 +118,7 @@ public class SynergyBuilder {
 	 *            Nome da carta consultada.
 	 */
 	private static void printCardSynergies(String cardName) {
-		Carta card = LeCartas.getCard(cardName);
+		Carta card = Universo.getCard(cardName);
 		List<Sinergia> minhaS = new ArrayList<>();
 		for (Sinergia s : cardSynergies) {
 			if (s.e1 == card || s.e2 == card) {
@@ -165,7 +160,7 @@ public class SynergyBuilder {
 			JSONObject o = iterator.next();
 			String id = (String) o.get("id");
 			String numid = (String) o.get("numid");
-			Carta c = LeCartas.getCard(id);
+			Carta c = Universo.getCard(id);
 			c.setNumid(numid);
 
 		}
@@ -173,13 +168,13 @@ public class SynergyBuilder {
 		while (iterator.hasNext()) {
 			JSONObject o = iterator.next();
 			String id = (String) o.get("id");
-			Carta c = LeCartas.getCard(id);
+			Carta c = Universo.getCard(id);
 			JSONArray sin = (JSONArray) o.get("synergies");
 			if (sin != null) {
 				Iterator<JSONArray> iterator2 = sin.iterator();
 				while (iterator2.hasNext()) {
 					JSONArray o2 = iterator2.next();
-					Carta c2 = LeCartas.getCard((String) o2.get(0));
+					Carta c2 = Universo.getCard((String) o2.get(0));
 					Float value = Float.parseFloat(o2.get(1).toString());
 					// TODO remover esse if
 					if (value > 4.0) {

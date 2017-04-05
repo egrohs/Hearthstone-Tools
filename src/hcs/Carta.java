@@ -58,8 +58,8 @@ public class Carta extends Entidade {
 	public Carta(String id, /* Long numid, */ String name, String set, String faction, CLASS classe, String type,
 			String text, Long cos, Long atta, Long health, Long dur, String rarity) {
 		super();
-		this.id = id;
-		this.name = name;
+		this.id = id.toLowerCase();
+		this.name = name.toLowerCase();
 		this.set = set;
 		this.race = faction;
 		this.classe = classe;

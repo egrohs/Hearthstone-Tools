@@ -18,14 +18,14 @@ public class TGFParser {
 	}
 
 	// TODO mecanicas devem ter (sinergia com elas mesmas?????
-	private void loop() {
-		for (Mecanica m : mechanics.values()) {
-			// exclui as mecanicas calculadas
-			if (!Character.isUpperCase(m.regex.charAt(0))) {
-				m.aff.put(m, 0f);
-			}
-		}
-	}
+//	private void loop() {
+//		for (Mecanica m : mechanics.values()) {
+//			// exclui as mecanicas calculadas
+//			if (!Character.isUpperCase(m.regex.charAt(0))) {
+//				m.aff.put(m, 0f);
+//			}
+//		}
+//	}
 
 	/**
 	 * Lê arquivo de grafo tgf contendo relacionamento entre as mecanicas.

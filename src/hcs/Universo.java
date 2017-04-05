@@ -11,17 +11,19 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-public class LeCartas {
+public class Universo {
 	static List<Carta> cards = new ArrayList<Carta>();
 
 	/**
 	 * Carrega o db json de cartas em memória.
 	 */
-	public static List<Carta> readCards() {
+	public static List<Carta> leCards() {
+		// TODO ler da web
+		// https://api.hearthstonejson.com/v1/latest/enUS/cards.collectible.json
 		JSONParser parser = new JSONParser();
 		try {
 			JSONArray sets = (JSONArray) parser.parse(new FileReader("input/cards.collectible.json"));
-			LeCartas.generateCards(sets);
+			Universo.generateCards(sets);
 			System.out.println(cards.size() + " cards imported");
 		} catch (ParseException e1) {
 			e1.printStackTrace();
@@ -65,6 +67,7 @@ public class LeCartas {
 	 * @return Card, null se não achar
 	 */
 	public static Carta getCard(String idORname) {
+		idORname = idORname.trim().toLowerCase().replaceAll("’","'");
 		for (Carta c : cards) {
 			if (c.name.equals(idORname)) {
 				return c;
@@ -76,6 +79,7 @@ public class LeCartas {
 				return c;
 			}
 		}
-		return null;
+		throw new RuntimeException("Carta não encontrada: " + idORname);
+		// return null;
 	}
 }

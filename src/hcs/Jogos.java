@@ -13,17 +13,18 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-public class LeJogos {
-	static List<Carta> cards = new ArrayList<Carta>();
-	static List<Sinergia> sin = new ArrayList<Sinergia>();
+public class Jogos {
+	//static List<Carta> cards = new ArrayList<Carta>();
+	static List<Sinergia> sinergias = new ArrayList<Sinergia>();
 	static JSONArray games = new JSONArray();
 
 	public static void main(String[] args) {
-		cards = LeCartas.readCards();
-		LeJogos.leJogos();
+		Universo.leCards();
+		Jogos.leJogos();
 	}
 
 	private static void leJogos() {
+		//TODO ler do site http://www.hearthscry.com/CollectOBot
 		JSONParser parser = new JSONParser();
 		File folder = new File("jogos");
 		File[] listOfFiles = folder.listFiles();
@@ -39,14 +40,14 @@ public class LeJogos {
 		}
 		System.out.println(games.size() + " games");
 		geraSinergias();
-		System.out.println(sin.size() + " sinergias");
+		System.out.println(sinergias.size() + " sinergias");
 		imprimSins();
 	}
 
 	private static void imprimSins() {
-		Collections.sort(sin);
+		Collections.sort(sinergias);
 		StringBuilder sb = new StringBuilder();
-		for (Sinergia s : sin) {
+		for (Sinergia s : sinergias) {
 			String line = s.e1 + "\t" + s.e2 + "\t" + s.valor;
 			sb.append(line + "\r\n");
 			System.out.println(line);
@@ -70,29 +71,29 @@ public class LeJogos {
 				String player = (String) hist.get("player");
 				if ("me".equals(player)) {
 					if (myprev == null) {
-						myprev = LeCartas.getCard(id);
+						myprev = Universo.getCard(id);
 						continue;
 					}
-					myatual = LeCartas.getCard(id);
+					myatual = Universo.getCard(id);
 					if (myatual != null) {
-						Sinergia s = Sinergia.getSinergy(sin, myprev, myatual);
+						Sinergia s = Sinergia.getSinergy(sinergias, myprev, myatual);
 						if (s == null) {
 							s = new Sinergia(myprev, myatual, 0f);
-							sin.add(s);
+							sinergias.add(s);
 						}
 						s.valor += 1;
 					}
 				} else if ("opponent".equals(player)) {
 					if (opoprev == null) {
-						opoprev = LeCartas.getCard(id);
+						opoprev = Universo.getCard(id);
 						continue;
 					}
-					opoatual = LeCartas.getCard(id);
+					opoatual = Universo.getCard(id);
 					if (opoatual != null) {
-						Sinergia s = Sinergia.getSinergy(sin, opoprev, opoatual);
+						Sinergia s = Sinergia.getSinergy(sinergias, opoprev, opoatual);
 						if (s == null) {
 							s = new Sinergia(opoprev, opoatual, 0f);
-							sin.add(s);
+							sinergias.add(s);
 						}
 						s.valor += 1;
 					}

@@ -158,7 +158,7 @@ public class WordCount {
 		tags.put("your", 0);
 	}
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) {
 		List<String> l = new ArrayList<String>(tags.keySet());
 		Collections.sort(l, new Comparator<String>() {
 			public int compare(String o1, String o2) {
