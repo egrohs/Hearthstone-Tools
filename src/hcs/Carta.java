@@ -12,21 +12,57 @@ import org.jsoup.Jsoup;
  *
  */
 public class Carta extends Entidade {
+	CLASS classe;
 	StringBuilder text = new StringBuilder();
-	String id, numid, set, race, playerClass, function, type, rarity;
+	String id, numid, set, race, function, type, rarity;
 	Integer cost, attack, health, dur, popularity, combats, wins, draws, loses;
-	boolean aggro/*, visited*/;
+	boolean aggro/* , visited */;
 	Set<Mecanica> mechanics = new HashSet<Mecanica>();
-//	Map<Card, Float> synergies = new LinkedHashMap<Card, Float>();
+	// Map<Card, Float> synergies = new LinkedHashMap<Card, Float>();
 
-	public Carta(String id, /* Long numid, */ String name, String set, String faction, String playerClass, String type,
+	public enum CLASS {
+		NEUTRAL, WARRIOR, DRUID, HUNTER, PRIEST, MAGE, SHAMAN, ROGUE, PALADIN, WARLOCK, JADE_LOTUS, KABAL, GRIMY_GOONS;
+		public static boolean contem(CLASS c1, CLASS c2) {
+			switch (c1) {
+			case NEUTRAL:
+				return true;
+			case JADE_LOTUS:
+				if (c2 == DRUID || c2 == ROGUE || c2 == SHAMAN) {
+					return true;
+				}
+				break;
+			case KABAL:
+				if (c2 == MAGE || c2 == PRIEST || c2 == WARLOCK) {
+					return true;
+				}
+				break;
+			case GRIMY_GOONS:
+				if (c2 == HUNTER || c2 == PALADIN || c2 == WARRIOR) {
+					return true;
+				}
+				break;
+			default:
+				if (c1 == c2) {
+					return true;
+				}
+				break;
+			}
+			return false;
+		}
+		// @Override
+		// public String toString() {
+		// return this.name().toLowerCase().replaceAll("_", " ");
+		// }
+	}
+
+	public Carta(String id, /* Long numid, */ String name, String set, String faction, CLASS classe, String type,
 			String text, Long cos, Long atta, Long health, Long dur, String rarity) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.set = set;
 		this.race = faction;
-		this.playerClass = playerClass;
+		this.classe = classe;
 		this.type = type;
 		this.text.append(text);
 		this.cost = (cos == null ? null : Integer.parseInt(cos.toString()));

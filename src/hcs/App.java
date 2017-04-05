@@ -22,7 +22,7 @@ import org.supercsv.prefs.CsvPreference;
 
 /**
  * Tentativa de parser heartstone usando gramaticas peg identificando os tokens
- * semanticos.
+ * semânticos.
  * 
  * @author 99689650068
  *

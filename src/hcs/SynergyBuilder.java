@@ -23,10 +23,6 @@ public class SynergyBuilder {
 	private static TGFParser tgfp;
 	// private static List<Card> deck = new ArrayList<Card>();
 
-	public enum CLASS {
-		WARRIOR, DRUID, HUNTER, PRIEST, MAGE, SHAMAN, ROGUE, PALADIN, WARLOCK;
-	}
-
 	public static void main(String[] args) throws Exception {
 		init();
 		// String card = "Frothing Berserker";
@@ -37,7 +33,7 @@ public class SynergyBuilder {
 		// generateTextSynergies("Azure Drake");
 		// countMAffinities();
 		// printCard("Acidic Swamp Ooze");
-		printDeck(buildDeck(CLASS.SHAMAN, new String[] { "Tunnel Trogg" }, new HashSet<Carta>(), 0));
+		printDeck(buildDeck(Carta.CLASS.SHAMAN, new String[] { "Tunnel Trogg" }, new HashSet<Carta>(), 0));
 		// printCard("Dread Corsair");
 		// printM2M();
 		// for (Sinergia s : sins) {
@@ -57,7 +53,7 @@ public class SynergyBuilder {
 				acum += s != null ? s.valor : 0f;
 				cont++;
 			}
-			System.out.println(acum / cont + "\t" + c1.name + "\t" + c1.playerClass + "\t" + c1.text);
+			System.out.println(acum / cont + "\t" + c1.name + "\t" + c1.classe + "\t" + c1.text);
 		}
 	}
 
@@ -77,7 +73,21 @@ public class SynergyBuilder {
 		// generateCardSynergies();
 	}
 
-	private static Set<Carta> buildDeck(CLASS classe, String[] initialCards, Set<Carta> deck, int depth)
+	/**
+	 * Gera lista de cartas que tem sinergia com as cartas informadas.
+	 * 
+	 * @param classe
+	 *            Limita as classes de cartas que podem entrar na lista.
+	 * @param initialCards
+	 *            Cartas para se verificar sinergia com.
+	 * @param deck
+	 *            Lista de saida?!
+	 * @param depth
+	 *            Limita profundidade de busca no grafo das sinergias.
+	 * @return Lista de cartas com sinergia às informadas.
+	 * @throws Exception
+	 */
+	private static Set<Carta> buildDeck(Carta.CLASS classe, String[] initialCards, Set<Carta> deck, int depth)
 			throws Exception {
 		System.out.println("Sinergias para " + initialCards[0]);
 		for (String cardname : initialCards) {
@@ -89,8 +99,7 @@ public class SynergyBuilder {
 				Carta c1 = (Carta) s.e1;
 				Carta c2 = (Carta) s.e2;
 				if (c == c1 || c == c2) {
-					if (classe == null || (c1.playerClass == null || classe.toString().equals(c1.playerClass))
-							&& (c2.playerClass == null || classe.toString().equals(c2.playerClass))) {
+					if (Carta.CLASS.contem(classe, c1.classe) || Carta.CLASS.contem(classe, c2.classe)) {
 						deck.add(c1);
 						deck.add(c2);
 					}
@@ -119,7 +128,7 @@ public class SynergyBuilder {
 		for (Sinergia s : cardSynergies) {
 			if (s.e1 == card || s.e2 == card) {
 				minhaS.add(s);
-				// + s.e1.playerClass +
+				// + s.e1.classe +
 				// "\t" + s.e1.text);
 			}
 		}
@@ -145,6 +154,11 @@ public class SynergyBuilder {
 		}
 	}
 
+	/**
+	 * Apos arquivo de sinergias lido, gera a lista de sinergias.
+	 * 
+	 * @param sets
+	 */
 	private static void generateNumIds(JSONArray sets) {
 		Iterator<JSONObject> iterator = sets.iterator();
 		while (iterator.hasNext()) {
@@ -218,41 +232,7 @@ public class SynergyBuilder {
 		Collections.sort(cardSynergies);
 	}
 
-	private static void parseCardsText2Mechanics2() {
-		for (Carta c : cards) {
-			for (Mecanica m : TGFParser.mechanics.values()) {
-				if ("AGGRO MINION".equals(m.regex) && c.aggro) {
-					c.mechanics.add(m);
-				} else if ("DMG SPELL".equals(m.regex) && "SPELL".equals(c.type)
-						&& Pattern.compile("deal \\d+(\\-\\d+)? damage").matcher(c.text).find()) {
-					c.mechanics.add(m);
-					/*
-					 * } else if ("HIGH ATTACK MINION".equals(m.regex) &&
-					 * "MINION".equals(c.type) && c.attack > 7) {
-					 * c.mechanics.add(m); } else if ("HIGH HP MINION"
-					 * .equals(m.regex) && "MINION".equals(c.type) && c.health >
-					 * 6) { c.mechanics.add(m); } else if ("LOW HP MINION"
-					 * .equals(m.regex) && "MINION".equals(c.type) && c.health <
-					 * 3) { c.mechanics.add(m); } else if ("HIGH COST CARD"
-					 * .equals(m.regex) && c.cost > 5) { c.mechanics.add(m); }
-					 * else if ("LOW COST CARD".equals(m.regex) && c.cost < 3) {
-					 * c.mechanics.add(m); } else if ("LOW COST MINION"
-					 * .equals(m.regex) && "MINION".equals(c.type) && c.cost <
-					 * 3) { c.mechanics.add(m); } else if ("LOW COST SPELL"
-					 * .equals(m.regex) && "SPELL".equals(c.type) && c.cost < 3)
-					 * { c.mechanics.add(m);
-					 */
-				} else if (m.regex.contains("DISADVANTAGES") && "MINION".equals(c.type)
-						&& Pattern.compile(m.regex).matcher(c.text).find()) {
-					c.mechanics.add(m);
-				} else if (Pattern.compile(m.regex).matcher(c.text).find()) {
-					c.mechanics.add(m);
-				}
-			}
-		}
-	}
-
-	private static void countMAffinities() {
+	private static void printQntMAffinities() {
 		for (Mecanica m : TGFParser.mechanics.values()) {
 			int cont = 0;
 			// System.out.println(m.regex + "\t" + m.aff.size());

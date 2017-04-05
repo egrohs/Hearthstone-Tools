@@ -1,7 +1,16 @@
 package hcs;
 
+import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Classe que mantem vinculo de sinergia entre duas entidades do jogo (cartas,
+ * mecanicas, etc).
+ * 
+ * @author 99689650068
+ *
+ * @param <T>
+ */
 public class Sinergia<T extends Comparable<? super T>> implements Comparable<Sinergia> {
 	Entidade e1, e2;
 	Float valor;
@@ -29,5 +38,15 @@ public class Sinergia<T extends Comparable<? super T>> implements Comparable<Sin
 			}
 		}
 		return null;
+	}
+
+	public static List<Sinergia> getSinergias(List<Sinergia> sinergias, Entidade e1) {
+		List<Sinergia> sins = new ArrayList<Sinergia>();
+		for (Sinergia s : sinergias) {
+			if (e1 == s.e1 || e1 == s.e2) {
+				sins.add(s);
+			}
+		}
+		return sins;
 	}
 }

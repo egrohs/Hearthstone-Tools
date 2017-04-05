@@ -10,41 +10,47 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-//function depth-limited-crawl(page p, int d)
-//if d == 0
-//  return
-///* do something with p, store it or so */
-//foreach (page l in links(p))
-//  depth-limited-crawl(linked, d-1)
+/**
+ * Utilitário para baixar decks de hearthstone.
+ * 
+ * @author 99689650068
+ *
+ */
+// function depth-limited-crawl(page p, int d)
+// if d == 0
+// return
+/// * do something with p, store it or so */
+// foreach (page l in links(p))
+// depth-limited-crawl(linked, d-1)
 
-//Currently supports:
-//- arenavalue.com
-//- arenamastery.com
-//- elitedecks.net
-//- gosugamers.net
-//- heartharena.com
-//- hearthbuilder.com
-//- hearthhead.com (including deckbuilder)
-//- hearthnews.fr
-//- hearthpwn.com (including deckbuilder)
-//- hearthstats.net / hss.io
-//- hearthstone-decks.com
-//- hearthstonechampion.com
-//- hearthstoneheroes.com
-//- hearthstoneplayers.com
-//- hearthstonetopdeck.com
-//- hearthstonetopdecks.com
-//- hearthstone.judgehype.com
-//- hs.inven.co.kr
-//- icy-veins.com
-//- ls.duowan.com
-//- netdeck.n4ru.it
-//- playhs.es
-//- powned.it
-//- pro.eslgaming.com
-//- teamarchon.com
-//- tempostorm.com
-public class Scraper {
+// Currently supports:
+// - arenavalue.com
+// - arenamastery.com
+// - elitedecks.net
+// - gosugamers.net
+// - heartharena.com
+// - hearthbuilder.com
+// - hearthhead.com (including deckbuilder)
+// - hearthnews.fr
+// - hearthpwn.com (including deckbuilder)
+// - hearthstats.net / hss.io
+// - hearthstone-decks.com
+// - hearthstonechampion.com
+// - hearthstoneheroes.com
+// - hearthstoneplayers.com
+// - hearthstonetopdeck.com
+// - hearthstonetopdecks.com
+// - hearthstone.judgehype.com
+// - hs.inven.co.kr
+// - icy-veins.com
+// - ls.duowan.com
+// - netdeck.n4ru.it
+// - playhs.es
+// - powned.it
+// - pro.eslgaming.com
+// - teamarchon.com
+// - tempostorm.com
+public class HSDecksScraper {
 	public static void main(String[] args) {
 		try {
 			String page = "1";

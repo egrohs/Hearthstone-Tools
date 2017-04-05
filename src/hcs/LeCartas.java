@@ -43,9 +43,16 @@ public class LeCartas {
 			JSONObject o = iterator.next();
 			Boolean col = (Boolean) o.get("collectible");
 			if (col != null && col == true && !"HERO".equals((String) o.get("type"))) {
+				String c = (String) o.get("multiClassGroup");
+				Carta.CLASS classe;
+				if (c != null) {
+					classe = Carta.CLASS.valueOf(c);
+				} else {
+					classe = Carta.CLASS.valueOf((String) o.get("playerClass"));
+				}
 				cards.add(new Carta((String) o.get("id"), (String) o.get("name"), (String) o.get("set"),
-						(String) o.get("race"), (String) o.get("playerClass"), (String) o.get("type"),
-						(String) o.get("text"), (Long) o.get("cost"), (Long) o.get("attack"), (Long) o.get("health"),
+						(String) o.get("race"), classe, (String) o.get("type"), (String) o.get("text"),
+						(Long) o.get("cost"), (Long) o.get("attack"), (Long) o.get("health"),
 						(Long) o.get("durability"), (String) o.get("rarity")));
 			}
 		}

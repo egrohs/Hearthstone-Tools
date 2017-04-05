@@ -11,7 +11,11 @@ import java.nio.file.WatchService;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+/**
+ * Leitor de logs do hearthstone durante o jogo.
+ * @author 99689650068
+ *
+ */
 public class LogReader {
 	public static void main(String[] args) {
 		try {

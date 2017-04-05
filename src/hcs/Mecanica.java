@@ -1,7 +1,7 @@
 package hcs;
 
 /**
- * Objeto de sinergia das cartas.
+ * Mecânicas do hearthstone.
  * 
  * @author 99689650068
  *

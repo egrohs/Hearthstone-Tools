@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Utilitario para contagem de tokens nos textos das cartas.
+ * Utilitário para contagem de tokens nos textos das cartas.
  * 
  * @author 99689650068
  *
