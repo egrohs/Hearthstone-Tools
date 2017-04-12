@@ -1,12 +1,16 @@
 package hcs;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Scanner;
+import java.util.Set;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -14,17 +18,43 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 public class Jogos {
-	//static List<Carta> cards = new ArrayList<Carta>();
+	// TODO LinkedHashSet???
 	static List<Sinergia> sinergias = new ArrayList<Sinergia>();
 	static JSONArray games = new JSONArray();
 
 	public static void main(String[] args) {
 		Universo.leCards();
-		Jogos.leJogos();
+		// Jogos.leJogos();
+		leSinergias();
+		Set<Sinergia> sub = provaveis(Universo.getCard("small-time buccaneer"), 1);
 	}
 
+	/**
+	 * Calcula as provaveis jogadas.
+	 * 
+	 * @param c
+	 * @param manaRestante Mana restante no turno atual.
+	 * @return
+	 */
+	private static Set<Sinergia> provaveis(Carta c, int manaRestante) {
+		Set<Sinergia> sub = new LinkedHashSet<Sinergia>();
+		if (c != null) {
+			for (Sinergia s : sinergias) {
+				// cartas com sinergia com custo provavel no turno
+				if (s.e1 == c && ((Carta) s.e2).cost <= manaRestante) {
+					sub.add(s);
+					System.out.println(s.e2 + "\t" + s.valor);
+				}
+			}
+		}
+		return sub;
+	}
+
+	/**
+	 * Le jogos e atualiza arquivo de sinergias csv.
+	 */
 	private static void leJogos() {
-		//TODO ler do site http://www.hearthscry.com/CollectOBot
+		// TODO ler do site http://www.hearthscry.com/CollectOBot
 		JSONParser parser = new JSONParser();
 		File folder = new File("jogos");
 		File[] listOfFiles = folder.listFiles();
@@ -42,6 +72,28 @@ public class Jogos {
 		geraSinergias();
 		System.out.println(sinergias.size() + " sinergias");
 		imprimSins();
+	}
+
+	/**
+	 * Le sinergias precalculadas do arquivo cache.
+	 */
+	private static void leSinergias() {
+		Scanner sc = null;
+		try {
+			sc = new Scanner(new File("input/gamessin.csv"));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		while (sc.hasNextLine()) {
+			String[] line = sc.nextLine().split("\t");
+			Carta c1 = Universo.getCard(line[0]);
+			Carta c2 = Universo.getCard(line[1]);
+			if (c1 != null && c2 != null) {
+				sinergias.add(new Sinergia(c1, c2, new Float(line[2])));
+			}
+		}
+		sc.close();
 	}
 
 	private static void imprimSins() {

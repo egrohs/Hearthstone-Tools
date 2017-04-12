@@ -19,6 +19,7 @@ public class Carta extends Entidade {
 	boolean aggro/* , visited */;
 	Set<Mecanica> mechanics = new HashSet<Mecanica>();
 	// Map<Card, Float> synergies = new LinkedHashMap<Card, Float>();
+	float rank;
 
 	public enum CLASS {
 		NEUTRAL, WARRIOR, DRUID, HUNTER, PRIEST, MAGE, SHAMAN, ROGUE, PALADIN, WARLOCK, JADE_LOTUS, KABAL, GRIMY_GOONS;

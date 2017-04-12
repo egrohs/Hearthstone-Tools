@@ -11,6 +11,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import hcs.Carta.CLASS;
+
 public class Universo {
 	static List<Carta> cards = new ArrayList<Carta>();
 
@@ -58,6 +60,11 @@ public class Universo {
 						(Long) o.get("durability"), (String) o.get("rarity")));
 			}
 		}
+		if (getCard("The Coin") == null) {
+			// TODO adiciona a moeda
+			cards.add(new Carta("game_005", "The Coin", "CORE", "ALLIANCE", CLASS.NEUTRAL, "SPELL",
+					"Add 1 mana this turn...", 0L, null, null, null, "COMMON"));
+		}
 	}
 
 	/**
@@ -67,7 +74,7 @@ public class Universo {
 	 * @return Card, null se não achar
 	 */
 	public static Carta getCard(String idORname) {
-		idORname = idORname.trim().toLowerCase().replaceAll("’","'");
+		idORname = idORname.trim().toLowerCase().replaceAll("’", "'");
 		for (Carta c : cards) {
 			if (c.name.equals(idORname)) {
 				return c;
@@ -79,7 +86,7 @@ public class Universo {
 				return c;
 			}
 		}
-		throw new RuntimeException("Carta não encontrada: " + idORname);
-		// return null;
+		// throw new RuntimeException("Carta não encontrada: " + idORname);
+		return null;
 	}
 }
