@@ -172,7 +172,7 @@ public class WordCount {
 		});
 		String line = "";
 		while (line != null) {
-			line = App.readLine();
+			line = PEG.readLine();
 			String str = line;
 			for (String tag : l) {
 				String k = " " + tag + "(s)?\\s";

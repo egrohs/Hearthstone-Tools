@@ -119,7 +119,7 @@ public class SynergyBuilder {
 	 */
 	private static void printCardSynergies(String cardName) {
 		Carta card = Universo.getCard(cardName);
-		List<Sinergia> minhaS = new ArrayList<>();
+		List<Sinergia> minhaS = new ArrayList<Sinergia>();
 		for (Sinergia s : cardSynergies) {
 			if (s.e1 == card || s.e2 == card) {
 				minhaS.add(s);

@@ -26,24 +26,24 @@ public class Carta extends Entidade {
 		public static boolean contem(CLASS c1, CLASS c2) {
 			switch (c1) {
 			case NEUTRAL:
-				return true;
+				return c2 == NEUTRAL;
 			case JADE_LOTUS:
-				if (c2 == DRUID || c2 == ROGUE || c2 == SHAMAN) {
+				if (c2 == DRUID || c2 == ROGUE || c2 == SHAMAN || c2 == NEUTRAL) {
 					return true;
 				}
 				break;
 			case KABAL:
-				if (c2 == MAGE || c2 == PRIEST || c2 == WARLOCK) {
+				if (c2 == MAGE || c2 == PRIEST || c2 == WARLOCK || c2 == NEUTRAL) {
 					return true;
 				}
 				break;
 			case GRIMY_GOONS:
-				if (c2 == HUNTER || c2 == PALADIN || c2 == WARRIOR) {
+				if (c2 == HUNTER || c2 == PALADIN || c2 == WARRIOR || c2 == NEUTRAL) {
 					return true;
 				}
 				break;
 			default:
-				if (c1 == c2) {
+				if (c1 == c2 || c2 == NEUTRAL) {
 					return true;
 				}
 				break;
