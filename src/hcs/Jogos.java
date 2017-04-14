@@ -17,6 +17,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import hcs.Carta.CLASS;
+
 public class Jogos {
 	// TODO LinkedHashSet???
 	static List<Sinergia> sinergias = new ArrayList<Sinergia>();
@@ -26,22 +28,24 @@ public class Jogos {
 		Universo.leCards();
 		// Jogos.leJogos();
 		leSinergias();
-		Set<Sinergia> sub = provaveis(Universo.getCard("small-time buccaneer"), 1);
+		Set<Sinergia> sub = provaveis(Universo.getCard("small-time buccaneer"), 1, CLASS.WARRIOR);
 	}
 
 	/**
 	 * Calcula as provaveis jogadas.
 	 * 
 	 * @param c
-	 * @param manaRestante Mana restante no turno atual.
+	 * @param manaRestante
+	 *            Mana restante no turno atual.
 	 * @return
 	 */
-	private static Set<Sinergia> provaveis(Carta c, int manaRestante) {
+	public static Set<Sinergia> provaveis(Carta c, int manaRestante, CLASS opo) {
 		Set<Sinergia> sub = new LinkedHashSet<Sinergia>();
 		if (c != null) {
 			for (Sinergia s : sinergias) {
 				// cartas com sinergia com custo provavel no turno
-				if (s.e1 == c && ((Carta) s.e2).cost <= manaRestante) {
+				Carta c2 = (Carta) s.e2;
+				if (s.e1 == c && CLASS.contem(opo, c2.classe) && c2.cost <= manaRestante) {
 					sub.add(s);
 					System.out.println(s.e2 + "\t" + s.valor);
 				}
@@ -77,7 +81,7 @@ public class Jogos {
 	/**
 	 * Le sinergias precalculadas do arquivo cache.
 	 */
-	private static void leSinergias() {
+	public static void leSinergias() {
 		Scanner sc = null;
 		try {
 			sc = new Scanner(new File("input/gamessin.csv"));
