@@ -54,7 +54,7 @@ public class App extends Application {
 
 	private static Scene monta() {
 		VBox box = new VBox();
-		TextField tf = new TextField();
+		final TextField tf = new TextField();
 		box.getChildren().add(tf);
 		Button b = new Button("GO");
 		box.getChildren().add(b);
