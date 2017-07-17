@@ -13,20 +13,19 @@ public class TGFParser {
 	public static List<Sinergia> mechanicsSynergies = new ArrayList<Sinergia>();
 
 	public TGFParser() {
-		readMechanics("input/hs.tgf");
+		readMechanics("res/mechanics/hs.tgf");
 		// loop();
 	}
 
 	// TODO mecanicas devem ter (sinergia com elas mesmas?????
-//	private void loop() {
-//		for (Mecanica m : mechanics.values()) {
-//			// exclui as mecanicas calculadas
-//			if (!Character.isUpperCase(m.regex.charAt(0))) {
-//				m.aff.put(m, 0f);
-//			}
-//		}
-//	}
-
+	// private void loop() {
+	// for (Mecanica m : mechanics.values()) {
+	// // exclui as mecanicas calculadas
+	// if (!Character.isUpperCase(m.regex.charAt(0))) {
+	// m.aff.put(m, 0f);
+	// }
+	// }
+	// }
 	/**
 	 * Lê arquivo de grafo tgf contendo relacionamento entre as mecanicas.
 	 * 
@@ -56,11 +55,13 @@ public class TGFParser {
 					try {
 						v = Float.parseFloat(s[2]);
 					} catch (Exception e) {
-
 					}
 					// TODO cria vinculo bidirecional?
-					mechanicsSynergies.add(new Sinergia(mechanics.get(s[0]), mechanics.get(s[1]), v));
-					//mechanicsSynergies.add(new Synergy(mechanics.get(s[1]), mechanics.get(s[0]), v));
+					Mecanica m1 = mechanics.get(s[0]);
+					Mecanica m2 = mechanics.get(s[1]);
+					mechanicsSynergies.add(new Sinergia(m1, m2, v, m1.regex + "+" + m2.regex));
+					// mechanicsSynergies.add(new Synergy(mechanics.get(s[1]),
+					// mechanics.get(s[0]), v));
 				}
 			}
 		} catch (FileNotFoundException e) {

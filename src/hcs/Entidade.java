@@ -8,4 +8,8 @@ package hcs;
  */
 public abstract class Entidade {
 	protected String name;
+	@Override
+	public String toString() {
+		return name;
+	}
 }

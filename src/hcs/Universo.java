@@ -3,8 +3,11 @@ package hcs;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -15,6 +18,23 @@ import hcs.Carta.CLASS;
 
 public class Universo {
 	static List<Carta> cards = new ArrayList<Carta>();
+	
+	public static CLASS whichClass(Set<Carta> cartas) {
+		Map<CLASS, Integer> qnts = new HashMap<CLASS, Integer>();
+		CLASS most = CLASS.NEUTRAL;
+		for (Carta c : cartas) {
+			if (qnts.get(c.classe) == null)
+				qnts.put(c.classe, 1);
+			else
+				qnts.put(c.classe, qnts.get(c.classe) + 1);
+		}
+		for (CLASS cls : qnts.keySet()) {
+			if (most == CLASS.NEUTRAL || qnts.get(most) < qnts.get(cls)) {
+				most = cls;
+			}
+		}
+		return most;
+	}
 
 	/**
 	 * Carrega o db json de cartas em memória.
@@ -22,9 +42,10 @@ public class Universo {
 	public static List<Carta> leCards() {
 		// TODO ler da web
 		// https://api.hearthstonejson.com/v1/latest/enUS/cards.collectible.json
+		// https://api.hearthstonejson.com/v1/20022/enUS/
 		JSONParser parser = new JSONParser();
 		try {
-			JSONArray sets = (JSONArray) parser.parse(new FileReader("input/cards.collectible.json"));
+			JSONArray sets = (JSONArray) parser.parse(new FileReader("res/cards.collectible.json"));
 			Universo.generateCards(sets);
 			System.out.println(cards.size() + " cards imported");
 		} catch (ParseException e1) {
@@ -74,16 +95,17 @@ public class Universo {
 	 * @return Card, null se não achar
 	 */
 	public static Carta getCard(String idORname) {
-		idORname = idORname.trim().toLowerCase().replaceAll("’", "'");
-		for (Carta c : cards) {
-			if (c.name.equals(idORname)) {
-				return c;
-			}
-			if (c.id.equals(idORname)) {
-				return c;
-			}
-			if (idORname.equals(c.numid)) {
-				return c;
+		if (idORname != null && !"".equals(idORname)) {
+			for (Carta c : cards) {
+				if (c.name.equalsIgnoreCase(idORname.trim().replaceAll("’", "'"))) {
+					return c;
+				}
+				if (c.id.equalsIgnoreCase(idORname)) {
+					return c;
+				}
+				if (idORname.equalsIgnoreCase(c.numid)) {
+					return c;
+				}
 			}
 		}
 		// throw new RuntimeException("Carta não encontrada: " + idORname);

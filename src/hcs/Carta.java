@@ -14,15 +14,16 @@ import org.jsoup.Jsoup;
 public class Carta extends Entidade {
 	CLASS classe;
 	StringBuilder text = new StringBuilder();
-	String id, numid, set, race, function, type, rarity;
-	Integer cost, attack, health, dur, popularity, combats, wins, draws, loses;
+	public String id, numid, set, race, function, type, rarity;
+	public Integer cost, attack, health, dur, popularity, combats, wins, draws, loses;
 	boolean aggro/* , visited */;
 	Set<Mecanica> mechanics = new HashSet<Mecanica>();
 	// Map<Card, Float> synergies = new LinkedHashMap<Card, Float>();
 	float rank;
+	public boolean calc;
 
 	public enum CLASS {
-		NEUTRAL, WARRIOR, DRUID, HUNTER, PRIEST, MAGE, SHAMAN, ROGUE, PALADIN, WARLOCK, JADE_LOTUS, KABAL, GRIMY_GOONS;
+		WARRIOR, DRUID, HUNTER, PRIEST, MAGE, SHAMAN, ROGUE, PALADIN, WARLOCK, JADE_LOTUS, KABAL, GRIMY_GOONS, NEUTRAL;
 		public static boolean contem(CLASS c1, CLASS c2) {
 			switch (c1) {
 			case NEUTRAL:
