@@ -11,7 +11,8 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 
-import hcs.Carta.CLASS;
+import hcs.model.Carta;
+import hcs.model.Carta.CLASS;
 
 /**
  * Partindo duma lista de cartas, tenta encontrar o metadeck as quais pertencem.
@@ -24,7 +25,7 @@ public class DeckFinder {
 
 	public static void main(String[] args) {
 		Universo.leCards();
-		DeckFinder.leDecks();
+		DeckFinder.leDecks("res/decks");
 		// for (Deck d : Decks.decks) {
 		// System.out.println(d);
 		// }
@@ -32,15 +33,16 @@ public class DeckFinder {
 	}
 
 	public DeckFinder() {
-		DeckFinder.leDecks();
+		DeckFinder.leDecks("res/decks");
 	}
 
 	public static Map<Deck, Double> similaridade(Set<Carta> searched) {
 		List<String> nomes = new ArrayList<String>();
 		for (Carta carta : searched) {
+			// System.out.println("similaridade: " +carta.name);
 			nomes.add(carta.name);
 		}
-		return similaridade(nomes.toArray(new String[30]));
+		return similaridade(nomes.toArray(new String[searched.size()]));
 	}
 
 	public static Map<Deck, Double> similaridade(String[] cartas) {
@@ -51,7 +53,7 @@ public class DeckFinder {
 			for (String c : cartas) {
 				Integer qnt = deck.getQnt(c);
 				if (qnt != null && qnt > 0) {
-					cont += qnt;
+					cont += 1;
 					double p = Math.round(10000.0 * cont / 30.0) / 100.0;
 					prob.put(deck, p);
 				}
@@ -66,28 +68,42 @@ public class DeckFinder {
 	/**
 	 * Carrega os decks em mem√≥ria.
 	 */
-	public static void leDecks() {
-		File folder = new File("res/metadecks");
-		File[] listOfFiles = folder.listFiles();
+	public static void leDecks(String dir) {
+		// FileUtils.listFiles(dir, true, true);
+		File listOfFiles[] = new File(dir).listFiles();
 		for (File file : listOfFiles) {
-			Map<Carta, Integer> cartas = new HashMap<Carta, Integer>();
-			try {
-				Scanner sc = new Scanner(file);
-				while (sc.hasNextLine()) {
-					String line = sc.nextLine().toLowerCase();
-					String[] vals = line.split("\t");
-					if (vals.length > 1 && !"".equals(vals[0]) && !"".equals(vals[1])) {
-						try {
-							cartas.put(Universo.getCard(vals[0]), Integer.parseInt(vals[1]));
-						} catch (Exception rt) {
-							cartas.put(Universo.getCard(vals[1]), Integer.parseInt(vals[0]));
+			if (file.isDirectory()) {
+				leDecks(file.getPath());
+			} else {
+				Map<Carta, Integer> cartas = new HashMap<Carta, Integer>();
+				try {
+					Scanner sc = new Scanner(file);
+					while (sc.hasNextLine()) {
+						// Apenas para ceitar ctrl-c-v do
+						// http://www.hearthstonetopdecks.com
+						String line = sc.nextLine().replaceAll("í", "'").replaceFirst("^(\\d+)(\\w)", "$1\t$2")
+								.replaceFirst("(\\w)(\\d+)$", "$1\t$2");// .toLowerCase();
+						String[] vals = line.split("\t");
+						int i = 0;
+						if (vals.length == 1)
+							vals = line.split(";");
+						if (vals.length > 2)
+							i = 1;
+						if (vals.length > 1 && !"".equals(vals[i]) && !"".equals(vals[i + 1])) {
+							try {
+								cartas.put(Universo.getCard(vals[i]), Integer.parseInt(vals[i + 1]));
+							} catch (Exception rt) {
+								cartas.put(Universo.getCard(vals[i + 1]), Integer.parseInt(vals[i]));
+							}
 						}
 					}
+					Deck deck = new Deck(file.getName(), cartas);
+					decks.add(deck);
+					System.out.println(deck.nome + " deck loaded.");
+					sc.close();
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
 				}
-				decks.add(new Deck(file.getName(), cartas));
-				sc.close();
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
 			}
 		}
 	}
@@ -127,6 +143,7 @@ class Deck {
 	}
 
 	public Integer getQnt(String nome) {
+		// System.out.println("getQnt "+nome);
 		Carta c = Universo.getCard(nome);
 		if (cartas.containsKey(c)) {
 			return cartas.get(c);

@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
 
 import com.sun.nio.file.SensitivityWatchEventModifier;
 
-import javafx.application.Platform;
+import hcs.model.Carta;
 
 /**
  * Leitor de logs do hearthstone durante o jogo.
@@ -34,7 +34,7 @@ public class LogReader extends Thread {
 
 	public static void main1(String[] args) {
 		Universo.leCards();
-		DeckFinder.leDecks();
+		DeckFinder.leDecks("res/decks");
 		new LogReader().start();
 		DeckFinder.similaridade(new String[] { "N'Zoth's First Mate", "FIERY WAR AXE", "AZURE DRAKE" });
 	}
@@ -70,7 +70,7 @@ public class LogReader extends Thread {
 
 	public static void main(String[] args) {
 		Universo.leCards();
-		DeckFinder.leDecks();
+		DeckFinder.leDecks("res/decks");
 		new LogReader().start();
 	}
 
@@ -98,17 +98,24 @@ public class LogReader extends Thread {
 					for (String tag : tags) {
 						if (tag.startsWith("cardId")) {
 							String id = tag.substring(tag.indexOf("=") + 1, tag.length());
-							Carta c = Universo.getCard(id);
-							if (c != null) {
-								System.out.println(c);
-								// cars.add(c);
-								// DeckFinder.similaridade(cars);
-								App.calcula(c);
-								cont--;
-								if(cont<=0)return c;
+							if (!"".equals(id)) {
+								Carta c = null;
+								try {
+									c = Universo.getCard(id);
+								} catch (RuntimeException e) {
+									// TODO: handle exception
+								}
+								if (c != null) {
+									System.out.println(c);
+									// cars.add(c);
+									// DeckFinder.similaridade(cars);
+									App.calcula(c);
+									// cont--;
+									// if(cont<=0)return c;
+								}
+								// System.out.println(pos);
+								// return c;
 							}
-							// System.out.println(pos);
-							// return c;
 						}
 					}
 				}
@@ -127,7 +134,8 @@ public class LogReader extends Thread {
 		}
 		return null;
 	}
-	static int cont=2;
+
+	// static int cont=2;
 	private static long pos;
 	// static String path = "C:\\Program Files
 	// (x86)\\Hearthstone\\Logs\\Zone.log";
@@ -135,26 +143,30 @@ public class LogReader extends Thread {
 
 	@Override
 	public void run() {
-		
-		try {
-			while (true) {
-				if(cont<=0)break;
+		while (true) {
+			try {
+				// if(cont<=0)break;
 				raf = new RandomAccessFile(new File(path), "r");
 				if (first) {
-//					raf.seek(raf.length());
+					raf.seek(raf.length());
 					first = false;
 				} else {
 					raf.seek(pos);
 				}
 				Carta c = leNovaLinha();
-				
 				Thread.sleep(1000);
+			} catch (FileNotFoundException fnf) {
+				// jogo ainda não abriu.
+				try {
+					Thread.sleep(10000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			} catch (InterruptedException | IOException e) {
+				// TODO abortar tudo???
+				e.printStackTrace();
 			}
-		} catch (FileNotFoundException fnf) {
-			// TODO jogo ainda não abriu, tratar?
-		} catch (IOException | InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 	}
 

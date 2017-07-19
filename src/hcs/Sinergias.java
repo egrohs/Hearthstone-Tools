@@ -1,9 +1,13 @@
 package hcs;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
-import hcs.Carta.CLASS;
+import hcs.model.Carta;
+import hcs.model.Entidade;
+import hcs.model.Carta.CLASS;
 
 public class Sinergias {
 	public static List<Sinergia> cardsSynergies = new ArrayList<Sinergia>();
@@ -30,23 +34,34 @@ public class Sinergias {
 		}
 		return null;
 	}
-
+	
 	/**
-	 * return all sinegies for that entity.
+	 * Calcula as provaveis jogadas.
 	 * 
-	 * @param e1
+	 * @param c
+	 * @param manaRestante
+	 *            Mana restante no turno atual.
 	 * @return
 	 */
-	public static List<Sinergia> getSinergias(Entidade e1, int manaRestante, CLASS opo) {
-		List<Sinergia> sins = new ArrayList<Sinergia>();
-		for (Sinergia s : cardsSynergies) {
-			if ((e1 == s.e1 && CLASS.contem(opo, ((Carta) s.e2).classe) && ((Carta) s.e2).cost <= manaRestante)
-					|| (e1 == s.e2 && CLASS.contem(opo, ((Carta) s.e1).classe)
-							&& ((Carta) s.e1).cost <= manaRestante)) {
-				sins.add(s);
+	public static Set<Sinergia> getCardSinergies(Carta c, int manaRestante, CLASS opo) {
+		Set<Sinergia> sub = new LinkedHashSet<Sinergia>();
+		//Set<Carta> sub = new LinkedHashSet<Carta>();
+		if (c != null) {
+			for (Sinergia s : Sinergias.cardsSynergies) {
+				if (s.e1 == c || s.e2 == c) {
+					Carta c2 = (Carta) s.e2;
+					if (c == c2) {
+						c = (Carta) s.e1;
+					}
+					// cartas com sinergia com custo provavel no turno
+					if (CLASS.contem(opo, c2.classe) && c2.cost <= manaRestante) {
+						sub.add(s);
+						System.out.println(c2 + "\t" + s.valor + "\t" + s.mechs);
+					}
+				}
 			}
 		}
-		return sins;
+		return sub;
 	}
 }
 

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -15,7 +16,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import hcs.Carta.CLASS;
+import hcs.model.Carta;
+import hcs.model.Carta.CLASS;
 
 /**
  * Base de dados de jogos em json HS, para analise estatistica.
@@ -33,7 +35,11 @@ public class SinergyFromGames {
 		Universo.leCards();
 		leJogos();
 		// leSinergias();
-		Set<Sinergia> sub = provaveis(Universo.getCard("entomb"), 1, CLASS.PRIEST);
+		provaveis(Universo.getCard("entomb"), 1, CLASS.PRIEST);
+	}
+
+	public SinergyFromGames() {
+		// leJogos(); //muito lento...
 	}
 
 	/**
@@ -44,15 +50,21 @@ public class SinergyFromGames {
 	 *            Mana restante no turno atual.
 	 * @return
 	 */
-	public static Set<Sinergia> provaveis(Carta c, int manaRestante, CLASS opo) {
-		Set<Sinergia> sub = new LinkedHashSet<Sinergia>();
+	public static Set<Carta> provaveis(Carta c, int manaRestante, CLASS opo) {
+		// Set<Sinergia> sub = new LinkedHashSet<Sinergia>();
+		Set<Carta> sub = new LinkedHashSet<Carta>();
 		if (c != null) {
 			for (Sinergia s : Sinergias.cardsSynergies) {
-				// cartas com sinergia com custo provavel no turno
-				Carta c2 = (Carta) s.e2;
-				if (s.e1 == c && CLASS.contem(opo, c2.classe) && c2.cost <= manaRestante) {
-					sub.add(s);
-					System.out.println(s.e2 + "\t" + s.valor + "\t" + s.mechs);
+				if (s.e1 == c || s.e2 == c) {
+					Carta c2 = (Carta) s.e2;
+					if (c == c2) {
+						c = (Carta) s.e1;
+					}
+					// cartas com sinergia com custo provavel no turno
+					if (CLASS.contem(opo, c2.classe) && c2.cost <= manaRestante) {
+						sub.add(c2);
+						System.out.println(c2 + "\t" + s.valor + "\t" + s.mechs);
+					}
 				}
 			}
 		}
@@ -131,7 +143,18 @@ public class SinergyFromGames {
 			sb.append(line + "\r\n");
 			System.out.println(line);
 		}
-		EscreveArquivo.escreveArquivo("res/output/sinergias.csv", sb.toString());
+		//EscreveArquivo.escreveArquivo("res/output/sinergias.csv", sb.toString());
+		PrintWriter out = null;
+		try {
+			out = new PrintWriter("res/output/sinergias.csv");
+			out.println(sb.toString());
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			if (out != null)
+				out.close();
+		}
 	}
 
 	/**

@@ -14,7 +14,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import hcs.Carta.CLASS;
+import hcs.model.Carta;
+import hcs.model.Carta.CLASS;
 
 public class Universo {
 	static List<Carta> cards = new ArrayList<Carta>();
@@ -81,9 +82,10 @@ public class Universo {
 						(Long) o.get("durability"), (String) o.get("rarity")));
 			}
 		}
-		if (getCard("The Coin") == null) {
+		//if (getCard("The Coin") == null)
+		{
 			// TODO adiciona a moeda
-			cards.add(new Carta("game_005", "The Coin", "CORE", "ALLIANCE", CLASS.NEUTRAL, "SPELL",
+			cards.add(new Carta("game_005", "the coin", "CORE", "ALLIANCE", CLASS.NEUTRAL, "SPELL",
 					"Add 1 mana this turn...", 0L, null, null, null, "COMMON"));
 		}
 	}
@@ -92,7 +94,7 @@ public class Universo {
 	 * Busca uma carta por nome ou id.
 	 * 
 	 * @param idORname
-	 * @return Card, null se não achar
+	 * @return Card.
 	 */
 	public static Carta getCard(String idORname) {
 		if (idORname != null && !"".equals(idORname)) {
@@ -108,7 +110,8 @@ public class Universo {
 				}
 			}
 		}
-		// throw new RuntimeException("Carta não encontrada: " + idORname);
-		return null;
+		// TODO CS2_013t excess mana not found..
+		throw new RuntimeException("Card not found: " + idORname);
+		//return null;
 	}
 }

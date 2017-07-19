@@ -20,7 +20,7 @@ import org.supercsv.io.CsvBeanReader;
 import org.supercsv.io.ICsvBeanReader;
 import org.supercsv.prefs.CsvPreference;
 
-import hcs.Carta;
+import hcs.model.Carta;
 
 /**
  * Tentativa de parser heartstone usando gramaticas peg identificando os tokens
