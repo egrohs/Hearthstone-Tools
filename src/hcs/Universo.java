@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -20,7 +19,7 @@ import hcs.model.Carta.CLASS;
 public class Universo {
 	static List<Carta> cards = new ArrayList<Carta>();
 	
-	public static CLASS whichClass(Set<Carta> cartas) {
+	public static CLASS whichClass(List<Carta> cartas) {
 		Map<CLASS, Integer> qnts = new HashMap<CLASS, Integer>();
 		CLASS most = CLASS.NEUTRAL;
 		for (Carta c : cartas) {
@@ -68,7 +67,7 @@ public class Universo {
 		while (iterator.hasNext()) {
 			JSONObject o = iterator.next();
 			Boolean col = (Boolean) o.get("collectible");
-			if (col != null && col == true && !"HERO".equals((String) o.get("type"))) {
+			if (col != null && col == true /*&& !"HERO".equals((String) o.get("type"))*/) {
 				String c = (String) o.get("multiClassGroup");
 				Carta.CLASS classe;
 				if (c != null) {

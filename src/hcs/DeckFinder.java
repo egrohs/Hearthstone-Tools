@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.Scanner;
 import java.util.Set;
 
 import hcs.model.Carta;
-import hcs.model.Carta.CLASS;
+import hcs.model.Deck;
 
 /**
  * Partindo duma lista de cartas, tenta encontrar o metadeck as quais pertencem.
@@ -36,7 +37,7 @@ public class DeckFinder {
 		DeckFinder.leDecks("res/decks");
 	}
 
-	public static Map<Deck, Double> similaridade(Set<Carta> searched) {
+	public static Map<Deck, Double> similaridade(Collection<Carta> searched) {
 		List<String> nomes = new ArrayList<String>();
 		for (Carta carta : searched) {
 			// System.out.println("similaridade: " +carta.name);
@@ -59,7 +60,7 @@ public class DeckFinder {
 				}
 			}
 			if (prob.get(deck) != null) {
-				System.out.println(deck.nome + ": " + prob.get(deck));
+				System.out.println(deck.name + ": " + prob.get(deck));
 			}
 		}
 		return prob;
@@ -99,7 +100,7 @@ public class DeckFinder {
 					}
 					Deck deck = new Deck(file.getName(), cartas);
 					decks.add(deck);
-					System.out.println(deck.nome + " deck loaded.");
+					System.out.println(deck.name + " deck loaded.");
 					sc.close();
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();
@@ -128,37 +129,5 @@ public class DeckFinder {
 				}
 			}
 		}
-	}
-}
-
-class Deck {
-	String nome;
-	Carta.CLASS classe = CLASS.NEUTRAL;
-	Map<Carta, Integer> cartas = new HashMap<Carta, Integer>();
-
-	public Deck(String nome, Map<Carta, Integer> cartas) {
-		this.nome = nome;
-		this.cartas = cartas;
-		this.classe = Universo.whichClass(cartas.keySet());
-	}
-
-	public Integer getQnt(String nome) {
-		// System.out.println("getQnt "+nome);
-		Carta c = Universo.getCard(nome);
-		if (cartas.containsKey(c)) {
-			return cartas.get(c);
-		}
-		return null;
-	}
-
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append(nome + "\r\n");
-		sb.append(classe + "\r\n");
-		for (Carta c : cartas.keySet()) {
-			sb.append(c.name + "\t" + cartas.get(c) + "\r\n");
-		}
-		return sb.toString();
 	}
 }

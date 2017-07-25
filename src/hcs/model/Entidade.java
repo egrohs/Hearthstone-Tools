@@ -1,6 +1,6 @@
 package hcs.model;
 
-import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
 
 /**
  * Entidade abstrada, pode ser carta, mecanica, etc.
@@ -8,8 +8,9 @@ import javafx.scene.image.ImageView;
  * @author 99689650068
  *
  */
-public abstract class Entidade extends ImageView {
+public class Entidade extends StackPane {
 	public String name, id;
+	
 	@Override
 	public String toString() {
 		return name;

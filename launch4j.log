@@ -1,0 +1,38 @@
+
+
+Version:	3.10
+CmdLine:	C:\workspace\HCS\hcs.exe --l4j-debug
+WOW64:		yes
+Working dir:	C:\workspace\HCS\.
+Java min ver:	1.5.0
+Java max ver:	
+Bundled JRE:	C:\Program Files\Java\jre1.8.0_65\bin\
+Check launcher:	C:\Program Files\Java\jre1.8.0_65\bin\bin\javaw.exe (not found)
+64-bit search:	SOFTWARE\JavaSoft\Java Runtime Environment...
+Check:		SOFTWARE\JavaSoft\Java Runtime Environment\1.8
+Check launcher:	C:\Program Files\Java\jre1.8.0_65\bin\javaw.exe (OK)
+Match:		1.8
+Check:		SOFTWARE\JavaSoft\Java Runtime Environment\1.8.0_60
+Check launcher:	C:\Program Files\Java\jre1.8.0_60\bin\javaw.exe (not found)
+Ignore:		1.8.0_060
+Check:		SOFTWARE\JavaSoft\Java Runtime Environment\1.8.0_65
+Check launcher:	C:\Program Files\Java\jre1.8.0_65\bin\javaw.exe (OK)
+Match:		1.8.0_065
+64-bit search:	SOFTWARE\JavaSoft\Java Development Kit...
+Check:		SOFTWARE\JavaSoft\Java Development Kit\1.7
+Ignore:		1.7
+Check:		SOFTWARE\JavaSoft\Java Development Kit\1.7.0_75
+Ignore:		1.7.0_075
+Check:		SOFTWARE\JavaSoft\Java Development Kit\1.8
+Ignore:		1.8
+Check:		SOFTWARE\JavaSoft\Java Development Kit\1.8.0_11
+Ignore:		1.8.0_011
+Check:		SOFTWARE\JavaSoft\Java Development Kit\1.8.0_40
+Ignore:		1.8.0_040
+64-bit search:	SOFTWARE\JavaSoft\JRE...
+64-bit search:	SOFTWARE\JavaSoft\JDK...
+Runtime used:	1.8.0_065 (64-bit)
+Launcher:	C:\Program Files\Java\jre1.8.0_65\bin\javaw.exe
+Launcher args:	-jar "C:\workspace\HCS\hcs.exe"
+Args length:	31/32768 chars
+Exit code:	0

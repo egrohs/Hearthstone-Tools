@@ -2,7 +2,7 @@
 2 spell damage
 3 battlecr(y|ies)
 4 return (.+\s)*(this |minion(s)? )(.+\s)*to (your|(its |their )owner's) hand
-5 PERM DISADVANTAGES| can\'t attack| your minions cost \(\d+\) more| attack the wrong enemy| your opponent draws| destroy this minion if it's your only one| remove the top \d+ cards of your deck| deal that amount to your hero
+5 PERM DISADVANTAGES| your minions cost \(\d+\) more| attack the wrong enemy| your opponent draws| destroy this minion if it's your only one| remove the top \d+ cards of your deck| deal that amount to your hero
 6 silence
 7 (destroy all )
 8 (take|gain) control of
@@ -65,6 +65,8 @@
 65 on the battlefield
 66 put (.+\s)+into the battlefield
 67 overload
+68 give [\w\s]*(it|minion(s)?) [\w\s]*taunt
+69 can\'t attack
 #
 1 2
 3 4 1.2
@@ -143,17 +145,6 @@
 65 49
 65 66
 66 12
-56 56 0.2
-57 57 0.2
-58 58 0.2
-50 50 0.2
-52 52 1.0
-39 39 0.2
-55 55 0.2
-54 54 0.2
-59 59 0.2
-53 53 0.2
-33 33 0.5
 16 13 -1.0
 22 13 -1.0
-67 67 0.2
+69 68

@@ -5,7 +5,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -22,6 +21,7 @@ import org.json.simple.parser.ParseException;
 
 import hcs.model.Carta;
 import hcs.model.Mecanica;
+import hcs.model.Sinergia;
 
 //TODO guardar as sinergias calculadas em arquivo, para evitar lentidão ao rodar.
 public class SinergyFromText {
@@ -29,7 +29,7 @@ public class SinergyFromText {
 	static List<Sinergia> mechanicsSynergies = new ArrayList<Sinergia>();
 	// static List<Carta> cards = new ArrayList<Carta>();
 	// private static int cont = 0;
-	//private static TGFParser tgfp;
+	// private static TGFParser tgfp;
 	// private static List<Card> deck = new ArrayList<Card>();
 
 	public static void main(String[] args) {
@@ -128,7 +128,7 @@ public class SinergyFromText {
 	 */
 	private static void printCardSynergies(Carta card) {
 		Set<Sinergia> minhaS = Sinergias.getCardSinergies(card, 10, card.classe);
-		//Collections.sort(minhaS);
+		// Collections.sort(minhaS);
 		for (Sinergia s : minhaS) {
 			System.out.println(s.e1.name + "\t");
 		}
@@ -222,7 +222,7 @@ public class SinergyFromText {
 					}
 				}
 			}
-			//Collections.sort(Sinergias.cardsSynergies);
+			// Collections.sort(Sinergias.cardsSynergies);
 			c.calc = true;
 		}
 	}
@@ -252,7 +252,7 @@ public class SinergyFromText {
 			}
 		}
 		System.out.println(System.currentTimeMillis() - ini);
-		//Collections.sort(Sinergias.cardsSynergies);
+		// Collections.sort(Sinergias.cardsSynergies);
 		System.out.println(Sinergias.cardsSynergies.size() + " sinergies calculated from parsed card texts.");
 	}
 
@@ -300,7 +300,10 @@ public class SinergyFromText {
 					String regex = line.substring(line.indexOf(" ") + 1);
 					// cria nodo
 					// ns.put(s[0], new Mechanic());
+					Mecanica m1 = new Mecanica(id, regex);
 					mechanics.put(id, new Mecanica(id, regex));
+					// auto sinergia
+					mechanicsSynergies.add(new Sinergia(m1, m1, 1, m1.regex + "+" + m1.regex));
 				} else {
 					String[] s = line.split(" ");
 					Float v = 0f;

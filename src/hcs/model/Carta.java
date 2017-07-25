@@ -5,7 +5,10 @@ import java.util.Set;
 
 import org.jsoup.Jsoup;
 
+import javafx.geometry.Pos;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
 
 /**
  * Objeto carta.
@@ -13,6 +16,7 @@ import javafx.scene.image.Image;
  * @author 99689650068
  *
  */
+//TODO UNG_116t barnabus the stomper
 public class Carta extends Entidade {
 	public CLASS classe;
 	public StringBuilder text = new StringBuilder();
@@ -63,15 +67,16 @@ public class Carta extends Entidade {
 			String text, Long cos, Long atta, Long health, Long dur, String rarity) {
 		super();
 		this.id = id.toLowerCase();
-		setImage(new Image("file:res/cards/" + this.id + ".png"));
+		this.getChildren().add(new ImageView(new Image("file:res/cards/" + this.id + ".png")));
+		StackPane.setAlignment(this, Pos.CENTER_LEFT);
 		this.name = name.toLowerCase();
 		this.set = set;
 		this.race = faction;
 		this.classe = classe;
 		this.type = type;
 		this.text.append(text);
-		this.cost = (cos == null ? null : Integer.parseInt(cos.toString()));
-		this.attack = (atta == null ? null : Integer.parseInt(atta.toString()));
+		this.cost = (cos == null ? -1 : Integer.parseInt(cos.toString()));
+		this.attack = (atta == null ? -1 : Integer.parseInt(atta.toString()));
 		this.health = (health == null ? null : Integer.parseInt(health.toString()));
 		this.dur = (dur == null ? null : Integer.parseInt(dur.toString()));
 		this.rarity = rarity;

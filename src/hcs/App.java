@@ -1,19 +1,14 @@
 package hcs;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import hcs.model.Carta;
 import hcs.model.Carta.CLASS;
+import hcs.model.Game;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
@@ -30,14 +25,13 @@ public class App extends Application {
 	static Stage stage;
 	// private static SynergyBuilder sb;
 	private static Sinergias s;
-	public static Set<Carta> searched = new HashSet<Carta>();
 	private static VBox box;
 	// private static TextField tf;
 	// private static Spinner<Integer> ss;
 	// private static ComboBox<CLASS> cb;
-	private static VBox cartas;
+	public static VBox cartas;
 	private static TextArea ta;
-	private static CLASS opo = CLASS.NEUTRAL;
+	private static CLASS opo = CLASS.MAGE;
 
 	@Override
 	public void start(Stage stage) {
@@ -91,23 +85,28 @@ public class App extends Application {
 		// set Stage boundaries to visible bounds of the main screen
 		stage.setX(primaryScreenBounds.getMinX());
 		stage.setY(primaryScreenBounds.getMinY());
-		stage.setWidth(150);
+		stage.setWidth(160);
 		stage.setHeight(primaryScreenBounds.getHeight());
 		stage.setAlwaysOnTop(true);
 		stage.show();
 	}
 
-	public static void calcula(Carta card) {
+	public static void decks(String texto) {
+		ta.setText(texto);
+		//System.out.println("TEXTO :" + texto);
+	}
+
+	public static void provaveis(Map<Carta, String> temp) {
 		// Necessario para evitar java.lang.IllegalStateException: Not on FX
 		// application thread;
 		// Outra thread atualizando a interface.
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
-				if (card != null) {
-					searched.add(card);
-				}
-				SinergyFromText.generateCardSynergies(card);
+				// if (card != null) {
+				// searched.add(card);
+				// }
+				// SinergyFromText.generateCardSynergies(card);
 				// if (cb != null && cb.getValue() != null)
 				{
 					// ta.setText("");
@@ -115,42 +114,36 @@ public class App extends Application {
 					// Carta card =
 					// Universo.getCard(tf.getText().toLowerCase());
 					// TODO a classe deve ser deduzida uma única vez pelo log.
-					if (opo == CLASS.NEUTRAL) {
-						opo = Universo.whichClass(searched);
-					}
-					System.out.println(opo);
-					// TODO como deduzir o turno atual no log?
-					Set<Sinergia> sub = Sinergias.getCardSinergies(card, 10, opo);
-					List<Sinergia> exibe = new ArrayList<Sinergia>(sub);
-					Collections.sort(exibe);
+					// if (opo == CLASS.NEUTRAL) {
+					// opo = Universo.whichClass(searched);
+					// }
 					// int cont = (int)
 					// Screen.getPrimary().getVisualBounds().getHeight() / 34 -
 					// 2;
 					int num = 1;
-					for (Sinergia sinergia : exibe) {
+					for (Carta c : temp.keySet()) {
 						// Mostra só as primeiras 30.
-						if (num > 30)
-							break;
-						StackPane stackPane = new StackPane();
-						Carta c = (Carta) sinergia.e2;
-						if (card == c) {
-							c = (Carta) sinergia.e1;
-						}
+						// if (num > 30)
+						// break;
+						String text = temp.get(c);
+						// StackPane stackPane = new StackPane();
 						// ImageView iv = new ImageView(new
 						// Image("file:res/cards/" + c.id + ".png"));
-						if (c.getScene() == null) {
-							stackPane.getChildren().add(c);
-							StackPane.setAlignment(c, Pos.CENTER_LEFT);
-							String t = num + ") " + c.name + " f:" + sinergia.freq + " v:" + sinergia.valor;
+						// if (c.getScene() == null)
+						{
+							// stackPane.getChildren().add(c);
+							// StackPane.setAlignment(c, Pos.CENTER_LEFT);
+							// String t = num + ") " + c.name + " f:" +
+							// sinergia.freq + " v:" + sinergia.valor;
 							Rectangle r = new Rectangle(130, 10, Color.BLACK);
-							Text t1 = new Text(t);
+							Text t1 = new Text(num + ") " + text);
 							t1.setFill(Color.WHITE);
 							t1.setFont(new Font(10));
-							stackPane.getChildren().add(r);
+							/* stackPane */c.getChildren().add(r);
 							StackPane.setAlignment(r, Pos.CENTER_LEFT);
-							stackPane.getChildren().add(t1);
+							/* stackPane */c.getChildren().add(t1);
 							StackPane.setAlignment(t1, Pos.CENTER_LEFT);
-							cartas.getChildren().add(stackPane);
+							cartas.getChildren().add(c);
 							// cont--;
 							// if (cont == 0) {
 							// break;
@@ -161,15 +154,9 @@ public class App extends Application {
 					// ss.increment();
 					// SinergyFromGames.imprimSins();
 				}
-				Map<Deck, Double> probs = DeckFinder.similaridade(searched);
-				StringBuilder sbb = new StringBuilder();
-				for (Deck k : probs.keySet()) {
-					// TODO buscar a classe do opo no log?
-					if (k.classe == opo) {
-						sbb.append(k.nome + " = " + probs.get(k) + "%\n");
-					}
-				}
-				ta.setText(sbb.toString());
+				// jhgjhgj
+				// ZoneLogReader.pendente--;
+				// System.out.println("PENDENTE: "+ZoneLogReader.pendente);
 			}
 		});
 	}
@@ -179,7 +166,9 @@ public class App extends Application {
 		SinergyFromGames.leSinergias();
 		s = new Sinergias();
 		new DeckFinder();
-		new LogReader().start();
+		new PowerLogReader().start();
+		new ZoneLogReader().start();
+		new Game().start();
 		// TODO detectar qndo um jogo comeca e termina para resetar as
 		// variaveis.
 		launch(args);

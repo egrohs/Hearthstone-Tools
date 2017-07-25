@@ -18,6 +18,7 @@ import org.json.simple.parser.ParseException;
 
 import hcs.model.Carta;
 import hcs.model.Carta.CLASS;
+import hcs.model.Sinergia;
 
 /**
  * Base de dados de jogos em json HS, para analise estatistica.
