@@ -47,7 +47,7 @@ public class PowerLogReader extends Thread {
 //						System.out.println(line);
 //					}
 					matcher = gameOver.matcher(line);
-					if (matcher.find() || matcher.matches()) {
+					if (matcher.find()) {
 						// end game
 						// manaMap.put(LocalTime.parse(matcher.group(1)), 0);
 						lastOverTime = LocalTime.parse(matcher.group(1));

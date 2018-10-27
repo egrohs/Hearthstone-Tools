@@ -2,6 +2,7 @@ package hcs;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -18,7 +19,7 @@ import hcs.model.Carta.CLASS;
 
 public class Universo {
 	static List<Carta> cards = new ArrayList<Carta>();
-	
+
 	public static CLASS whichClass(List<Carta> cartas) {
 		Map<CLASS, Integer> qnts = new HashMap<CLASS, Integer>();
 		CLASS most = CLASS.NEUTRAL;
@@ -67,7 +68,10 @@ public class Universo {
 		while (iterator.hasNext()) {
 			JSONObject o = iterator.next();
 			Boolean col = (Boolean) o.get("collectible");
-			if (col != null && col == true /*&& !"HERO".equals((String) o.get("type"))*/) {
+			if (col != null
+					&& col == true /*
+									 * && !"HERO".equals((String) o.get("type"))
+									 */) {
 				String c = (String) o.get("multiClassGroup");
 				Carta.CLASS classe;
 				if (c != null) {
@@ -75,13 +79,22 @@ public class Universo {
 				} else {
 					classe = Carta.CLASS.valueOf((String) o.get("playerClass"));
 				}
+				String text = (String) o.get("text");
+				try {
+					if (text != null) {
+						text = new String(text.getBytes("ISO-8859-1"), "UTF-8");
+					}
+				} catch (UnsupportedEncodingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				cards.add(new Carta((String) o.get("id"), (String) o.get("name"), (String) o.get("set"),
-						(String) o.get("race"), classe, (String) o.get("type"), (String) o.get("text"),
-						(Long) o.get("cost"), (Long) o.get("attack"), (Long) o.get("health"),
-						(Long) o.get("durability"), (String) o.get("rarity")));
+						(String) o.get("race"), classe, (String) o.get("type"), text, (Long) o.get("cost"),
+						(Long) o.get("attack"), (Long) o.get("health"), (Long) o.get("durability"),
+						(String) o.get("rarity")));
 			}
 		}
-		//if (getCard("The Coin") == null)
+		// if (getCard("The Coin") == null)
 		{
 			// TODO adiciona a moeda
 			cards.add(new Carta("game_005", "the coin", "CORE", "ALLIANCE", CLASS.NEUTRAL, "SPELL",
@@ -111,6 +124,6 @@ public class Universo {
 		}
 		// TODO CS2_013t excess mana not found..
 		throw new RuntimeException("Card not found: " + idORname);
-		//return null;
+		// return null;
 	}
 }

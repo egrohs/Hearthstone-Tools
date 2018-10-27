@@ -8,7 +8,7 @@ import javafx.scene.layout.StackPane;
  * @author 99689650068
  *
  */
-public class Entidade extends StackPane {
+public class Entidade /*extends StackPane*/ {
 	public String name, id;
 	
 	@Override

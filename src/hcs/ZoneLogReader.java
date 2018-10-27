@@ -47,7 +47,7 @@ public class ZoneLogReader extends Thread {
 			try {
 				while ((line = zone.readLine()) != null) {
 					matcher = hero.matcher(line);
-					if (matcher.find() || matcher.matches()) {
+					if (matcher.find()) {
 						Game.opponent.classe = Universo.getCard(matcher.group(1)).classe;
 						System.out.println(Universo.getCard(matcher.group(1)).classe);
 					} else {

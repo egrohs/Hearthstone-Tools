@@ -1,10 +1,16 @@
 package hcs;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.jsoup.Jsoup;
 
 import hcs.model.Carta;
 import hcs.model.Carta.CLASS;
 import hcs.model.Game;
+import hcs.model.Mecanica;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
@@ -93,7 +99,7 @@ public class App extends Application {
 
 	public static void decks(String texto) {
 		ta.setText(texto);
-		//System.out.println("TEXTO :" + texto);
+		// System.out.println("TEXTO :" + texto);
 	}
 
 	public static void provaveis(Map<Carta, String> temp) {

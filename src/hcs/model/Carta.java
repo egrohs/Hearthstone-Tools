@@ -16,7 +16,7 @@ import javafx.scene.layout.StackPane;
  * @author 99689650068
  *
  */
-//TODO UNG_116t barnabus the stomper
+// TODO UNG_116t barnabus the stomper
 public class Carta extends Entidade {
 	public CLASS classe;
 	public StringBuilder text = new StringBuilder();
@@ -67,14 +67,16 @@ public class Carta extends Entidade {
 			String text, Long cos, Long atta, Long health, Long dur, String rarity) {
 		super();
 		this.id = id.toLowerCase();
-		this.getChildren().add(new ImageView(new Image("file:res/cards/" + this.id + ".png")));
-		StackPane.setAlignment(this, Pos.CENTER_LEFT);
+//		this.getChildren().add(new ImageView(new Image("file:res/cards/" + this.id + ".png")));
+//		StackPane.setAlignment(this, Pos.CENTER_LEFT);
 		this.name = name.toLowerCase();
 		this.set = set;
 		this.race = faction;
 		this.classe = classe;
 		this.type = type;
-		this.text.append(text);
+		if (text != null) {
+			this.text.append(Jsoup.parse(text).text().replaceAll(String.valueOf((char) 160), " "));
+		}
 		this.cost = (cos == null ? -1 : Integer.parseInt(cos.toString()));
 		this.attack = (atta == null ? -1 : Integer.parseInt(atta.toString()));
 		this.health = (health == null ? null : Integer.parseInt(health.toString()));
@@ -87,6 +89,10 @@ public class Carta extends Entidade {
 			}
 		}
 		trim();
+	}
+
+	public Carta(Set<Mecanica> mechs) {
+		this.mechanics = mechs;
 	}
 
 	/*
