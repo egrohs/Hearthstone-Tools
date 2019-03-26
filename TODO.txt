@@ -90,7 +90,7 @@ while you have a mech.		MECH			at the end of your turn, give another friendly me
 spell damage +5			CHEAP? DMG SPELLS
 COMBO INIMIGO, NAO ROLA! change an enemy minion's attack to 1.	destroy a random enemy minion with 2 or less attack.
 murlocs				murloc
-COMBO INIMIGO, NAO ROLA! set|change ...attack		destroy a minion with 3 or less attack.
+COMBO INIMIGO, NAO ROLA! set|change ...getAttack()		destroy a minion with 3 or less attack.
 opponent draws|each player draws			costs (1) less for each card in your opponent's hand.
 dragon type			dragon
 overload			whenever you play a card with overload, gain +1/+1.
