@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 
-import hcs.model.Carta;
+import hcs.model.Card;
 import hcs.model.Deck;
 
 /**
@@ -23,10 +23,9 @@ import hcs.model.Deck;
  */
 public class DeckFinder {
 	static Set<Deck> decks = new HashSet<Deck>();
-	static ClassLoader classLoader = DeckFinder.class.getClassLoader();
 	public static void main(String[] args) {
 		Universo.leCards();
-		DeckFinder.leDecks(new File(classLoader.getResource("decks").getFile()));
+		DeckFinder.leDecks(new File(Universo.cl.getResource("decks").getFile()));
 		// for (Deck d : Decks.decks) {
 		// System.out.println(d);
 		// }
@@ -34,12 +33,12 @@ public class DeckFinder {
 	}
 
 	public DeckFinder() {
-		DeckFinder.leDecks(new File(classLoader.getResource("decks").getFile()));
+		DeckFinder.leDecks(new File(Universo.cl.getResource("decks").getFile()));
 	}
 
-	public static Map<Deck, Double> similaridade(Collection<Carta> searched) {
+	public static Map<Deck, Double> similaridade(Collection<Card> searched) {
 		List<String> nomes = new ArrayList<String>();
-		for (Carta carta : searched) {
+		for (Card carta : searched) {
 			// System.out.println("similaridade: " +carta.getName());
 			nomes.add(carta.getName());
 		}
@@ -76,7 +75,7 @@ public class DeckFinder {
 			if (file.isDirectory()) {
 				leDecks(file);
 			} else {
-				Map<Carta, Integer> cartas = new HashMap<Carta, Integer>();
+				Map<Card, Integer> cartas = new HashMap<Card, Integer>();
 				try {
 					Scanner sc = new Scanner(file);
 					while (sc.hasNextLine()) {

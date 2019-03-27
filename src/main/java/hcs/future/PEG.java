@@ -20,7 +20,7 @@ import org.supercsv.io.CsvBeanReader;
 import org.supercsv.io.ICsvBeanReader;
 import org.supercsv.prefs.CsvPreference;
 
-import hcs.model.Carta;
+import hcs.model.Card;
 
 /**
  * Tentativa de parser heartstone usando gramaticas peg identificando os tokens
@@ -30,7 +30,7 @@ import hcs.model.Carta;
  *
  */
 public class PEG {
-	static List<Carta> cards = new ArrayList<Carta>();
+	static List<Card> cards = new ArrayList<Card>();
 	static Scanner file = null;
 	static Map<String, String> tags = new TreeMap<String, String>();
 	static List<String> l = null;
@@ -229,9 +229,9 @@ public class PEG {
 	}
 
 	private static void calcCombats() {
-		for (Carta attacker : cards) {
+		for (Card attacker : cards) {
 			if (!attacker.getType().equals("Spell")) {// && Wearpon!!!
-				for (Carta defender : cards) {
+				for (Card defender : cards) {
 					if (!defender.getType().equals("Spell")) {// && Wearpon!!!
 						if (attacker.getCost() == defender.getCost()) {
 							attacker.incCombats();
@@ -258,9 +258,9 @@ public class PEG {
 			// must match)
 			final String[] header = beanReader.getHeader(true);
 			final CellProcessor[] processors = getProcessors();
-			Carta card;
+			Card card;
 			while (true) {
-				card = beanReader.read(Carta.class, header, processors);
+				card = beanReader.read(Card.class, header, processors);
 				if (card == null) {
 					break;
 				}

@@ -1,6 +1,6 @@
 package hcs.model;
 
-import hcs.model.Carta.CLASS;
+import hcs.model.Card.CLASS;
 import lombok.Data;
 
 /**
@@ -10,7 +10,7 @@ import lombok.Data;
  *
  */
 @Data
-public class Entidade /*extends StackPane*/ {
+public class Entity {
 	protected String name, id;
 	
 	@Override

@@ -8,6 +8,7 @@ import java.io.PrintWriter;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -16,9 +17,9 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import hcs.model.Carta;
-import hcs.model.Carta.CLASS;
-import hcs.model.Sinergia;
+import hcs.model.Card;
+import hcs.model.Card.CLASS;
+import hcs.model.Sinergy;
 
 /**
  * Base de dados de jogos em json HS, para analise estatistica.
@@ -31,7 +32,6 @@ public class SinergyFromGames {
 	// static Set<Sinergia> sinergias = new HashSet<Sinergia>();
 	// static Sinergias sinergias = new Sinergias();
 	static JSONArray games = new JSONArray();
-	static ClassLoader classLoader = SinergyFromGames.class.getClassLoader();
 
 	public static void main(String[] args) {
 		Universo.leCards();
@@ -52,20 +52,20 @@ public class SinergyFromGames {
 	 *            Mana restante no turno atual.
 	 * @return
 	 */
-	public static Set<Carta> provaveis(Carta c, int manaRestante, CLASS opo) {
+	public static Set<Card> provaveis(Card c, int manaRestante, CLASS opo) {
 		// Set<Sinergia> sub = new LinkedHashSet<Sinergia>();
-		Set<Carta> sub = new LinkedHashSet<Carta>();
+		Set<Card> sub = new LinkedHashSet<Card>();
 		if (c != null) {
-			for (Sinergia s : Sinergias.cardsSynergies) {
-				if (s.e1 == c || s.e2 == c) {
-					Carta c2 = (Carta) s.e2;
+			for (Sinergy s : Sinergias.cardsSynergies) {
+				if (s.getE1() == c || s.getE2() == c) {
+					Card c2 = (Card) s.getE2();
 					if (c == c2) {
-						c = (Carta) s.e1;
+						c = (Card) s.getE1();
 					}
 					// cartas com sinergia com custo provavel no turno
 					if (CLASS.contem(opo, c2.getClasse()) && c2.getCost() <= manaRestante) {
 						sub.add(c2);
-						System.out.println(c2 + "\t" + s.valor + "\t" + s.mechs);
+						System.out.println(c2 + "\t" + s.getValor() + "\t" + s.getMechs());
 					}
 				}
 			}
@@ -79,7 +79,7 @@ public class SinergyFromGames {
 	private static void leJogos() {
 		// TODO ler do site http://www.hearthscry.com/CollectOBot
 		JSONParser parser = new JSONParser();
-		File folder = new File(classLoader.getResource("jogos").getFile());
+		File folder = new File(Universo.cl.getResource("jogos").getFile());
 		//File folder = new File("res/jogos");
 		File[] listOfFiles = folder.listFiles();
 		FileReader fr = null;
@@ -118,20 +118,20 @@ public class SinergyFromGames {
 	public static void leSinergias() {
 		Scanner sc = null;
 		try {
-			sc = new Scanner(new File(classLoader.getResource("output/sinergias.csv").getFile()));
+			sc = new Scanner(new File(Universo.cl.getResource("output/sinergias.csv").getFile()));
 		} catch (FileNotFoundException e) {
 			// TODO deve gera-lo...
 			e.printStackTrace();
 		}
 		while (sc.hasNextLine()) {
 			String[] line = sc.nextLine().split("\t");
-			Carta c1 = Universo.getCard(line[0]);
-			Carta c2 = Universo.getCard(line[1]);
+			Card c1 = Universo.getCard(line[0]);
+			Card c2 = Universo.getCard(line[1]);
 			int freq = Integer.parseInt(line[2]);
 			float val = Float.parseFloat(line[3]);
 			String mech = line[4];
 			if (c1 != null && c2 != null) {
-				Sinergias.cardsSynergies.add(new Sinergia(c1, c2, freq, val, mech));
+				Sinergias.cardsSynergies.add(new Sinergy(c1, c2, freq, val, mech));
 			}
 		}
 		sc.close();
@@ -139,17 +139,17 @@ public class SinergyFromGames {
 	}
 
 	public static void imprimSins() {
-		Collections.sort(Sinergias.cardsSynergies);
+		Collections.sort((List<Sinergy<Card>>) Sinergias.cardsSynergies);
 		StringBuilder sb = new StringBuilder();
-		for (Sinergia s : Sinergias.cardsSynergies) {
-			String line = s.e1 + "\t" + s.e2 + "\t" + s.freq + "\t" + s.valor + "\t" + s.mechs;
+		for (Sinergy s : Sinergias.cardsSynergies) {
+			String line = s.getE1() + "\t" + s.getE2() + "\t" + s.getFreq() + "\t" + s.getValor() + "\t" + s.getMechs();
 			sb.append(line + "\r\n");
 			System.out.println(line);
 		}
 		//EscreveArquivo.escreveArquivo("res/output/sinergias.csv", sb.toString());
 		PrintWriter out = null;
 		try {
-			out = new PrintWriter(new File(classLoader.getResource("output/sinergias.csv").getFile()));
+			out = new PrintWriter(new File(Universo.cl.getResource("output/sinergias.csv").getFile()));
 			out.println(sb.toString());
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -168,7 +168,7 @@ public class SinergyFromGames {
 		while (iterator.hasNext()) {
 			JSONObject game = iterator.next();
 			Iterator<JSONObject> card_history = ((JSONArray) game.get("card_history")).iterator();
-			Carta myprev = null, opoprev = null, myatual = null, opoatual = null;
+			Card myprev = null, opoprev = null, myatual = null, opoatual = null;
 			while (card_history.hasNext()) {
 				JSONObject hist = card_history.next();
 				JSONObject card = (JSONObject) hist.get("card");
@@ -181,12 +181,12 @@ public class SinergyFromGames {
 					}
 					myatual = Universo.getCard(id);
 					if (myatual != null) {
-						Sinergia s = Sinergias.getSinergy(myprev, myatual);
+						Sinergy s = Sinergias.getCardSinergy(myprev, myatual);
 						if (s == null) {
-							s = new Sinergia(myprev, myatual, 1);
+							s = new Sinergy(myprev, myatual, 1);
 							Sinergias.cardsSynergies.add(s);
 						}
-						s.valor += 1;
+						s.setValor(s.getValor() + 1);
 					}
 				} else if ("opponent".equals(player)) {
 					if (opoprev == null) {
@@ -195,12 +195,12 @@ public class SinergyFromGames {
 					}
 					opoatual = Universo.getCard(id);
 					if (opoatual != null) {
-						Sinergia s = Sinergias.getSinergy(opoprev, opoatual);
+						Sinergy s = Sinergias.getCardSinergy(opoprev, opoatual);
 						if (s == null) {
-							s = new Sinergia(opoprev, opoatual, 1);
+							s = new Sinergy(opoprev, opoatual, 1);
 							Sinergias.cardsSynergies.add(s);
 						}
-						s.valor += 1;
+						s.setValor(s.getValor() + 1);
 					}
 				}
 			}

@@ -134,7 +134,7 @@ public class App extends Application {
 							// stackPane.getChildren().add(c);
 							// StackPane.setAlignment(c, Pos.CENTER_LEFT);
 							// String t = num + ") " + c.getName() + " f:" +
-							// sinergia.freq + " v:" + sinergia.valor;
+							// sinergia.freq + " v:" + sinergia.getValor();
 							Rectangle r = new Rectangle(130, 10, Color.BLACK);
 							Text t1 = new Text(num + ") " + text);
 							t1.setFill(Color.WHITE);

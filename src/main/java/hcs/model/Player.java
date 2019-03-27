@@ -1,9 +1,9 @@
 package hcs.model;
 
-import hcs.model.Carta.CLASS;
+import hcs.model.Card.CLASS;
 import lombok.Data;
 
 @Data
-public class Player extends Entidade {
+public class Player extends Entity {
     private CLASS classe;
 }

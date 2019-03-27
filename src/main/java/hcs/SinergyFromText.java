@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -20,15 +21,13 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import hcs.model.Carta;
+import hcs.model.Card;
 import hcs.model.Mecanica;
-import hcs.model.Sinergia;
+import hcs.model.Sinergy;
+import hcs.model.Tag;
 
 //TODO guardar as sinergias calculadas em arquivo, para evitar lentid�o ao rodar.
 public class SinergyFromText {
-    static ClassLoader classLoader = SinergyFromText.class.getClassLoader();
-    static Map<String, Mecanica> mechanics = new HashMap<String, Mecanica>();
-    static List<Sinergia> mechanicsSynergies = new ArrayList<Sinergia>();
     // static List<Carta> cards = new ArrayList<Carta>();
     // private static int cont = 0;
     // private static TGFParser tgfp;
@@ -44,44 +43,40 @@ public class SinergyFromText {
 	// generateTextSynergies("Azure Drake");
 	// countMAffinities();
 	// printCard("Acidic Swamp Ooze");
-	printDeck(buildDeck(Carta.CLASS.SHAMAN, new String[] { "Tunnel Trogg" }, new HashSet<Carta>(), 0));
+	//printDeck(buildDeck(Carta.CLASS.SHAMAN, new String[] { "Tunnel Trogg" }, new HashSet<Carta>(), 0));
 	// printCard("Dread Corsair");
 	// printM2M();
 	// for (Sinergia s : sins) {
-	// System.out.println(s.e1 + "\t" + s.e2 + "\t" + s.valor);
+	// System.out.println(s.getE1() + "\t" + s.getE2() + "\t" + s.getValor());
 	// }
 	// System.out.println(sins.size());
     }
 
-    private static void printDeck(Collection<Carta> deck) {
+    private static void printDeck(Collection<Card> deck) {
 	for (int i = 0; i < deck.size(); i++) {
-	    Carta c1 = (Carta) deck.toArray()[i];
+	    Card c1 = (Card) deck.toArray()[i];
 	    int cont = 0;
 	    Float acum = 0f;
 	    for (int j = i; j < deck.size(); j++) {
-		Carta c2 = (Carta) deck.toArray()[j];
-		Sinergia s = Sinergias.getSinergy(c1, c2);
-		acum += s != null ? s.valor : 0f;
+		Card c2 = (Card) deck.toArray()[j];
+		Sinergy s = Sinergias.getCardSinergy(c1, c2);
+		acum += s != null ? s.getValor() : 0f;
 		cont++;
 	    }
 	    System.out.println(acum / cont + "\t" + c1.getName() + "\t" + c1.getClasse() + "\t" + c1.getText());
 	}
     }
 
-    private static void printM2M() {
-	for (Sinergia s : mechanicsSynergies) {
-	    System.out.println(((Mecanica) s.e1).regex + "\t" + ((Mecanica) s.e2).regex);
-	}
-    }
-
     public SinergyFromText() {
 	// buildMechanics();
-	Universo.leCards();
+	//Universo.leCards();
 	// printCards();
-	readMechanics();
+	//readMechanics();
 	// buildCards();
-	parseCardsText2Mechanics();
+	//parseCardsText2Mechanics();
 	// generateCardSynergies();
+//	calcTags();
+//	printTags();
     }
 
     /**
@@ -93,15 +88,15 @@ public class SinergyFromText {
      * @param depth        Limita profundidade de busca no grafo das sinergias.
      * @return Lista de cartas com sinergia às informadas.
      */
-    private static Set<Carta> buildDeck(Carta.CLASS classe, String[] initialCards, Set<Carta> deck, int depth) {
+    private static Set<Card> buildDeck(Card.CLASS classe, String[] initialCards, Set<Card> deck, int depth) {
 	System.out.println("Sinergias para " + initialCards[0]);
 	for (String cardname : initialCards) {
-	    Carta c = Universo.getCard(cardname);
-	    for (Sinergia s : Sinergias.cardsSynergies) {
-		Carta c1 = (Carta) s.e1;
-		Carta c2 = (Carta) s.e2;
+	    Card c = Universo.getCard(cardname);
+	    for (Sinergy s : Sinergias.cardsSynergies) {
+		Card c1 = (Card) s.getE1();
+		Card c2 = (Card) s.getE2();
 		if (c == c1 || c == c2) {
-		    if (Carta.CLASS.contem(classe, c1.getClasse()) || Carta.CLASS.contem(classe, c2.getClasse())) {
+		    if (Card.CLASS.contem(classe, c1.getClasse()) || Card.CLASS.contem(classe, c2.getClasse())) {
 			deck.add(c1);
 			deck.add(c2);
 		    }
@@ -112,7 +107,7 @@ public class SinergyFromText {
     }
 
     private static void printCard(String n) {
-	Carta card = Universo.getCard(n);
+	Card card = Universo.getCard(n);
 	for (Mecanica m : card.getMechanics()) {
 	    System.out.println(m.regex);
 	}
@@ -123,11 +118,11 @@ public class SinergyFromText {
      * 
      * @param card Carta consultada.
      */
-    private static void printCardSynergies(Carta card) {
-	Set<Sinergia> minhaS = Sinergias.getCardSinergies(card, 10, card.getClasse());
+    private static void printCardSynergies(Card card) {
+	Set<Sinergy<Card>> minhaS = Sinergias.getCardSinergies(card, 10, card.getClasse());
 	// Collections.sort(minhaS);
-	for (Sinergia s : minhaS) {
-	    System.out.println(s.e1.getName() + "\t");
+	for (Sinergy s : minhaS) {
+	    System.out.println(s.getE1().getName() + "\t");
 	}
     }
 
@@ -137,7 +132,8 @@ public class SinergyFromText {
     private static void readSynergies() {
 	JSONParser parser = new JSONParser();
 	try {
-	    JSONArray sets = (JSONArray) parser.parse(new FileReader(new File(classLoader.getResource("sinergy/synergy.json").getFile())));
+	    JSONArray sets = (JSONArray) parser
+		    .parse(new FileReader(new File(Universo.cl.getResource("sinergy/synergy.json").getFile())));
 	    System.out.println(sets.size() + " synergies imported");
 	    generateNumIds(sets);
 	} catch (ParseException e1) {
@@ -158,170 +154,29 @@ public class SinergyFromText {
 	    JSONObject o = iterator.next();
 	    String id = (String) o.get("id");
 	    String numid = (String) o.get("numid");
-	    Carta c = Universo.getCard(id);
+	    Card c = Universo.getCard(id);
 	    c.setNumid(numid);
 	}
 	iterator = sets.iterator();
 	while (iterator.hasNext()) {
 	    JSONObject o = iterator.next();
 	    String id = (String) o.get("id");
-	    Carta c = Universo.getCard(id);
+	    Card c = Universo.getCard(id);
 	    JSONArray sin = (JSONArray) o.get("synergies");
 	    if (sin != null) {
 		Iterator<JSONArray> iterator2 = sin.iterator();
 		while (iterator2.hasNext()) {
 		    JSONArray o2 = iterator2.next();
-		    Carta c2 = Universo.getCard((String) o2.get(0));
+		    Card c2 = Universo.getCard((String) o2.get(0));
 		    Float value = Float.parseFloat(o2.get(1).toString());
 		    // TODO remover esse if
 		    if (value > 4.0) {
-			Sinergias.cardsSynergies.add(new Sinergia(c, c2, value, ""));
+			Sinergias.cardsSynergies.add(new Sinergy(c, c2, value, ""));
 		    }
 		}
 	    }
 	}
     }
 
-    /**
-     * Lê os textos das cartas, gerando suas listas de sinergia.
-     */
-    private static void parseCardsText2Mechanics() {
-	// List<Sinergia> cardSynergies = new ArrayList<Sinergia>();
-	for (Mecanica m : mechanics.values()) {
-	    for (Carta c : Universo.cards) {
-		if (Pattern.compile(m.regex).matcher(c.getText()).find()) {
-		    c.getMechanics().add(m);
-		}
-	    }
-	}
-	// generateCardsSynergies();
-    }
-
-    public static void generateCardSynergies(Carta c) {
-	if (!c.isCalculada()) {
-	    for (Sinergia s : mechanicsSynergies) {
-		Mecanica m1 = (Mecanica) s.e1;
-		Mecanica m2 = (Mecanica) s.e2;
-		// for (Carta c : Universo.cards)
-		{
-		    if (c.getMechanics().contains(m1)) {
-			for (Carta c2 : Universo.cards) {
-			    if (c2.getMechanics().contains(m2)) {
-				Sinergia ss = Sinergias.getSinergy(c, c2);
-				if (ss == null) {
-				    ss = new Sinergia(c, c2, s.valor, m1.regex + "+" + m2.regex);
-				    Sinergias.cardsSynergies.add(ss);
-				} else {
-				    ss.valor += s.valor;
-				}
-			    }
-			}
-		    }
-		}
-	    }
-	    // Collections.sort(Sinergias.cardsSynergies);
-	    c.setCalculada(true);
-	}
-    }
-
-    /**
-     * Gera as sinergias de todas as cartas.
-     */
-    private static void generateCardsSynergies() {
-	long ini = System.currentTimeMillis();
-	for (Sinergia s : mechanicsSynergies) {
-	    Mecanica m1 = (Mecanica) s.e1;
-	    Mecanica m2 = (Mecanica) s.e2;
-	    for (Carta c : Universo.cards) {
-		if (c.getMechanics().contains(m1)) {
-		    for (Carta c2 : Universo.cards) {
-			if (c2.getMechanics().contains(m2)) {
-			    Sinergia ss = Sinergias.getSinergy(c, c2);
-			    if (ss == null) {
-				ss = new Sinergia(c, c2, s.valor, m1.regex + "+" + m2.regex);
-				Sinergias.cardsSynergies.add(ss);
-			    } else {
-				ss.valor += s.valor;
-			    }
-			}
-		    }
-		}
-	    }
-	}
-	System.out.println(System.currentTimeMillis() - ini);
-	// Collections.sort(Sinergias.cardsSynergies);
-	System.out.println(Sinergias.cardsSynergies.size() + " sinergies calculated from parsed card texts.");
-    }
-
-    private static void printQntMAffinities() {
-	for (Mecanica m : mechanics.values()) {
-	    int cont = 0;
-	    // System.out.println(m.regex + "\t" + m.aff.size());
-	    for (Carta card : Universo.cards) {
-		if (card.getMechanics().contains(m)) {
-		    cont++;
-		}
-	    }
-	    System.out.println(m.regex + "\t" + cont);
-	}
-    }
-
-    // TODO mecanicas devem ter (sinergia com elas mesmas?????
-    // private void loop() {
-    // for (Mecanica m : mechanics.values()) {
-    // // exclui as mecanicas calculadas
-    // if (!Character.isUpperCase(m.regex.charAt(0))) {
-    // m.aff.put(m, 0f);
-    // }
-    // }
-    // }
-    /**
-     * Lê arquivo de grafo tgf contendo relacionamento entre as mecanicas.
-     * 
-     * @param file Arquivo tgf das mecanicas.
-     */
-    private void readMechanics() {
-	Scanner sc = null;
-	try {
-	    sc = new Scanner(new FileReader(new File(classLoader.getResource("mechanics/hs.tgf").getFile())));
-	    boolean nodes = true;
-	    while (sc.hasNextLine()) {
-		String line = sc.nextLine();
-		if ("#".equals(line)) {
-		    nodes = false;
-		    continue;
-		}
-		if (nodes) {
-		    String id = line.substring(0, line.indexOf(" "));
-		    String regex = line.substring(line.indexOf(" ") + 1);
-		    // cria nodo
-		    // ns.put(s[0], new Mechanic());
-		    Mecanica m1 = new Mecanica(id, regex);
-		    mechanics.put(id, new Mecanica(id, regex));
-		    // auto sinergia
-		    mechanicsSynergies.add(new Sinergia(m1, m1, 1, m1.regex + "+" + m1.regex));
-		} else {
-		    String[] s = line.split(" ");
-		    Float v = 0f;
-		    try {
-			v = Float.parseFloat(s[2]);
-		    } catch (Exception e) {
-		    }
-		    // TODO cria vinculo bidirecional?
-		    Mecanica m1 = mechanics.get(s[0]);
-		    Mecanica m2 = mechanics.get(s[1]);
-		    mechanicsSynergies.add(new Sinergia(m1, m2, v, m1.regex + "+" + m2.regex));
-		    // mechanicsSynergies.add(new Synergy(mechanics.get(s[1]),
-		    // mechanics.get(s[0]), v));
-		}
-	    }
-	} catch (FileNotFoundException e) {
-	    //System.out.println("Input file " + file + " not found");
-	    e.printStackTrace();
-	    sc.close();
-	    System.exit(1);
-	} finally {
-	    sc.close();
-	}
-    }
+    
 }

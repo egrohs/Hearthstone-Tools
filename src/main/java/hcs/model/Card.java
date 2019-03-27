@@ -15,7 +15,7 @@ import lombok.Data;
  */
 // TODO UNG_116t barnabus the stomper
 @Data
-public class Carta extends Entidade {
+public class Card extends Entity {
     private boolean calculada;
     private CLASS classe;
     private StringBuilder text = new StringBuilder();
@@ -62,7 +62,7 @@ public class Carta extends Entidade {
 	// }
     }
 
-    public Carta(String id, /* Long numid, */ String name, String set, String faction, CLASS classe, String type,
+    public Card(String id, /* Long numid, */ String name, String set, String faction, CLASS classe, String type,
 	    String text, Long cos, Long atta, Long health, Long dur, String rarity) {
 	super();
 	this.id = id.toLowerCase();
@@ -90,10 +90,6 @@ public class Carta extends Entidade {
 	trim();
     }
 
-    public Carta(Set<Mecanica> mechs) {
-	this.mechanics = mechs;
-    }
-
     /*
      * TODO talvez os textos não devem ir pra lowercase, pois palavras curtas como
      * "all" podem ser dificeis de identificar.
@@ -119,7 +115,7 @@ public class Carta extends Entidade {
     public boolean equals(Object obj) {
 	// boolean r = super.equals(obj);
 	// if (r && !id.equals(((Carta) obj).id))
-	if (obj instanceof Carta && id.equals(((Carta) obj).id)) {
+	if (obj instanceof Card && id.equals(((Card) obj).id)) {
 	    return true;
 	}
 	return false;

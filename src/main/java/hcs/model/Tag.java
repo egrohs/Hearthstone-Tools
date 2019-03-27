@@ -1,9 +1,15 @@
 package hcs.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import lombok.Data;
 
-public class Tag extends Entidade {
-    private String regex, cathegory;
-    //private List<Tag> sinergias = new ArrayList<>();
+@Data
+public class Tag extends Entity {
+    private String regex, tags;
+
+    // private List<Tag> sinergias = new ArrayList<>();
+    public Tag(String name, String regex, String tags) {
+	this.name = name;
+	this.regex = regex;
+	this.tags = tags;
+    }
 }

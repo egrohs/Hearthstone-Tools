@@ -9,7 +9,7 @@ import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import hcs.model.Carta;
+import hcs.model.Card;
 import hcs.model.Game;
 
 /**
@@ -24,7 +24,7 @@ public class ZoneLogReader extends Thread {
 	// static boolean deleted;
 	public static File zonelog = new File("C:\\Program Files (x86)\\Hearthstone\\Logs\\Zone.log");
 	static RandomAccessFile zone;
-	public static Map<LocalTime, Carta> playMap = new TreeMap<LocalTime, Carta>();
+	public static Map<LocalTime, Card> playMap = new TreeMap<LocalTime, Card>();
 	// TODO com esse pattern tb esta pegando as cards descartadas
 	// indevidamente?
 	// static Pattern play = Pattern.compile("OPPOSING (HAND|SECRET) ->");
@@ -41,7 +41,7 @@ public class ZoneLogReader extends Thread {
 			// zonelog = new File("C:\\Program Files
 			// (x86)\\Hearthstone\\Logs\\Zone.log");
 			// deleted = false;
-			Carta c = null;
+			Card c = null;
 			done = false;
 			String line = null;
 			try {

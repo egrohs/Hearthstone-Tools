@@ -30,7 +30,7 @@ public class Game extends Thread {
 			// synchronized (ZoneLogReader.playMap)
 			if (ZoneLogReader.done && PowerLogReader.done && lastSize != ZoneLogReader.playMap.size()) {
 				trim();
-				for (Carta card : ZoneLogReader.playMap.values()) {
+				for (Card card : ZoneLogReader.playMap.values()) {
 					cmechs(card);
 				}
 				StringBuilder sbb = simi();
@@ -48,12 +48,12 @@ public class Game extends Thread {
 						// TODO deveria remover? Onde manter as cartas jogadas?
 						// Carta card =
 						// ZoneLogReader.playMap.remove(lastCardTime);
-						Carta card = ZoneLogReader.playMap.get(lastCardTime);
+						Card card = ZoneLogReader.playMap.get(lastCardTime);
 						System.out.println(lastCardTime + " PLAYED: " + card + " MANA: " + PowerLogReader.lastMana);
 						acerto(card);
 						// TODO usar todas mecanicas mais jogadas? s� as com
 						// mais ocorrencias?
-						Set<Carta> temp = possiveis();
+						Set<Card> temp = possiveis();
 						//TODO
 						//App.provaveis(temp);
 					}
@@ -76,7 +76,7 @@ public class Game extends Thread {
 		return result;
 	}
 
-	private void cmechs(Carta c) {
+	private void cmechs(Card c) {
 		for (Mecanica mecanica : c.getMechanics()) {
 			if (mechs.containsKey(mecanica)) {
 				Integer v = mechs.get(mecanica);
@@ -98,7 +98,7 @@ public class Game extends Thread {
 	 * 
 	 * @param card
 	 */
-	private void acerto(Carta card) {
+	private void acerto(Card card) {
 		// calcula o acerto.
 		double acerto = 0;
 //		for (int i = 0; i < App.cartas.getChildren().size(); i++) {
@@ -117,29 +117,29 @@ public class Game extends Thread {
 	 * @param card
 	 * @return
 	 */
-	private Map<Carta, String> possiveis2(Carta card) {
+	private Map<Card, String> possiveis2(Card card) {
 		// calcula possiveis jogadas.
 		// TODO deve considerar todas cartas ja jogadas
-		SinergyFromText.generateCardSynergies(card);
+		Sinergias.generateCardSynergies(card);
 		// TODO tem que ser o mana que ele terminou o turno
-		Set<Sinergia> sub = Sinergias.getCardSinergies(card, PowerLogReader.lastMana + 1, opponent.getClasse());
-		List<Sinergia> exibe = new ArrayList<Sinergia>(sub);
+		Set<Sinergy<Card>> sub = Sinergias.getCardSinergies(card, PowerLogReader.lastMana + 1, opponent.getClasse());
+		List<Sinergy> exibe = new ArrayList<Sinergy>(sub);
 		Collections.sort(exibe);
-		Map<Carta, String> temp = new LinkedHashMap<Carta, String>();
-		for (Sinergia sinergia : exibe) {
-			Carta c = (Carta) sinergia.e2;
+		Map<Card, String> temp = new LinkedHashMap<Card, String>();
+		for (Sinergy sinergia : exibe) {
+			Card c = (Card) sinergia.getE2();
 			if (card == c) {
-				c = (Carta) sinergia.e1;
+				c = (Card) sinergia.getE1();
 			}
 			if (!temp.containsKey(c)) {
-				String t = c.getName() + " f:" + sinergia.freq + " v:" + sinergia.valor;
+				String t = c.getName() + " f:" + sinergia.getFreq() + " v:" + sinergia.getValor();
 				temp.put(c, t);
 			}
 		}
 		return temp;
 	}
 
-	private Set<Carta> possiveis() {
+	private Set<Card> possiveis() {
 		return Sinergias.getMechsCards(mechs, PowerLogReader.lastMana + 1, opponent.getClasse());
 	}
 
@@ -167,7 +167,7 @@ public class Game extends Thread {
 	 */
 	private void trim() {
 		if (PowerLogReader.lastOverTime != null) {
-			for (LocalTime cTime : new TreeMap<LocalTime, Carta>(ZoneLogReader.playMap).keySet()) {
+			for (LocalTime cTime : new TreeMap<LocalTime, Card>(ZoneLogReader.playMap).keySet()) {
 				if (cTime.isBefore(PowerLogReader.lastOverTime)) {
 					ZoneLogReader.playMap.remove(cTime);
 				}

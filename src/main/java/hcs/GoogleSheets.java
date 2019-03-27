@@ -21,7 +21,7 @@ import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.SheetsScopes;
 import com.google.api.services.sheets.v4.model.ValueRange;
 //https://developers.google.com/sheets/api/quickstart/java
-public class GoogleTags {
+public class GoogleSheets {
     private static final String APPLICATION_NAME = "Google Sheets API Java Quickstart";
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
     private static final String TOKENS_DIRECTORY_PATH = "tokens";
@@ -40,9 +40,9 @@ public class GoogleTags {
      * @return An authorized Credential object.
      * @throws IOException If the credentials.json file cannot be found.
      */
-    private static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
+    public static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
 	// Load client secrets.
-	InputStream in = GoogleTags.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
+	InputStream in = GoogleSheets.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
 	GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
 
 	// Build flow and trigger user authorization request.
@@ -57,24 +57,26 @@ public class GoogleTags {
     /**
      * Prints the names and majors of students in a sample spreadsheet:
      * https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
+     * @throws IOException 
+     * @throws GeneralSecurityException 
      */
-    public static void main(String... args) throws IOException, GeneralSecurityException {
+    public static List<List<Object>> getDados(String spreadsheetId, String range) throws GeneralSecurityException, IOException {
 	// Build a new authorized API client service.
 	final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-	final String spreadsheetId = "1WNcRrDzxyoy_TRm9v15VSGwEiRPqJhUhReq0Wh8Jp14";
-	final String range = "TAGS!A2:C";
 	Sheets service = new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
 		.setApplicationName(APPLICATION_NAME).build();
 	ValueRange response = service.spreadsheets().values().get(spreadsheetId, range).execute();
-	List<List<Object>> values = response.getValues();
-	if (values == null || values.isEmpty()) {
-	    //System.out.println("No data found.");
-	} else {
-	    //System.out.println("Name, Major");
-	    for (List row : values) {
-		// Print columns A and C, which correspond to indices 0 and 2.
-		//System.out.printf("%s, %s\n", row.get(0), row.get(2));
-	    }
-	}
+//	List<List<Object>> values = response.getValues();
+//	if (values == null || values.isEmpty()) {
+//	    //System.out.println("No data found.");
+//	} else {
+//	    //System.out.println("Name, Major");
+//	    for (List row : values) {
+//		// Print columns A and C, which correspond to indices 0 and 2.
+//		//System.out.printf("%s, %s\n", row.get(0), row.get(2));
+//	    }
+//	}
+	// TODO Auto-generated method stub
+	return response.getValues();
     }
 }
