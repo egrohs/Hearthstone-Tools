@@ -28,7 +28,6 @@ public class TagBuilder {
     private ClassLoader cl = this.getClass().getClassLoader();
 
     public TagBuilder() {
-	parseCardsText2Tags();
 	calcTags();
 	// printTags();
     }
@@ -179,7 +178,7 @@ public class TagBuilder {
     /**
      * Lê os textos das cartas, gerando suas Tags.
      */
-    private void parseCardsText2Tags() {
+    void parseCardsText2Tags() {
 	for (Tag m : tags.values()) {
 	    for (Card c : CardBuilder.cards) {
 		if (Pattern.compile(m.getRegex()).matcher(c.getText()).find()) {

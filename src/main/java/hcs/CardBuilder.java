@@ -9,6 +9,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -29,15 +30,17 @@ import hcs.model.Tag;
 
 public class CardBuilder {
     static List<Card> cards = new ArrayList<Card>();
-    List<Sinergy<Card>> cardsSynergies = new ArrayList<Sinergy<Card>>();
+    Set<Sinergy<Card>> cardsSynergies = new HashSet<Sinergy<Card>>();
     private ClassLoader cl = this.getClass().getClassLoader();
     private TagBuilder tb;
 
     public CardBuilder() {
 	tb = new TagBuilder();
+	leCards();
+	tb.parseCardsText2Tags();
 	generateCardsSynergies(tb.tagsSynergies);
     }
-    
+
     public static CLASS whichClass(List<Card> cartas) {
 	Map<CLASS, Integer> qnts = new HashMap<CLASS, Integer>();
 	CLASS most = CLASS.NEUTRAL;
@@ -60,6 +63,7 @@ public class CardBuilder {
      */
     public List<Card> leCards() {
 	if (cards.size() == 0) {
+	    long ini = System.currentTimeMillis();
 	    // TODO ler da web
 	    // https://api.hearthstonejson.com/v1/latest/enUS/cards.collectible.json
 	    // https://api.hearthstonejson.com/v1/20022/enUS/
@@ -68,12 +72,13 @@ public class CardBuilder {
 		File file = new File(cl.getResource("cards.collectible.json").getFile());
 		JSONArray sets = (JSONArray) parser.parse(new FileReader(file));
 		generateCards(sets);
-		System.out.println(cards.size() + " cards imported");
 	    } catch (ParseException e1) {
 		e1.printStackTrace();
 	    } catch (IOException e) {
 		e.printStackTrace();
 	    }
+	    System.out.println(
+		    cards.size() + " cards imported in " + (System.currentTimeMillis() - ini) / 1000 + " seconds.");
 	}
 	return cards;
     }
@@ -156,7 +161,11 @@ public class CardBuilder {
      * Gera as sinergias de todas as cartas.
      */
     private void generateCardsSynergies(List<Sinergy<Tag>> tagsSynergies) {
+	System.out.println("generateCardsSynergies...");
 	long ini = System.currentTimeMillis();
+	
+	leSinergias();
+	
 	for (Sinergy s : tagsSynergies) {
 	    Tag m1 = (Tag) s.getE1();
 	    Tag m2 = (Tag) s.getE2();
@@ -176,9 +185,12 @@ public class CardBuilder {
 		}
 	    }
 	}
-	System.out.println(System.currentTimeMillis() - ini);
+	
+	imprimSins();
+	
 	// Collections.sort(Sinergias.cardsSynergies);
-	System.out.println(cardsSynergies.size() + " sinergies calculated from parsed card texts.");
+	System.out.println(cardsSynergies.size() + " sinergies calculated from parsed card texts in "
+		+ (System.currentTimeMillis() - ini) / 60000 + " minutes.");
     }
 
     private void generateCardSynergies(Card c, List<Sinergy<Tag>> tagsSynergies) {
@@ -212,7 +224,7 @@ public class CardBuilder {
      * @param e2
      * @return the Sinergy object
      */
-    //TODO retornar lista de sinergias, não apenas uma.
+    // TODO retornar lista de sinergias, não apenas uma.
     public Sinergy<Card> getCardSinergy(Card e1, Card e2) {
 	for (Sinergy<Card> s : cardsSynergies) {
 	    if ((e1 == s.getE1() && e2 == s.getE2()) || (e1 == s.getE2() && e2 == s.getE1())) {
@@ -348,11 +360,11 @@ public class CardBuilder {
 	    System.out.println(s.getE1().getName() + "\t");
 	}
     }
-    
+
     /**
      * Le sinergias precalculadas do arquivo cache.
      */
-    public void leSinergias() {
+    private void leSinergias() {
 	Scanner sc = null;
 	try {
 	    sc = new Scanner(new File(cl.getResource("output/sinergias.csv").getFile()));
@@ -374,8 +386,8 @@ public class CardBuilder {
 	sc.close();
 	System.out.println(cardsSynergies.size() + " pre calculated sinergies loaded.");
     }
-    
-    public void imprimSins() {
+
+    private void imprimSins() {
 	Collections.sort((List<Sinergy<Card>>) cardsSynergies);
 	StringBuilder sb = new StringBuilder();
 	for (Sinergy s : cardsSynergies) {
@@ -396,7 +408,7 @@ public class CardBuilder {
 		out.close();
 	}
     }
-    
+
     /**
      * Partindo da base de jogos, gera sinergias dos pares de cartas jogadas.
      */
@@ -443,7 +455,7 @@ public class CardBuilder {
 	    }
 	}
     }
-    
+
     /**
      * Calcula as provaveis jogadas.
      * 
