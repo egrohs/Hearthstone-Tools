@@ -21,7 +21,9 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import hcs.model.Card;
+import hcs.model.Card.CLASS;
 import hcs.model.Deck;
+import hcs.model.Player;
 import hcs.model.Sinergy;
 
 /**
@@ -31,22 +33,26 @@ import hcs.model.Sinergy;
  *
  */
 public class DeckBuilder {
-    static Set<Deck> decks = new HashSet<Deck>();
-
+    Set<Deck> decks = new HashSet<Deck>();
+    private ClassLoader cl = this.getClass().getClassLoader();
+    private CardBuilder cb;
     public static void main(String[] args) {
-	CardBuilder.leCards();
-	DeckBuilder.leDecks(new File(CardBuilder.cl.getResource("decks").getFile()));
+	CardBuilder cb = new CardBuilder();
+	cb.leCards();
+	DeckBuilder db = new DeckBuilder();
+	db.leDecks(new File(db.cl.getResource("decks").getFile()));
 	// for (Deck d : Decks.decks) {
 	// System.out.println(d);
 	// }
-	DeckBuilder.similaridade(new String[] { "N'Zoth's First Mate", "FIERY WAR AXE", "AZURE DRAKE" });
+	db.similaridade(new String[] { "N'Zoth's First Mate", "FIERY WAR AXE", "AZURE DRAKE" });
     }
 
     public DeckBuilder() {
-	DeckBuilder.leDecks(new File(CardBuilder.cl.getResource("decks").getFile()));
+	cb = new CardBuilder();
+	leDecks(new File(cl.getResource("decks").getFile()));
     }
 
-    public static Map<Deck, Double> similaridade(Collection<Card> searched) {
+    public Map<Deck, Double> similaridade(Collection<Card> searched) {
 	List<String> nomes = new ArrayList<String>();
 	for (Card carta : searched) {
 	    // System.out.println("similaridade: " +carta.getName());
@@ -55,7 +61,7 @@ public class DeckBuilder {
 	return similaridade(nomes.toArray(new String[searched.size()]));
     }
 
-    public static Map<Deck, Double> similaridade(String[] cartas) {
+    public Map<Deck, Double> similaridade(String[] cartas) {
 	Map<Deck, Double> prob = new HashMap<Deck, Double>();
 	System.out.println("----------------------");
 	for (Deck deck : decks) {
@@ -78,7 +84,7 @@ public class DeckBuilder {
     /**
      * Carrega os decks em memória.
      */
-    public static void leDecks(File dir) {
+    public void leDecks(File dir) {
 	// FileUtils.listFiles(dir, true, true);
 	File listOfFiles[] = dir.listFiles();
 	for (File file : listOfFiles) {
@@ -180,7 +186,7 @@ public class DeckBuilder {
     // - pro.eslgaming.com
     // - teamarchon.com
     // - tempostorm.com
-    public static void hearthstonetopdecks() {
+    public void hearthstonetopdecks() {
 	try {
 	    String page = "1";
 	    String url = "http://www.hearthstonetopdecks.com/deck-category/type/page/" + page;
@@ -213,7 +219,7 @@ public class DeckBuilder {
 	}
     }
 
-    private static void login(String loginUrl, String url) throws IOException {
+    private void login(String loginUrl, String url) throws IOException {
 	// First login. Take the cookies
 	Connection.Response res = Jsoup.connect(loginUrl).data("eid", "i110013").data("pw", "001")
 		.referrer("http://www.google.com")
@@ -231,18 +237,40 @@ public class DeckBuilder {
 	System.out.println("Title : " + doc.title());
     }
 
-    private static void printDeck(Collection<Card> deck) {
+    private void printDeck(Collection<Card> deck) {
 	for (int i = 0; i < deck.size(); i++) {
 	    Card c1 = (Card) deck.toArray()[i];
 	    int cont = 0;
 	    Float acum = 0f;
 	    for (int j = i; j < deck.size(); j++) {
 		Card c2 = (Card) deck.toArray()[j];
-		Sinergy s = CardBuilder.getCardSinergy(c1, c2);
+		Sinergy s = cb.getCardSinergy(c1, c2);
 		acum += s != null ? s.getValor() : 0f;
 		cont++;
 	    }
 	    System.out.println(acum / cont + "\t" + c1.getName() + "\t" + c1.getClasse() + "\t" + c1.getText());
 	}
+    }
+    
+    /**
+     * Calcula a similariade de deck partindo de todas cartas jogadas ate agora.
+     * 
+     * @return
+     */
+    private StringBuilder simi(Player opponent) {
+	// calcula similaridade de deck.
+	Map<Deck, Double> probs = similaridade(ZoneLogReader.playMap.values());
+	StringBuilder sbb = new StringBuilder();
+	for (Deck k : probs.keySet()) {
+	    // TODO buscar a classe do opo no log?
+	    if (k.getClasse() == opponent.getClasse()) {
+		sbb.append(k.getName() + " = " + probs.get(k) + "%\n");
+	    }
+	}
+	return sbb;
+    }
+
+    public Set<Sinergy<Card>> getCardSinergies(Card card, int manaRestante, CLASS classe) {
+	return cb.getCardSinergies(card, manaRestante, classe);
     }
 }

@@ -3,9 +3,10 @@ package hcs;
 public class App {
 
     public static void main(String[] args) {
-	CardBuilder.leCards();
+	CardBuilder cb = new CardBuilder();
+	cb.leCards();
 	//new SinergyFromText();
 	new TagBuilder();
-	CardBuilder.generateCardSynergies(CardBuilder.getCard("Leeroy Jenkins"));
+	//cb.generateCardSynergies(cb.getCard("Leeroy Jenkins"));
     }
 }

@@ -1,6 +1,5 @@
 package hcs.model;
 
-import hcs.model.Card.CLASS;
 import lombok.Data;
 
 /**

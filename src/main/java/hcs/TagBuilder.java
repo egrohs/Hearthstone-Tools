@@ -8,40 +8,33 @@ import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import hcs.model.Card;
 import hcs.model.Card.CLASS;
-import hcs.model.Entity;
 import hcs.model.Mechanic;
 import hcs.model.Sinergy;
 import hcs.model.Tag;
 
 public class TagBuilder {
-    
-    static Map<String, Mechanic> mechanics = new HashMap<String, Mechanic>();
-    static List<Sinergy<Mechanic>> mechanicsSynergies = new ArrayList<Sinergy<Mechanic>>();
-    static Map<String, Tag> tags = new HashMap<String, Tag>();
-    static List<Sinergy<Tag>> tagsSynergies = new ArrayList<Sinergy<Tag>>();
+    Map<String, Mechanic> mechanics = new HashMap<String, Mechanic>();
+    List<Sinergy<Mechanic>> mechanicsSynergies = new ArrayList<Sinergy<Mechanic>>();
+    Map<String, Tag> tags = new HashMap<String, Tag>();
+    List<Sinergy<Tag>> tagsSynergies = new ArrayList<Sinergy<Tag>>();
+    private ClassLoader cl = this.getClass().getClassLoader();
 
     public TagBuilder() {
-	// new SinergyFromGames();
-	// new SinergyFromText();
 	parseCardsText2Tags();
 	calcTags();
-	//printTags();
+	// printTags();
     }
 
-    
-
     @Deprecated
-    public static Set<Card> getMechsCards(Map<Mechanic, Integer> mechs, int manaRestante, CLASS opo) {
+    public Set<Card> getMechsCards(Map<Mechanic, Integer> mechs, int manaRestante, CLASS opo) {
 	Set<Card> cs = new HashSet<Card>();
 	for (Mechanic mecanica : new ArrayList<Mechanic>(mechs.keySet())) {
 	    for (Sinergy s : mechanicsSynergies) {
@@ -64,8 +57,6 @@ public class TagBuilder {
 	return cs;
     }
 
-    
-
     // public static void main(String[] args) {
     // TODO charge e DD.
     // secret: when an enemy minion attacks, return it to its owner's hand
@@ -83,23 +74,6 @@ public class TagBuilder {
 		    "destroy (a|an|all|\\d) (random )?(damaged |frozen |legendary )?(enemy |other )?minion(s)?(\\s|\\.|\\,)(with (taunt|\\d+ or less attack|an attack of \\d+ or more))?") };
     // }
 
-    public static Map<Pattern, Integer> calc(int manaRestante, CLASS opo) {
-	Map<Pattern, Integer> res = new HashMap<Pattern, Integer>();
-	for (Card card : CardBuilder.cards) {
-	    // System.out.println(card.getText());
-	    if (CLASS.contem(opo, card.getClasse()) && card.getCost() <= manaRestante) {
-		for (Pattern p : pts) {
-		    Matcher matcher = p.matcher(card.getText());
-		    Integer i = res.get(p);
-		    if (matcher.find()) {
-			res.put(p, i == null ? 1 : (i + 1));
-		    }
-		}
-	    }
-	}
-	return res;
-    }
-
     /**
      * Lê arquivo de grafo tgf contendo relacionamento entre as mecanicas.
      * 
@@ -109,7 +83,7 @@ public class TagBuilder {
     private void readMechanics() {
 	Scanner sc = null;
 	try {
-	    sc = new Scanner(new FileReader(new File(CardBuilder.cl.getResource("mechanics/hs.tgf").getFile())));
+	    sc = new Scanner(new FileReader(new File(cl.getResource("mechanics/hs.tgf").getFile())));
 	    boolean nodes = true;
 	    while (sc.hasNextLine()) {
 		String line = sc.nextLine();
@@ -174,7 +148,7 @@ public class TagBuilder {
 		tags.put(name, t);
 		// Print columns A and C, which correspond to indices 0 and 2.
 		// System.out.printf("%s, %s\n", row.get(0), row.get(2));
-		//System.out.println(t);
+		// System.out.println(t);
 	    }
 	}
 
@@ -190,7 +164,7 @@ public class TagBuilder {
     }
 
     @Deprecated
-    private static void printM2M() {
+    private void printM2M() {
 	for (Sinergy s : mechanicsSynergies) {
 	    System.out.println(((Mechanic) s.getE1()).regex + "\t" + ((Mechanic) s.getE2()).regex);
 	}
@@ -205,7 +179,7 @@ public class TagBuilder {
     /**
      * Lê os textos das cartas, gerando suas Tags.
      */
-    private static void parseCardsText2Tags() {
+    private void parseCardsText2Tags() {
 	for (Tag m : tags.values()) {
 	    for (Card c : CardBuilder.cards) {
 		if (Pattern.compile(m.getRegex()).matcher(c.getText()).find()) {
@@ -215,12 +189,8 @@ public class TagBuilder {
 	}
     }
 
-    
-
-
-
     @Deprecated
-    private static void printQntMAffinities() {
+    private void printQntMAffinities() {
 	for (Mechanic m : mechanics.values()) {
 	    int cont = 0;
 	    // System.out.println(m.regex + "\t" + m.aff.size());
@@ -230,14 +200,6 @@ public class TagBuilder {
 		}
 	    }
 	    System.out.println(m.regex + "\t" + cont);
-	}
-    }
-
-    public static void main(String[] args) {
-	CardBuilder.leCards();
-	Map<Pattern, Integer> m = TagBuilder.calc(3, CLASS.MAGE);
-	for (Pattern p : m.keySet()) {
-	    System.out.println(m.get(p) + "\t" + p);
 	}
     }
 }

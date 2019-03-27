@@ -1,5 +1,8 @@
 package hcs.model;
 
-public class Archtype {
+import lombok.Data;
+
+@Data
+public class Archtype extends Entity {
 
 }
