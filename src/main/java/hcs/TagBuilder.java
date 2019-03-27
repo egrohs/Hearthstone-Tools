@@ -19,18 +19,18 @@ import java.util.regex.Pattern;
 import hcs.model.Card;
 import hcs.model.Card.CLASS;
 import hcs.model.Entity;
-import hcs.model.Mecanica;
+import hcs.model.Mechanic;
 import hcs.model.Sinergy;
 import hcs.model.Tag;
 
-public class Sinergias {
-    static List<Sinergy<Card>> cardsSynergies = new ArrayList<Sinergy<Card>>();
-    static Map<String, Mecanica> mechanics = new HashMap<String, Mecanica>();
-    static List<Sinergy<Mecanica>> mechanicsSynergies = new ArrayList<Sinergy<Mecanica>>();
+public class TagBuilder {
+    
+    static Map<String, Mechanic> mechanics = new HashMap<String, Mechanic>();
+    static List<Sinergy<Mechanic>> mechanicsSynergies = new ArrayList<Sinergy<Mechanic>>();
     static Map<String, Tag> tags = new HashMap<String, Tag>();
     static List<Sinergy<Tag>> tagsSynergies = new ArrayList<Sinergy<Tag>>();
 
-    public Sinergias() {
+    public TagBuilder() {
 	// new SinergyFromGames();
 	// new SinergyFromText();
 	parseCardsText2Tags();
@@ -38,26 +38,12 @@ public class Sinergias {
 	//printTags();
     }
 
-    /**
-     * return the sinergy with those Cards.
-     * 
-     * @param e1
-     * @param e2
-     * @return the Sinergy object
-     */
-    public static Sinergy<Card> getCardSinergy(Card e1, Card e2) {
-	for (Sinergy<Card> s : cardsSynergies) {
-	    if ((e1 == s.getE1() && e2 == s.getE2()) || (e1 == s.getE2() && e2 == s.getE1())) {
-		return s;
-	    }
-	}
-	return null;
-    }
+    
 
     @Deprecated
-    public static Set<Card> getMechsCards(Map<Mecanica, Integer> mechs, int manaRestante, CLASS opo) {
+    public static Set<Card> getMechsCards(Map<Mechanic, Integer> mechs, int manaRestante, CLASS opo) {
 	Set<Card> cs = new HashSet<Card>();
-	for (Mecanica mecanica : new ArrayList<Mecanica>(mechs.keySet())) {
+	for (Mechanic mecanica : new ArrayList<Mechanic>(mechs.keySet())) {
 	    for (Sinergy s : mechanicsSynergies) {
 		if (s.getE1() == mecanica) {
 		    mechs.put(mecanica, 0);
@@ -67,8 +53,8 @@ public class Sinergias {
 		}
 	    }
 	}
-	for (Mecanica mecanica : mechs.keySet()) {
-	    for (Card c1 : Universo.cards) {
+	for (Mechanic mecanica : mechs.keySet()) {
+	    for (Card c1 : CardBuilder.cards) {
 		if (c1.getMechanics().contains(mecanica) && CLASS.contem(opo, c1.getClasse())
 			&& c1.getCost() <= manaRestante) {
 		    cs.add(c1);
@@ -78,33 +64,7 @@ public class Sinergias {
 	return cs;
     }
 
-    /**
-     * Calcula as provaveis jogadas.
-     * 
-     * @param c
-     * @param manaRestante Mana restante no turno atual.
-     * @return
-     */
-    public static Set<Sinergy<Card>> getCardSinergies(Card c, int manaRestante, CLASS opo) {
-	Set<Sinergy<Card>> sub = new LinkedHashSet<Sinergy<Card>>();
-	// Set<Carta> sub = new LinkedHashSet<Carta>();
-	if (c != null) {
-	    for (Sinergy s : Sinergias.cardsSynergies) {
-		if (s.getE1() == c || s.getE2() == c) {
-		    Card c2 = (Card) s.getE2();
-		    if (c == c2) {
-			c = (Card) s.getE1();
-		    }
-		    // cartas com sinergia com custo provavel no turno
-		    if (CLASS.contem(opo, c2.getClasse()) && c2.getCost() <= manaRestante) {
-			sub.add(s);
-			System.out.println(c2 + "\t" + s.getValor() + "\t" + s.getMechs());
-		    }
-		}
-	    }
-	}
-	return sub;
-    }
+    
 
     // public static void main(String[] args) {
     // TODO charge e DD.
@@ -125,7 +85,7 @@ public class Sinergias {
 
     public static Map<Pattern, Integer> calc(int manaRestante, CLASS opo) {
 	Map<Pattern, Integer> res = new HashMap<Pattern, Integer>();
-	for (Card card : Universo.cards) {
+	for (Card card : CardBuilder.cards) {
 	    // System.out.println(card.getText());
 	    if (CLASS.contem(opo, card.getClasse()) && card.getCost() <= manaRestante) {
 		for (Pattern p : pts) {
@@ -149,7 +109,7 @@ public class Sinergias {
     private void readMechanics() {
 	Scanner sc = null;
 	try {
-	    sc = new Scanner(new FileReader(new File(Universo.cl.getResource("mechanics/hs.tgf").getFile())));
+	    sc = new Scanner(new FileReader(new File(CardBuilder.cl.getResource("mechanics/hs.tgf").getFile())));
 	    boolean nodes = true;
 	    while (sc.hasNextLine()) {
 		String line = sc.nextLine();
@@ -162,8 +122,8 @@ public class Sinergias {
 		    String regex = line.substring(line.indexOf(" ") + 1);
 		    // cria nodo
 		    // ns.put(s[0], new Mechanic());
-		    Mecanica m1 = new Mecanica(id, regex);
-		    mechanics.put(id, new Mecanica(id, regex));
+		    Mechanic m1 = new Mechanic(id, regex);
+		    mechanics.put(id, new Mechanic(id, regex));
 		    // auto sinergia
 		    mechanicsSynergies.add(new Sinergy(m1, m1, 1, m1.regex + "+" + m1.regex));
 		} else {
@@ -174,8 +134,8 @@ public class Sinergias {
 		    } catch (Exception e) {
 		    }
 		    // TODO cria vinculo bidirecional?
-		    Mecanica m1 = mechanics.get(s[0]);
-		    Mecanica m2 = mechanics.get(s[1]);
+		    Mechanic m1 = mechanics.get(s[0]);
+		    Mechanic m2 = mechanics.get(s[1]);
 		    mechanicsSynergies.add(new Sinergy(m1, m2, v, m1.regex + "+" + m2.regex));
 		    // mechanicsSynergies.add(new Synergy(mechanics.get(s[1]),
 		    // mechanics.get(s[0]), v));
@@ -232,7 +192,7 @@ public class Sinergias {
     @Deprecated
     private static void printM2M() {
 	for (Sinergy s : mechanicsSynergies) {
-	    System.out.println(((Mecanica) s.getE1()).regex + "\t" + ((Mecanica) s.getE2()).regex);
+	    System.out.println(((Mechanic) s.getE1()).regex + "\t" + ((Mechanic) s.getE2()).regex);
 	}
     }
 
@@ -247,7 +207,7 @@ public class Sinergias {
      */
     private static void parseCardsText2Tags() {
 	for (Tag m : tags.values()) {
-	    for (Card c : Universo.cards) {
+	    for (Card c : CardBuilder.cards) {
 		if (Pattern.compile(m.getRegex()).matcher(c.getText()).find()) {
 		    c.getTags().add(m);
 		}
@@ -255,66 +215,16 @@ public class Sinergias {
 	}
     }
 
-    public static void generateCardSynergies(Card c) {
-	if (!c.isCalculada()) {
-	    for (Sinergy<Tag> s : tagsSynergies) {
-		Tag m1 = (Tag)s.getE1();
-		Tag m2 = (Tag)s.getE2();
-		if (c.getTags().contains(m1)) {
-		    for (Card c2 : Universo.cards) {
-			if (c2.getTags().contains(m2)) {
-			    Sinergy<Card> ss = Sinergias.getCardSinergy(c, c2);
-			    if (ss == null) {
-				ss = new Sinergy<Card>(c, c2, s.getValor(), m1.getRegex() + "+" + m2.getRegex());
-				Sinergias.cardsSynergies.add(ss);
-			    } else {
-				ss.setValor(ss.getValor() + s.getValor());
-			    }
-			}
-		    }
-		}
-	    }
-	    // Collections.sort(Sinergias.cardsSynergies);
-	    c.setCalculada(true);
-	}
-    }
+    
 
-    /**
-     * Gera as sinergias de todas as cartas.
-     */
-    @Deprecated
-    private static void generateCardsSynergies() {
-	long ini = System.currentTimeMillis();
-	for (Sinergy s : mechanicsSynergies) {
-	    Mecanica m1 = (Mecanica) s.getE1();
-	    Mecanica m2 = (Mecanica) s.getE2();
-	    for (Card c : Universo.cards) {
-		if (c.getMechanics().contains(m1)) {
-		    for (Card c2 : Universo.cards) {
-			if (c2.getMechanics().contains(m2)) {
-			    Sinergy ss = Sinergias.getCardSinergy(c, c2);
-			    if (ss == null) {
-				ss = new Sinergy(c, c2, s.getValor(), m1.regex + "+" + m2.regex);
-				Sinergias.cardsSynergies.add(ss);
-			    } else {
-				ss.setValor(ss.getValor() + s.getValor());
-			    }
-			}
-		    }
-		}
-	    }
-	}
-	System.out.println(System.currentTimeMillis() - ini);
-	// Collections.sort(Sinergias.cardsSynergies);
-	System.out.println(Sinergias.cardsSynergies.size() + " sinergies calculated from parsed card texts.");
-    }
+
 
     @Deprecated
     private static void printQntMAffinities() {
-	for (Mecanica m : mechanics.values()) {
+	for (Mechanic m : mechanics.values()) {
 	    int cont = 0;
 	    // System.out.println(m.regex + "\t" + m.aff.size());
-	    for (Card card : Universo.cards) {
+	    for (Card card : CardBuilder.cards) {
 		if (card.getMechanics().contains(m)) {
 		    cont++;
 		}
@@ -324,8 +234,8 @@ public class Sinergias {
     }
 
     public static void main(String[] args) {
-	Universo.leCards();
-	Map<Pattern, Integer> m = Sinergias.calc(3, CLASS.MAGE);
+	CardBuilder.leCards();
+	Map<Pattern, Integer> m = TagBuilder.calc(3, CLASS.MAGE);
 	for (Pattern p : m.keySet()) {
 	    System.out.println(m.get(p) + "\t" + p);
 	}

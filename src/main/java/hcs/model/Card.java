@@ -22,7 +22,7 @@ public class Card extends Entity {
     private String numid, set, race, function, type, rarity;
     private Integer cost, attack, health, dur, popularity, combats, wins, draws, loses;
     private boolean aggro/* , visited */;
-    private Set<Mecanica> mechanics = new HashSet<Mecanica>();
+    private Set<Mechanic> mechanics = new HashSet<Mechanic>();
     // Map<Card, Float> synergies = new LinkedHashMap<Card, Float>();
     private Set<Tag> tags = new HashSet<Tag>();
     private float rank;

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import hcs.Universo;
+import hcs.CardBuilder;
 import hcs.model.Card.CLASS;
 import lombok.Data;
 
@@ -16,12 +16,12 @@ public class Deck extends Entity {
 	public Deck(String nome, Map<Card, Integer> cartas) {
 		this.name = nome;
 		this.cartas = cartas;
-		this.classe = Universo.whichClass(new ArrayList<Card>(cartas.keySet()));
+		this.classe = CardBuilder.whichClass(new ArrayList<Card>(cartas.keySet()));
 	}
 
 	public Integer getQnt(String nome) {
 		// System.out.println("getQnt "+nome);
-		Card c = Universo.getCard(nome);
+		Card c = CardBuilder.getCard(nome);
 		if (cartas.containsKey(c)) {
 			return cartas.get(c);
 		}

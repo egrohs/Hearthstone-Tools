@@ -48,13 +48,13 @@ public class ZoneLogReader extends Thread {
 				while ((line = zone.readLine()) != null) {
 					matcher = hero.matcher(line);
 					if (matcher.find()) {
-						Game.opponent.setClasse(Universo.getCard(matcher.group(1)).getClasse());
-						System.out.println(Universo.getCard(matcher.group(1)).getClasse());
+						Game.opponent.setClasse(CardBuilder.getCard(matcher.group(1)).getClasse());
+						System.out.println(CardBuilder.getCard(matcher.group(1)).getClasse());
 					} else {
 						matcher = playCard.matcher(line);
 						if (matcher.find() || matcher.matches()) {
 							try {
-								c = Universo.getCard(matcher.group(5));
+								c = CardBuilder.getCard(matcher.group(5));
 								playMap.put(LocalTime.parse(matcher.group(1)), c);
 								System.out.println(c);
 							} catch (RuntimeException e) {

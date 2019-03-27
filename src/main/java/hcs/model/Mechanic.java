@@ -7,11 +7,11 @@ package hcs.model;
  *
  */
 @Deprecated(since = "Use Tag class")
-public class Mecanica extends Entity {
+public class Mechanic extends Entity {
     public String regex, cathegory;
     // Map<Mechanic, Float> aff = new LinkedHashMap<Mechanic, Float>();
 
-    public Mecanica(String id, String regex) {
+    public Mechanic(String id, String regex) {
 	this.id = id;
 	this.regex = regex;
     }

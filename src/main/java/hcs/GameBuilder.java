@@ -27,51 +27,24 @@ import hcs.model.Sinergy;
  * @author egrohs
  *
  */
-public class SinergyFromGames {
+public class GameBuilder {
 	// TODO LinkedHashSet???
 	// static Set<Sinergia> sinergias = new HashSet<Sinergia>();
 	// static Sinergias sinergias = new Sinergias();
 	static JSONArray games = new JSONArray();
 
 	public static void main(String[] args) {
-		Universo.leCards();
+		CardBuilder.leCards();
 		leJogos();
 		// leSinergias();
-		provaveis(Universo.getCard("entomb"), 1, CLASS.PRIEST);
+		CardBuilder.provaveis(CardBuilder.getCard("entomb"), 1, CLASS.PRIEST);
 	}
 
-	public SinergyFromGames() {
+	public GameBuilder() {
 		// leJogos(); //muito lento...
 	}
 
-	/**
-	 * Calcula as provaveis jogadas.
-	 * 
-	 * @param c
-	 * @param manaRestante
-	 *            Mana restante no turno atual.
-	 * @return
-	 */
-	public static Set<Card> provaveis(Card c, int manaRestante, CLASS opo) {
-		// Set<Sinergia> sub = new LinkedHashSet<Sinergia>();
-		Set<Card> sub = new LinkedHashSet<Card>();
-		if (c != null) {
-			for (Sinergy s : Sinergias.cardsSynergies) {
-				if (s.getE1() == c || s.getE2() == c) {
-					Card c2 = (Card) s.getE2();
-					if (c == c2) {
-						c = (Card) s.getE1();
-					}
-					// cartas com sinergia com custo provavel no turno
-					if (CLASS.contem(opo, c2.getClasse()) && c2.getCost() <= manaRestante) {
-						sub.add(c2);
-						System.out.println(c2 + "\t" + s.getValor() + "\t" + s.getMechs());
-					}
-				}
-			}
-		}
-		return sub;
-	}
+	
 
 	/**
 	 * Le jogos (usar -Xmx1300m).
@@ -79,7 +52,7 @@ public class SinergyFromGames {
 	private static void leJogos() {
 		// TODO ler do site http://www.hearthscry.com/CollectOBot
 		JSONParser parser = new JSONParser();
-		File folder = new File(Universo.cl.getResource("jogos").getFile());
+		File folder = new File(CardBuilder.cl.getResource("jogos").getFile());
 		//File folder = new File("res/jogos");
 		File[] listOfFiles = folder.listFiles();
 		FileReader fr = null;
@@ -108,7 +81,7 @@ public class SinergyFromGames {
 			}
 		}
 		geraSinergias();
-		System.out.println(Sinergias.cardsSynergies.size() + " sinergias");
+		System.out.println(CardBuilder.cardsSynergies.size() + " sinergias");
 		// imprimSins();
 	}
 
@@ -118,30 +91,30 @@ public class SinergyFromGames {
 	public static void leSinergias() {
 		Scanner sc = null;
 		try {
-			sc = new Scanner(new File(Universo.cl.getResource("output/sinergias.csv").getFile()));
+			sc = new Scanner(new File(CardBuilder.cl.getResource("output/sinergias.csv").getFile()));
 		} catch (FileNotFoundException e) {
 			// TODO deve gera-lo...
 			e.printStackTrace();
 		}
 		while (sc.hasNextLine()) {
 			String[] line = sc.nextLine().split("\t");
-			Card c1 = Universo.getCard(line[0]);
-			Card c2 = Universo.getCard(line[1]);
+			Card c1 = CardBuilder.getCard(line[0]);
+			Card c2 = CardBuilder.getCard(line[1]);
 			int freq = Integer.parseInt(line[2]);
 			float val = Float.parseFloat(line[3]);
 			String mech = line[4];
 			if (c1 != null && c2 != null) {
-				Sinergias.cardsSynergies.add(new Sinergy(c1, c2, freq, val, mech));
+				CardBuilder.cardsSynergies.add(new Sinergy(c1, c2, freq, val, mech));
 			}
 		}
 		sc.close();
-		System.out.println(Sinergias.cardsSynergies.size() + " pre calculated sinergies loaded.");
+		System.out.println(CardBuilder.cardsSynergies.size() + " pre calculated sinergies loaded.");
 	}
 
 	public static void imprimSins() {
-		Collections.sort((List<Sinergy<Card>>) Sinergias.cardsSynergies);
+		Collections.sort((List<Sinergy<Card>>) CardBuilder.cardsSynergies);
 		StringBuilder sb = new StringBuilder();
-		for (Sinergy s : Sinergias.cardsSynergies) {
+		for (Sinergy s : CardBuilder.cardsSynergies) {
 			String line = s.getE1() + "\t" + s.getE2() + "\t" + s.getFreq() + "\t" + s.getValor() + "\t" + s.getMechs();
 			sb.append(line + "\r\n");
 			System.out.println(line);
@@ -149,7 +122,7 @@ public class SinergyFromGames {
 		//EscreveArquivo.escreveArquivo("res/output/sinergias.csv", sb.toString());
 		PrintWriter out = null;
 		try {
-			out = new PrintWriter(new File(Universo.cl.getResource("output/sinergias.csv").getFile()));
+			out = new PrintWriter(new File(CardBuilder.cl.getResource("output/sinergias.csv").getFile()));
 			out.println(sb.toString());
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -176,29 +149,29 @@ public class SinergyFromGames {
 				String player = (String) hist.get("player");
 				if ("me".equals(player)) {
 					if (myprev == null) {
-						myprev = Universo.getCard(id);
+						myprev = CardBuilder.getCard(id);
 						continue;
 					}
-					myatual = Universo.getCard(id);
+					myatual = CardBuilder.getCard(id);
 					if (myatual != null) {
-						Sinergy s = Sinergias.getCardSinergy(myprev, myatual);
+						Sinergy s = CardBuilder.getCardSinergy(myprev, myatual);
 						if (s == null) {
 							s = new Sinergy(myprev, myatual, 1);
-							Sinergias.cardsSynergies.add(s);
+							CardBuilder.cardsSynergies.add(s);
 						}
 						s.setValor(s.getValor() + 1);
 					}
 				} else if ("opponent".equals(player)) {
 					if (opoprev == null) {
-						opoprev = Universo.getCard(id);
+						opoprev = CardBuilder.getCard(id);
 						continue;
 					}
-					opoatual = Universo.getCard(id);
+					opoatual = CardBuilder.getCard(id);
 					if (opoatual != null) {
-						Sinergy s = Sinergias.getCardSinergy(opoprev, opoatual);
+						Sinergy s = CardBuilder.getCardSinergy(opoprev, opoatual);
 						if (s == null) {
 							s = new Sinergy(opoprev, opoatual, 1);
-							Sinergias.cardsSynergies.add(s);
+							CardBuilder.cardsSynergies.add(s);
 						}
 						s.setValor(s.getValor() + 1);
 					}
