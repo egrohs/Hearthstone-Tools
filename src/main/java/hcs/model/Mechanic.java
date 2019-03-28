@@ -1,5 +1,7 @@
 package hcs.model;
 
+import lombok.Data;
+
 /**
  * Mecânicas do hearthstone.
  * 
@@ -7,8 +9,9 @@ package hcs.model;
  *
  */
 @Deprecated(since = "Use Tag class")
+@Data
 public class Mechanic extends Entity {
-    public String regex, cathegory;
+    private String regex, cathegory;
     // Map<Mechanic, Float> aff = new LinkedHashMap<Mechanic, Float>();
 
     public Mechanic(String id, String regex) {

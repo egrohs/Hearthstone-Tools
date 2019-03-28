@@ -36,7 +36,7 @@ public class TagBuilder {
     public Set<Card> getMechsCards(Map<Mechanic, Integer> mechs, int manaRestante, CLASS opo) {
 	Set<Card> cs = new HashSet<Card>();
 	for (Mechanic mecanica : new ArrayList<Mechanic>(mechs.keySet())) {
-	    for (Sinergy s : mechanicsSynergies) {
+	    for (Sinergy<Mechanic> s : mechanicsSynergies) {
 		if (s.getE1() == mecanica) {
 		    mechs.put(mecanica, 0);
 		}
@@ -98,7 +98,7 @@ public class TagBuilder {
 		    Mechanic m1 = new Mechanic(id, regex);
 		    mechanics.put(id, new Mechanic(id, regex));
 		    // auto sinergia
-		    mechanicsSynergies.add(new Sinergy(m1, m1, 1, m1.regex + "+" + m1.regex));
+		    mechanicsSynergies.add(new Sinergy<Mechanic>(m1, m1, 1, m1.getRegex() + "+" + m1.getRegex()));
 		} else {
 		    String[] s = line.split(" ");
 		    Float v = 0f;
@@ -109,7 +109,7 @@ public class TagBuilder {
 		    // TODO cria vinculo bidirecional?
 		    Mechanic m1 = mechanics.get(s[0]);
 		    Mechanic m2 = mechanics.get(s[1]);
-		    mechanicsSynergies.add(new Sinergy(m1, m2, v, m1.regex + "+" + m2.regex));
+		    mechanicsSynergies.add(new Sinergy<Mechanic>(m1, m2, v, m1.getRegex() + "+" + m2.getRegex()));
 		    // mechanicsSynergies.add(new Synergy(mechanics.get(s[1]),
 		    // mechanics.get(s[0]), v));
 		}
@@ -117,7 +117,6 @@ public class TagBuilder {
 	} catch (FileNotFoundException e) {
 	    // System.out.println("Input file " + file + " not found");
 	    e.printStackTrace();
-	    sc.close();
 	    System.exit(1);
 	} finally {
 	    sc.close();
@@ -137,7 +136,7 @@ public class TagBuilder {
 	    System.out.println("No data found.");
 	} else {
 	    // System.out.println("Name, Major");
-	    for (List row : values) {
+	    for (List<Object> row : values) {
 		String name = (String) row.get(0);
 		String regex = (String) row.get(1);
 		String tts = row.size() > 2 ? (String) row.get(2) : "";
@@ -164,13 +163,13 @@ public class TagBuilder {
 
     @Deprecated
     private void printM2M() {
-	for (Sinergy s : mechanicsSynergies) {
-	    System.out.println(((Mechanic) s.getE1()).regex + "\t" + ((Mechanic) s.getE2()).regex);
+	for (Sinergy<Mechanic> s : mechanicsSynergies) {
+	    System.out.println(((Mechanic) s.getE1()).getRegex() + "\t" + ((Mechanic) s.getE2()).getRegex());
 	}
     }
 
     private void printTags() {
-	for (Sinergy sinergia : tagsSynergies) {
+	for (Sinergy<Tag> sinergia : tagsSynergies) {
 	    System.out.println(sinergia);
 	}
     }
@@ -192,13 +191,13 @@ public class TagBuilder {
     private void printQntMAffinities() {
 	for (Mechanic m : mechanics.values()) {
 	    int cont = 0;
-	    // System.out.println(m.regex + "\t" + m.aff.size());
+	    // System.out.println(m.getRegex() + "\t" + m.aff.size());
 	    for (Card card : CardBuilder.cards) {
 		if (card.getMechanics().contains(m)) {
 		    cont++;
 		}
 	    }
-	    System.out.println(m.regex + "\t" + cont);
+	    System.out.println(m.getRegex() + "\t" + cont);
 	}
     }
 }

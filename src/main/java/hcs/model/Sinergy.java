@@ -11,6 +11,7 @@ import lombok.Data;
  * @param <T>
  */
 @Data
+//@EqualsAndHashCode(callSuper=true)
 public class Sinergy<T extends Entity> implements Comparable<Sinergy<T>> {
 	private Entity e1, e2;
 	private int freq;
@@ -44,7 +45,7 @@ public class Sinergy<T extends Entity> implements Comparable<Sinergy<T>> {
 	public boolean equals(Object obj) {
 		if (obj == null || !(obj instanceof Sinergy))
 			return false;
-		Sinergy<Entity> s2 = (Sinergy<Entity>) obj;
+		Sinergy<T> s2 = (Sinergy<T>) obj;
 		// from here, must not test for nulls.
 		if (valor != s2.getValor())
 			return false;

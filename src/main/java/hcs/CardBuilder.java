@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -166,16 +165,16 @@ public class CardBuilder {
 	
 	leSinergias();
 	
-	for (Sinergy s : tagsSynergies) {
+	for (Sinergy<Tag> s : tagsSynergies) {
 	    Tag m1 = (Tag) s.getE1();
 	    Tag m2 = (Tag) s.getE2();
 	    for (Card c : cards) {
 		if (c.getTags().contains(m1)) {
 		    for (Card c2 : cards) {
 			if (c2.getTags().contains(m2)) {
-			    Sinergy ss = getCardSinergy(c, c2);
+			    Sinergy<Card> ss = getCardSinergy(c, c2);
 			    if (ss == null) {
-				ss = new Sinergy(c, c2, s.getValor(), m1.getRegex() + "+" + m2.getRegex());
+				ss = new Sinergy<Card>(c, c2, s.getValor(), m1.getRegex() + "+" + m2.getRegex());
 				cardsSynergies.add(ss);
 			    } else {
 				ss.setValor(ss.getValor() + s.getValor());
@@ -245,7 +244,7 @@ public class CardBuilder {
 	// Set<Sinergia> sub = new LinkedHashSet<Sinergia>();
 	Set<Card> sub = new LinkedHashSet<Card>();
 	if (c != null) {
-	    for (Sinergy s : cardsSynergies) {
+	    for (Sinergy<Card> s : cardsSynergies) {
 		if (s.getE1() == c || s.getE2() == c) {
 		    Card c2 = (Card) s.getE2();
 		    if (c == c2) {
@@ -307,7 +306,7 @@ public class CardBuilder {
 		    Float value = Float.parseFloat(o2.get(1).toString());
 		    // TODO remover esse if
 		    if (value > 4.0) {
-			cardsSynergies.add(new Sinergy(c, c2, value, ""));
+			cardsSynergies.add(new Sinergy<Card>(c, c2, value, ""));
 		    }
 		}
 	    }
@@ -327,7 +326,7 @@ public class CardBuilder {
 	System.out.println("Sinergias para " + initialCards[0]);
 	for (String cardname : initialCards) {
 	    Card c = getCard(cardname);
-	    for (Sinergy s : cardsSynergies) {
+	    for (Sinergy<Card> s : cardsSynergies) {
 		Card c1 = (Card) s.getE1();
 		Card c2 = (Card) s.getE2();
 		if (c == c1 || c == c2) {
@@ -344,7 +343,7 @@ public class CardBuilder {
     private void printCard(String n) {
 	Card card = getCard(n);
 	for (Mechanic m : card.getMechanics()) {
-	    System.out.println(m.regex);
+	    System.out.println(m.getRegex());
 	}
     }
 
@@ -356,7 +355,7 @@ public class CardBuilder {
     private void printCardSynergies(Card card) {
 	Set<Sinergy<Card>> minhaS = getCardSinergies(card, 10, card.getClasse());
 	// Collections.sort(minhaS);
-	for (Sinergy s : minhaS) {
+	for (Sinergy<Card> s : minhaS) {
 	    System.out.println(s.getE1().getName() + "\t");
 	}
     }
@@ -380,7 +379,7 @@ public class CardBuilder {
 	    float val = Float.parseFloat(line[3]);
 	    String mech = line[4];
 	    if (c1 != null && c2 != null) {
-		cardsSynergies.add(new Sinergy(c1, c2, freq, val, mech));
+		cardsSynergies.add(new Sinergy<Card>(c1, c2, freq, val, mech));
 	    }
 	}
 	sc.close();
@@ -388,9 +387,9 @@ public class CardBuilder {
     }
 
     private void imprimSins() {
-	Collections.sort((List<Sinergy<Card>>) cardsSynergies);
+	//Collections.sort((List<Sinergy<Card>>) cardsSynergies);
 	StringBuilder sb = new StringBuilder();
-	for (Sinergy s : cardsSynergies) {
+	for (Sinergy<Card> s : cardsSynergies) {
 	    String line = s.getE1() + "\t" + s.getE2() + "\t" + s.getFreq() + "\t" + s.getValor() + "\t" + s.getMechs();
 	    sb.append(line + "\r\n");
 	    System.out.println(line);
@@ -430,9 +429,9 @@ public class CardBuilder {
 		    }
 		    myatual = getCard(id);
 		    if (myatual != null) {
-			Sinergy s = getCardSinergy(myprev, myatual);
+			Sinergy<Card> s = getCardSinergy(myprev, myatual);
 			if (s == null) {
-			    s = new Sinergy(myprev, myatual, 1);
+			    s = new Sinergy<Card>(myprev, myatual, 1);
 			    cardsSynergies.add(s);
 			}
 			s.setValor(s.getValor() + 1);
@@ -444,9 +443,9 @@ public class CardBuilder {
 		    }
 		    opoatual = getCard(id);
 		    if (opoatual != null) {
-			Sinergy s = getCardSinergy(opoprev, opoatual);
+			Sinergy<Card> s = getCardSinergy(opoprev, opoatual);
 			if (s == null) {
-			    s = new Sinergy(opoprev, opoatual, 1);
+			    s = new Sinergy<Card>(opoprev, opoatual, 1);
 			    cardsSynergies.add(s);
 			}
 			s.setValor(s.getValor() + 1);
@@ -467,7 +466,7 @@ public class CardBuilder {
 	Set<Sinergy<Card>> sub = new LinkedHashSet<Sinergy<Card>>();
 	// Set<Carta> sub = new LinkedHashSet<Carta>();
 	if (c != null) {
-	    for (Sinergy s : cardsSynergies) {
+	    for (Sinergy<Card> s : cardsSynergies) {
 		if (s.getE1() == c || s.getE2() == c) {
 		    Card c2 = (Card) s.getE2();
 		    if (c == c2) {

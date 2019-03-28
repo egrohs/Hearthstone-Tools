@@ -1,7 +1,5 @@
 package hcs;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -149,10 +147,10 @@ public class GameBuilder extends Thread {
 	//CardBuilder.generateCardSynergies(card);
 	// TODO tem que ser o mana que ele terminou o turno
 	Set<Sinergy<Card>> sub = db.getCardSinergies(card, PowerLogReader.lastMana + 1, opponent.getClasse());
-	List<Sinergy> exibe = new ArrayList<Sinergy>(sub);
+	List<Sinergy<Card>> exibe = new ArrayList<Sinergy<Card>>(sub);
 	Collections.sort(exibe);
 	Map<Card, String> temp = new LinkedHashMap<Card, String>();
-	for (Sinergy sinergia : exibe) {
+	for (Sinergy<Card> sinergia : exibe) {
 	    Card c = (Card) sinergia.getE2();
 	    if (card == c) {
 		c = (Card) sinergia.getE1();
@@ -196,7 +194,7 @@ public class GameBuilder extends Thread {
 	GameBuilder gb = new GameBuilder();
 	gb.leJogos();
 	// leSinergias();
-	cb.provaveis(cb.getCard("entomb"), 1, CLASS.PRIEST);
+	cb.provaveis(CardBuilder.getCard("entomb"), 1, CLASS.PRIEST);
     }
 
     /**

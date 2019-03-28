@@ -12,7 +12,7 @@ public class PowerLogReader extends Thread {
 	// private long size;
 	static Pattern gameOver = Pattern.compile(
 			"D (\\d+\\:\\d+\\:\\d+\\.\\d+) GameState\\.DebugPrintPower\\(\\) \\-\\s+TAG_CHANGE Entity=GameEntity tag=NEXT_STEP value=FINAL_GAMEOVER");
-	// TODO \w+ basta aqui? e espaços??
+	// TODO \w+ basta aqui? e espaï¿½os??
 	static Pattern mana = Pattern.compile(
 			"D (\\d+\\:\\d+\\:\\d+\\.\\d+) GameState\\.DebugPrintPower\\(\\) \\-\\s+TAG_CHANGE Entity=(\\w+) tag=RESOURCES value=(\\d+)");
 	// Pattern turn = Pattern.compile("TAG_CHANGE Entity=GameEntity tag=TURN
@@ -87,7 +87,7 @@ public class PowerLogReader extends Thread {
 				power = new RandomAccessFile(powerlog, "r");
 				power.seek(pos);
 			} catch (IOException e) {
-				// jogo ainda não abriu.
+				// jogo ainda nï¿½o abriu.
 				System.err.println("Aguardando nova partida...");
 				try {
 					Thread.sleep(10000);

@@ -15,6 +15,7 @@ import lombok.Data;
  */
 // TODO UNG_116t barnabus the stomper
 @Data
+//@EqualsAndHashCode(callSuper=true)
 public class Card extends Entity {
     private boolean calculada;
     private CLASS classe;

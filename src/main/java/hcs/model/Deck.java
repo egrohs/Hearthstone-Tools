@@ -7,8 +7,10 @@ import java.util.Map;
 import hcs.CardBuilder;
 import hcs.model.Card.CLASS;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
+@EqualsAndHashCode(callSuper=true)
 public class Deck extends Entity {
 	private Card.CLASS classe = CLASS.NEUTRAL;
 	private Map<Card, Integer> cartas = new HashMap<Card, Integer>();
