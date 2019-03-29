@@ -190,7 +190,7 @@ public class GameBuilder extends Thread {
 
     public static void main(String[] args) {
 	CardBuilder cb = new CardBuilder();
-	cb.leCards();
+	cb.buildCards();
 	GameBuilder gb = new GameBuilder();
 	gb.leJogos();
 	// leSinergias();

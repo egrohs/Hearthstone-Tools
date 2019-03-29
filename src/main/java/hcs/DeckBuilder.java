@@ -39,7 +39,7 @@ public class DeckBuilder {
 
 	public static void main(String[] args) {
 		CardBuilder cb = new CardBuilder();
-		cb.leCards();
+		cb.buildCards();
 		DeckBuilder db = new DeckBuilder();
 		db.leDecks(new File(db.cl.getResource("decks").getFile()));
 		// for (Deck d : Decks.decks) {
@@ -51,6 +51,7 @@ public class DeckBuilder {
 	public DeckBuilder() {
 		cb = new CardBuilder();
 		leDecks(new File(cl.getResource("decks").getFile()));
+		System.out.println(decks.size() + " decks loaded.");
 	}
 
 	public Map<Deck, Double> similaridade(Collection<Card> searched) {
@@ -116,7 +117,6 @@ public class DeckBuilder {
 					}
 					Deck deck = new Deck(file.getName(), cartas);
 					decks.add(deck);
-					System.out.println(deck.getName() + " deck loaded.");
 					sc.close();
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();

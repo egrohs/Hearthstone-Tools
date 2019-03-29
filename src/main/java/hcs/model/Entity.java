@@ -9,11 +9,16 @@ import lombok.Data;
  *
  */
 @Data
-public class Entity {
+public class Entity implements Comparable<Entity> {
 	protected String name, id;
-	
+
+//	@Override
+//	public String toString() {
+//		return name;
+//	}
+
 	@Override
-	public String toString() {
-		return name;
+	public int compareTo(Entity o) {
+		return this.name.compareTo(((Entity) o).name);
 	}
 }

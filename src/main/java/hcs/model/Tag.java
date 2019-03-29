@@ -1,17 +1,21 @@
 package hcs.model;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 @Data
-@EqualsAndHashCode(callSuper=true)
+//@EqualsAndHashCode(callSuper=true)
 public class Tag extends Entity {
-    private String regex, tags;
+	private String regex, tags;
+	// private List<Tag> sinergies = new ArrayList<Tag>();
 
-    // private List<Tag> sinergias = new ArrayList<>();
-    public Tag(String name, String regex, String tags) {
-	this.name = name;
-	this.regex = regex;
-	this.tags = tags;
-    }
+	public Tag(String name, String regex, String tags) {
+		this.name = name;
+		this.regex = regex;
+		this.tags = tags;
+	}
+
+	@Override
+	public String toString() {
+		return name;
+	}
 }
