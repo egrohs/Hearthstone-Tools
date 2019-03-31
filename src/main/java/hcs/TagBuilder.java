@@ -14,6 +14,10 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
+
 import hcs.model.Card;
 import hcs.model.Card.CLASS;
 import hcs.model.Mechanic;
@@ -28,12 +32,20 @@ public class TagBuilder {
 	private ClassLoader cl = this.getClass().getClassLoader();
 
 	public TagBuilder() {
-		importTags();
+		loadTags();
+		calcSinergies();
+		// importTags();
 		// printTags();
 	}
-public static Map<String, Tag> getTags() {
-	return tags;
-}
+
+	public static Map<String, Tag> getTags() {
+		return tags;
+	}
+	
+	public List<Sinergy<Tag>> getTagsSynergies() {
+		return tagsSynergies;
+	}
+
 	@Deprecated
 	public Set<Card> getMechsCards(Map<Mechanic, Integer> mechs, int manaRestante, CLASS opo) {
 		Set<Card> cs = new HashSet<Card>();
@@ -125,6 +137,34 @@ public static Map<String, Tag> getTags() {
 		}
 	}
 
+	private void loadTags() {
+		Scanner sc = null;
+		try {
+			sc = new Scanner(new File(cl.getResource("tags/hstags.csv").getFile()));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		while (sc.hasNextLine()) {
+			String[] line = sc.nextLine().split("\t");
+			String tag = "", regex = "", type = "", cost = "", attack = "", hp = "", sinergies = "", description = "";
+			try {
+				tag = (line[0]);
+				regex = (line[1]);
+				type = (line[2]);
+				cost = (line[3]);
+				attack = line[4];
+				hp = line[5];
+				sinergies = line[6];
+				description = line[7];
+			} catch (ArrayIndexOutOfBoundsException e) {
+				// TODO: handle exception
+			}
+			tags.put(tag, new Tag(tag, regex, type, cost, attack, hp, sinergies, description));
+		}
+		sc.close();
+		System.out.println(tags.size() + " tags loaded.");
+	}
+
 	private void importTags() {
 		List<List<Object>> values = null;
 		try {
@@ -141,20 +181,22 @@ public static Map<String, Tag> getTags() {
 				String regex = (String) row.get(1);
 				String tts = row.size() > 2 ? (String) row.get(2) : "";
 				Tag t = tags.get(name);
-				if (t == null)
-					t = new Tag(name, regex, tts);
-				tags.put(name, t);
+//				if (t == null)
+//					t = new Tag(name, regex, tts);
+//				tags.put(name, t);
 
 			}
 		}
 		System.out.println(tags.size() + " tags imported.");
+	}
 
+	private void calcSinergies() {
 		for (Tag tag : tags.values()) {
-			for (String t : tag.getTags().split(",")) {
+			for (String s : tag.getSinergies().split(",")) {
 				Tag t1 = tags.get(tag.getName());
-				Tag t2 = tags.get(t);
+				Tag t2 = tags.get(s);
 				if (t2 != null) {
-					tagsSynergies.add(new Sinergy<>(t1, t2, 0));
+					tagsSynergies.add(new Sinergy<Tag>(t1, t2, 0));
 				}
 			}
 		}
@@ -172,13 +214,34 @@ public static Map<String, Tag> getTags() {
 	 */
 	void buildCardTags() {
 		for (Card c : CardBuilder.cards) {
+			// System.out.println(c);
 			for (Tag tag : tags.values()) {
-				if (c.getRace().contains(tag.getName())
-						|| Pattern.compile(tag.getRegex()).matcher(c.getText()).find()) {
+				if (eval("\"" + c.getType() + "\"" + tag.getType()) && eval(c.getCost() + tag.getCost())
+						&& eval(c.getAttack() + tag.getAttack()) && eval(c.getHealth() + tag.getHp())
+						&& (c.getRace().contains(tag.getName())
+								|| Pattern.compile(tag.getRegex()).matcher(c.getText()).find())) {
 					c.getTags().add(tag);
 				}
 			}
 		}
+	}
+
+	ScriptEngineManager mgr = new ScriptEngineManager();
+	ScriptEngine engine = mgr.getEngineByName("JavaScript");
+
+	private boolean eval(String foo) {
+		// System.out.println(foo);
+		if (foo.contains("=") || foo.contains("<") || foo.contains(">")) {
+			try {
+				// System.out.println(engine.eval(foo));
+				return (boolean) engine.eval(foo);
+			} catch (ScriptException e) {
+				// TODO Auto-generated catch block
+				// e.printStackTrace();
+				// System.exit(0);
+			}
+		}
+		return true;
 	}
 
 	@Deprecated

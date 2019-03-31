@@ -73,7 +73,7 @@ public class Card extends Entity {
 		this.set = set;
 		this.race = faction == null ? "" : faction;
 		this.classe = classe;
-		this.type = type;
+		this.type = type.toLowerCase();
 		if (text != null) {
 			this.getText().append(Jsoup.parse(text).text().replaceAll(String.valueOf((char) 160), " "));
 		}
@@ -124,10 +124,10 @@ public class Card extends Entity {
 		return false;
 	}
 
-//	@Override
-//	public String toString() {
-//		return name;
-//	}
+	@Override
+	public String toString() {
+		return name;
+	}
 
 	public void incDraws() {
 		this.draws++;

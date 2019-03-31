@@ -1,0 +1,87 @@
+tag	regex	type	cost	attack	hp	sinergies	description
+ADAPT	adapt( |\.)					ATTACK_MODIFY	
+ADJACENT	(adjacent )					SUMMON	
+ARMOR	\d+ armor					HEALTH_RESTORE	Increases the armor value of a hero.
+ATTACK_MODIFY	((set|change).+attack.*to |double.+attack|give.*((\+\d+|its|their) attack|\+\d+\/))					RETURN_TO_HAND,WINDFURY	Change the health and/or attack of another character or weapon.
+AURA	abilidades duradouras enquanto esta no jogo?					DIVINE_SHIELD,REVIVE	
+BATTLECRY	battlecr(y|ies)					RETURN_TO_HAND	Does something when you play it from your hand.
+BEAST	beast( |\.|\,)						
+CANT_ATTACK	can\'t attack					SILENCE	
+CHARGE	charge					ATTACK_MODIFY,WINDFURY,RUSH	Can attack immediately.
+CHOOSE_ONE	choose (one|twice)						Select one effect from the list of options.
+COMBO	combo(s|\:)					LOW_COST	A bonus if you already played a card this turn.
+CONTROL	(control of )					RETURN_TO_HAND,DESTROY,TRANSFORM	Forces a minion to be controlled by its enemy.
+COPY	cop(y |y.|ies? )					HIGH_COST	Creates a duplicate of another card or minion.
+COST_MODIFY	costs? (by )?\(\d+\)					HIGH_COST	Changes the amount of mana crystals required to play certain cards.
+COUNTER	(counter )						A card that is Countered has no effect.
+DAMAGE_ALL	takes damage|(damage to all )					DEATHRATTLE	Inflicts some amount of damage to your characters as well as your enemy's characters.
+DAMAGE_ENEMIES	damage to .+ enem(y|ies)						Inflicts some amount of damage to your enemy's characters.
+DAMAGE_SPELL	deal \d+ damage	=="spell"				SPELL_DAMAGE	Damage increased by spell damage.
+DEAL_DAMAGE	deal \d+ damage						Inflicts some amount of damage to character(s).
+DEATHRATTLE	deathrattle|dies|died					DAMAGE_ALL,DESTROY,REVIVE	Does something when it dies.
+DEMON	demon						
+DESTROY	(destroy (a|an|all|any) )					DIVINE_SHIELD,HIGH_HP	Removes something from the battlefield, regardless of its remaining health or effects.
+DISCARD	discard [a|\d+] card					DRAW	Removes cards before they can be played.
+DISCOVER	(discover )					GENERATE	
+DIVINE_SHIELD	divine shield					LOW_HP	The first time this minion takes damage, ignore it.
+DRAGON	dragon						
+DRAW	drawn?|each player draws					card in???,LOW_HP	Draws additional card(s) from the deck.
+ECHO	echo					when(ever) cast?? plays?? summon?	
+ELEMENTAL	elemental						
+ELUSIVE	can\'t be targeted						Can't be targeted by spells or Hero Powers.
+ENRAGE	enrage					"DAMAGE_ALL,+ low dmg
+low dmg yours minions"	While damaged, this minion has a new power.
+EOT	end of (each|your) turn					AURA,REVIVE	
+EQUIP	equip(s)?						
+EVEN	even\-\s?cost						
+FORGETFUL	attack the wrong enemy					SILENCE	
+FREEZE	freeze|frozen						Frozen characters lose their next attack.
+GENERATE	discover|add (a |\d+ |it to )|give your opponent|fill your hand					DISCOVER	Generate new card
+HEALTH_RESTORE	restore(d)? \d+ health					HIGH_HP	Increases a character's remaining health, but not beyond its maximum health.
+HERO_POWER	(hero|cards and) power					INSPIRE	
+HIGH_ATTACK		=="minion"		>5			
+HIGH_COST			>5				
+HIGH_COST_MINION			>5				
+HIGH_HP		=="minion"			>5		
+IMMUNE	immune					EQUIP	Can't be damaged.
+INSPIRE	inspire					HERO_POWER	Does something after you use your Hero Power.
+JADE_GOLEM	jade golem						
+LACKEY	lacke(y|ies)						
+LIFESTEAL	lifesteal					HIGH_ATTACK	
+LOW_ATTACK		=="minion"		<3			
+LOW_COST			<3				
+LOW_COST_MINION		=="minion"	<3				
+LOW_HP		=="minion"			<3		
+MAGNETIC	magnetic						
+MANA	(transform|destroy|gain|lose|refresh|set|spend) .+ mana( crystals?)?						Spend mana or armor to do something
+MECH	( mech)						
+MURLOC	murloc						
+ODD	odd\-\s?cost						
+OVERKILL	overkill					ATTACK_MODIFY,HIGH_ATTACK	
+OVERLOAD	overload					COST_MODIFY	You have X less mana next turn.
+PIRATE	pirate						
+POISONOUS	damaged by this minion					DIVINE_SHIELD	Destroy any minion damaged by this minion.
+QUEST	quest						
+RECRUIT	recruit						
+REMOVE_FROM_DECK	remove the top						remove top card(s) from deck(s)
+RETURN_TO_HAND	return .+ to your hand					CHARGE,RUSH,BATTLECRY	Removes a card from play and puts it back into someones hand.
+REVEAL	reveal a						Reveal a card in deck(s)
+REVIVE	revive|resurect|resummon					AURA	
+RITUAL	c\'thun						
+RUSH	rush					CHARGE	
+SECRET	secret						
+SHUFFLE	shuffle						shuffles deck(s)
+SILENCE	silence					CANT_ATTACK	Removes all card text and enchantments.
+SOT	start of (each|your( opponent\'s)?) turn					AURA,REVIVE	
+SPELL	cast|spell	=="spell"					
+SPELL_DAMAGE	spell damage					Affected By Spell Damage	Your spell cards deal # extra damage.
+START_GAME	start (the|of) game						
+STEALTH	stealth					passive constant abilities (give...)...	Can't be attacked or targeted until it deals damage.
+SUMMON	(summon|return it to life)					CHARGE,RUSH,LOW_COST_MINION	Places another minion on the battlefield.
+TAUNT	taunt					HIGH_HP	Enemies must attack this minion.
+TOTEM	totem						
+TRANSFORM	transform					BATTLECRY,DIVINE_SHIELD,CHOOSE_ONE,ECHO,HIGH_COST_MINION	Causes one minion to become another minion.
+TREANTS	treant						
+TWINSPELL	twinspell					COST_MODIFY,ECHO	
+UNLIMITED_ATTACKS	unlimited attacks					SILENCE	Modifies how minion(s) attacks
+WINDFURY	mega\-windfury|windfury					CHARGE,RUSH,ATTACK_MODIFY,OVERKILL	Can attack twice each turn.

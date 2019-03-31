@@ -1,7 +1,5 @@
 package hcs;
 
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -49,6 +47,18 @@ public class CardBuilder {
 		// generateCardsSynergies(tb.tagsSynergies);
 	}
 
+	public int containsTag(Tag tag) {
+		int i = 0;
+		for (Card card : cards) {
+			if (card.getTags().contains(tag)) {
+				i++;
+				System.out.println(card.getName());
+			}
+		}
+		System.out.println(i);
+		return i;
+	}
+
 	public static CLASS whichClass(List<Card> cartas) {
 		Map<CLASS, Integer> qnts = new HashMap<CLASS, Integer>();
 		CLASS most = CLASS.NEUTRAL;
@@ -74,8 +84,10 @@ public class CardBuilder {
 			long ini = System.currentTimeMillis();
 			try {
 				File file = new File("cards.collectible.json");
-				file.delete();
-				Files.copy(new URL(api).openStream(), Paths.get("cards.collectible.json"));
+				if (!file.exists()) {
+					// file.delete();
+					Files.copy(new URL(api).openStream(), Paths.get("cards.collectible.json"));
+				}
 				JSONParser parser = new JSONParser();
 				JSONArray sets = (JSONArray) parser.parse(new FileReader(file));
 				generateCards(sets);
@@ -172,14 +184,14 @@ public class CardBuilder {
 	/**
 	 * Gera as sinergias de todas as cartas.
 	 */
-	private void generateCardsSynergies(List<Sinergy<Tag>> tagsSynergies) {
+	private void generateCardsSynergies() {
 		System.out.println("generateCardsSynergies...");
 		long ini = System.currentTimeMillis();
 
 		FileWriter fw = null;
 		try {
 			fw = new FileWriter("cardSinergies.csv");
-			for (Sinergy<Tag> tagSin : tagsSynergies) {
+			for (Sinergy<Tag> tagSin : tb.getTagsSynergies()) {
 				Tag tag1 = (Tag) tagSin.getE1();
 				Tag tag2 = (Tag) tagSin.getE2();
 				for (Card c1 : cards) {
@@ -219,20 +231,20 @@ public class CardBuilder {
 				+ (System.currentTimeMillis() - ini) / 60000 + " minutes.");
 	}
 
-	private void generateCardSynergies(Card c, List<Sinergy<Tag>> tagsSynergies) {
+	public void generateCardSynergies(Card c) {
 		if (!c.isCalculada()) {
-			for (Sinergy<Tag> s : tagsSynergies) {
-				Tag m1 = (Tag) s.getE1();
-				Tag m2 = (Tag) s.getE2();
-				if (c.getTags().contains(m1)) {
+			for (Sinergy<Tag> ts : tb.getTagsSynergies()) {
+				Tag tag1 = (Tag) ts.getE1();
+				Tag tag2 = (Tag) ts.getE2();
+				if (c.getTags().contains(tag1)) {
 					for (Card c2 : cards) {
-						if (c2.getTags().contains(m2)) {
-							Sinergy<Card> ss = getCardSinergy(c, c2);
-							if (ss == null) {
-								ss = new Sinergy<Card>(c, c2, s.getValor(), m1.getRegex() + "+" + m2.getRegex());
-								cardsSynergies.add(ss);
+						if (c2.getTags().contains(tag2)) {
+							Sinergy<Card> cs = getCardSinergy(c, c2);
+							if (cs == null) {
+								cs = new Sinergy<Card>(c, c2, ts.getValor(), tag1.getRegex() + "+" + tag2.getRegex());
+								cardsSynergies.add(cs);
 							} else {
-								ss.setValor(ss.getValor() + s.getValor());
+								cs.setValor(cs.getValor() + ts.getValor());
 							}
 						}
 					}
@@ -391,7 +403,9 @@ public class CardBuilder {
 		for (String n : cards) {
 			Card c = getCard(n);
 			for (Tag tag : c.getTags()) {
-				System.out.println("assertTrue(CardBuilder.getCard(\""+c.getName() + "\").getTags().contains(TagBuilder.getTags().get(\"" + tag.getName() + "\")));//"+c.getText());
+				System.out.println("assertTrue(CardBuilder.getCard(\"" + c.getName()
+						+ "\").getTags().contains(TagBuilder.getTags().get(\"" + tag.getName() + "\")));//"
+						+ c.getText());
 			}
 		}
 	}

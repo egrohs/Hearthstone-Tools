@@ -8,7 +8,7 @@ import lombok.Data;
  * @author 99689650068
  *
  */
-@Deprecated(since = "Use Tag class")
+@Deprecated//(since = "Use Tag class")
 @Data
 public class Mechanic extends Entity {
     private String regex, cathegory;
