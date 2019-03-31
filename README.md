@@ -1,10 +1,10 @@
-- Decidir tipo/local e formato de arquivo que contem a sinergia das tags (legivel até como grafo, e facil de modificar)
-- Esse arquivo deve conter condicoes para raça, low cost etc..
-- Como deve ser a saida desses calculos, um json pra ser consumido de um serviço?
-- Qual interface uasr pro deckbuilder? Angular?
-- Como tratar as sinegies falso positivas?
-- As expressoes regulares deveriam evitar .* ou .+
-- Download automatico qndo sai nova api json de cartas no site (o arquivo fica na raiz e não dentro do jar).
+- Decide which type, location and file format should contains tags sinergies (must be readable like a graph, and easy to modify).
+- This file should contain card race, cost and type condition formulas.
+- How should be calculation output, a json webservice to be consumed?
+- Which UI tech for deckbuilder? Angular?
+- How avoid false positive sinegies?
+- Regular expressions should avoid  .* ou .+ (too generic).
+- Hearthstone json api new version automatic download (at project root, not inside the jar).
 
 	// "your (other )?minions", AoE effect
 	// Aoe dmg? adjacent?
