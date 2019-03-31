@@ -39,9 +39,8 @@ public class DeckBuilder {
 
 	public static void main(String[] args) {
 		CardBuilder cb = new CardBuilder();
-		cb.buildCards();
 		DeckBuilder db = new DeckBuilder();
-		db.leDecks(new File(db.cl.getResource("decks").getFile()));
+		db.loadDecks(new File(db.cl.getResource("decks").getFile()));
 		// for (Deck d : Decks.decks) {
 		// System.out.println(d);
 		// }
@@ -50,11 +49,11 @@ public class DeckBuilder {
 
 	public DeckBuilder() {
 		cb = new CardBuilder();
-		leDecks(new File(cl.getResource("decks").getFile()));
+		loadDecks(new File(cl.getResource("decks").getFile()));
 		System.out.println(decks.size() + " decks loaded.");
 	}
 
-	public Map<Deck, Double> similaridade(Collection<Card> searched) {
+	private Map<Deck, Double> similaridade(Collection<Card> searched) {
 		List<String> nomes = new ArrayList<String>();
 		for (Card carta : searched) {
 			// System.out.println("similaridade: " +carta.getName());
@@ -63,7 +62,7 @@ public class DeckBuilder {
 		return similaridade(nomes.toArray(new String[searched.size()]));
 	}
 
-	public Map<Deck, Double> similaridade(String[] cartas) {
+	private Map<Deck, Double> similaridade(String[] cartas) {
 		Map<Deck, Double> prob = new HashMap<Deck, Double>();
 		System.out.println("----------------------");
 		for (Deck deck : decks) {
@@ -84,14 +83,14 @@ public class DeckBuilder {
 	}
 
 	/**
-	 * Carrega os decks em memória.
+	 * Load meta decks.
 	 */
-	public void leDecks(File dir) {
+	private void loadDecks(File dir) {
 		// FileUtils.listFiles(dir, true, true);
 		File listOfFiles[] = dir.listFiles();
 		for (File file : listOfFiles) {
 			if (file.isDirectory()) {
-				leDecks(file);
+				loadDecks(file);
 			} else {
 				Map<Card, Integer> cartas = new HashMap<Card, Integer>();
 				try {
@@ -149,10 +148,7 @@ public class DeckBuilder {
 	}
 
 	/**
-	 * Utilitário para baixar decks de hearthstone.
-	 * 
-	 * @author 99689650068
-	 *
+	 * Download web hearthstone decks.
 	 */
 	// function depth-limited-crawl(page p, int d)
 	// if d == 0
@@ -239,20 +235,20 @@ public class DeckBuilder {
 		System.out.println("Title : " + doc.title());
 	}
 
-	private void printDeck(Collection<Card> deck) {
-		for (int i = 0; i < deck.size(); i++) {
-			Card c1 = (Card) deck.toArray()[i];
-			int cont = 0;
-			Float acum = 0f;
-			for (int j = i; j < deck.size(); j++) {
-				Card c2 = (Card) deck.toArray()[j];
-				Sinergy<Card> s = cb.getCardSinergy(c1, c2);
-				acum += s != null ? s.getValor() : 0f;
-				cont++;
-			}
-			System.out.println(acum / cont + "\t" + c1.getName() + "\t" + c1.getClasse() + "\t" + c1.getText());
-		}
-	}
+//	private void printDeck(Deck deck) {
+//		for (Card c1 : deck.getCartas().keySet()) {
+//			int cont = 0;
+//			Float acum = 0f;
+//			for (Card c2 : deck.getCartas().keySet()) {
+//				if (!c1.equals(c2)) {
+//					Sinergy<Card> s = cb.getCardSinergy(c1, c2);
+//					acum += s != null ? s.getValor() : 0f;
+//					cont++;
+//				}
+//			}
+//			System.out.println(acum / cont + "\t" + c1.getName() + "\t" + c1.getClasse() + "\t" + c1.getText());
+//		}
+//	}
 
 	/**
 	 * Calcula a similariade de deck partindo de todas cartas jogadas ate agora.
@@ -274,5 +270,32 @@ public class DeckBuilder {
 
 	public Set<Sinergy<Card>> getCardSinergies(Card card, int manaRestante, CLASS classe) {
 		return cb.getCardSinergies(card, manaRestante, classe);
+	}
+
+	/**
+	 * Gera lista de cartas que tem sinergia com as cartas informadas.
+	 * 
+	 * @param classe       Limita as classes de cartas que podem entrar na lista.
+	 * @param initialCards Cartas para se verificar sinergia com.
+	 * @param deck         Lista de saida?!
+	 * @param depth        Limita profundidade de busca no grafo das sinergias.
+	 * @return Lista de cartas com sinergia às informadas.
+	 */
+	private Set<Card> buildDeck(Card.CLASS classe, String[] initialCards, Set<Card> deck, int depth) {
+		System.out.println("Sinergias para " + initialCards[0]);
+		for (String cardname : initialCards) {
+			Card c = CardBuilder.getCard(cardname);
+			for (Sinergy<Card> s : cb.cardsSynergies) {
+				Card c1 = (Card) s.getE1();
+				Card c2 = (Card) s.getE2();
+				if (c == c1 || c == c2) {
+					if (Card.CLASS.contem(classe, c1.getClasse()) || Card.CLASS.contem(classe, c2.getClasse())) {
+						deck.add(c1);
+						deck.add(c2);
+					}
+				}
+			}
+		}
+		return deck;
 	}
 }

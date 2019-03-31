@@ -6,6 +6,7 @@ TODOS
 - How avoid false positive sinegies?
 - Regular expressions should avoid  .* ou .+ (too generic).
 - Hearthstone json api new version automatic download (at project root, not inside the jar).
+- Review unnused and duplicate methods.
 
 	// "your (other )?minions", AoE effect
 	// Aoe dmg? adjacent?

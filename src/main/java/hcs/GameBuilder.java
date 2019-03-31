@@ -190,11 +190,10 @@ public class GameBuilder extends Thread {
 
     public static void main(String[] args) {
 	CardBuilder cb = new CardBuilder();
-	cb.buildCards();
 	GameBuilder gb = new GameBuilder();
 	gb.leJogos();
 	// leSinergias();
-	cb.provaveis(CardBuilder.getCard("entomb"), 1, CLASS.PRIEST);
+	//cb.provaveis(CardBuilder.getCard("entomb"), 1, CLASS.PRIEST);
     }
 
     /**

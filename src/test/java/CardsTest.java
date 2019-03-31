@@ -710,8 +710,8 @@ assertTrue(!CardBuilder.getCard("griftah").getTags().contains(TagBuilder.getTags
 		CardBuilder cb = new CardBuilder();
 		Card c = CardBuilder.getCard("face collector");
 		cb.generateCardSynergies(c);
-		for (Sinergy<Card> s : cb.getCardSinergies(c, 10, CLASS.ROGUE)) {
+		//for (Sinergy<Card> s : cb.getCardSinergies(c, 10, CLASS.ROGUE)) {
 			//syso
-		}
+		//}
 	}
 }

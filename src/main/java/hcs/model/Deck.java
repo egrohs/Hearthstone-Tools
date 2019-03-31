@@ -2,6 +2,7 @@ package hcs.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import hcs.CardBuilder;
@@ -18,7 +19,7 @@ public class Deck extends Entity {
 	public Deck(String nome, Map<Card, Integer> cartas) {
 		this.name = nome;
 		this.cartas = cartas;
-		this.classe = CardBuilder.whichClass(new ArrayList<Card>(cartas.keySet()));
+		this.classe = whichClass(new ArrayList<>(cartas.keySet()));
 	}
 
 	public Integer getQnt(String nome) {
@@ -39,5 +40,23 @@ public class Deck extends Entity {
 			sb.append(c.getName() + "\t" + cartas.get(c) + "\r\n");
 		}
 		return sb.toString();
+	}
+	
+
+	private CLASS whichClass(List<Card> cartas) {
+		Map<CLASS, Integer> qnts = new HashMap<CLASS, Integer>();
+		CLASS most = CLASS.NEUTRAL;
+		for (Card c : cartas) {
+			if (qnts.get(c.getClasse()) == null)
+				qnts.put(c.getClasse(), 1);
+			else
+				qnts.put(c.getClasse(), qnts.get(c.getClasse()) + 1);
+		}
+		for (CLASS cls : qnts.keySet()) {
+			if (most == CLASS.NEUTRAL || qnts.get(most) < qnts.get(cls)) {
+				most = cls;
+			}
+		}
+		return most;
 	}
 }

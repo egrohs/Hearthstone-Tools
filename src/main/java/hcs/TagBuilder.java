@@ -70,10 +70,7 @@ public class TagBuilder {
 		return cs;
 	}
 
-	// public static void main(String[] args) {
-	// TODO charge e DD.
-	// secret: when an enemy minion attacks, return it to its owner's hand
-	// and it costs (2) more.
+	@Deprecated
 	static Pattern[] pts = new Pattern[] {
 			Pattern.compile("return (a|an|all) (enemy )?minion(s)? to ((its|their) owner's|your opponent's) hand"),
 			Pattern.compile("silence (a|all) (enemy )?(minion(s)?|[race])(\\.|\\, |\\s)?(with [ability])?"),
@@ -210,7 +207,7 @@ public class TagBuilder {
 	}
 
 	/**
-	 * Lê os textos das cartas, gerando suas Tags.
+	 * Generate all cards Tags.
 	 */
 	void buildCardTags() {
 		for (Card c : CardBuilder.cards) {

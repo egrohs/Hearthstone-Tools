@@ -47,7 +47,7 @@ public class CardBuilder {
 		// generateCardsSynergies(tb.tagsSynergies);
 	}
 
-	public int containsTag(Tag tag) {
+	private int containsTag(Tag tag) {
 		int i = 0;
 		for (Card card : cards) {
 			if (card.getTags().contains(tag)) {
@@ -59,27 +59,10 @@ public class CardBuilder {
 		return i;
 	}
 
-	public static CLASS whichClass(List<Card> cartas) {
-		Map<CLASS, Integer> qnts = new HashMap<CLASS, Integer>();
-		CLASS most = CLASS.NEUTRAL;
-		for (Card c : cartas) {
-			if (qnts.get(c.getClasse()) == null)
-				qnts.put(c.getClasse(), 1);
-			else
-				qnts.put(c.getClasse(), qnts.get(c.getClasse()) + 1);
-		}
-		for (CLASS cls : qnts.keySet()) {
-			if (most == CLASS.NEUTRAL || qnts.get(most) < qnts.get(cls)) {
-				most = cls;
-			}
-		}
-		return most;
-	}
-
 	/**
-	 * Carrega o db json de cartas em memória.
+	 * Load json card db api in memory.
 	 */
-	public List<Card> buildCards() {
+	private List<Card> buildCards() {
 		if (cards.size() == 0) {
 			long ini = System.currentTimeMillis();
 			try {
@@ -103,9 +86,9 @@ public class CardBuilder {
 	}
 
 	/**
-	 * Instancia os objetos cards.
+	 * Parse json array and create card objects.
 	 * 
-	 * @param array JSONObject contendo o db de cartas.
+	 * @param array JSONObject with cards data.
 	 */
 	private void generateCards(JSONArray array) {
 		Iterator<JSONObject> iterator = array.iterator();
@@ -157,7 +140,7 @@ public class CardBuilder {
 	}
 
 	/**
-	 * Busca uma carta por nome ou id.
+	 * Find a card by name or id.
 	 * 
 	 * @param idORname
 	 * @return Card.
@@ -182,7 +165,7 @@ public class CardBuilder {
 	}
 
 	/**
-	 * Gera as sinergias de todas as cartas.
+	 * Generate all cards sinergies.
 	 */
 	private void generateCardsSynergies() {
 		System.out.println("generateCardsSynergies...");
@@ -231,6 +214,7 @@ public class CardBuilder {
 				+ (System.currentTimeMillis() - ini) / 60000 + " minutes.");
 	}
 
+	//TODO public?
 	public void generateCardSynergies(Card c) {
 		if (!c.isCalculada()) {
 			for (Sinergy<Tag> ts : tb.getTagsSynergies()) {
@@ -256,14 +240,14 @@ public class CardBuilder {
 	}
 
 	/**
-	 * return the sinergy with those Cards.
+	 * Find sinergy between 2 Cards.
 	 * 
-	 * @param e1
-	 * @param e2
-	 * @return the Sinergy object
+	 * @param e1 Card 1
+	 * @param e2 Card 2
+	 * @return Return the sinergy with those Cards.
 	 */
 	// TODO retornar lista de sinergias, não apenas uma.
-	public Sinergy<Card> getCardSinergy(Card e1, Card e2) {
+	private Sinergy<Card> getCardSinergy(Card e1, Card e2) {
 		for (Sinergy<Card> s : cardsSynergies) {
 			if ((e1 == s.getE1() && e2 == s.getE2()) || (e1 == s.getE2() && e2 == s.getE1())) {
 				return s;
@@ -273,35 +257,7 @@ public class CardBuilder {
 	}
 
 	/**
-	 * Calcula as provaveis jogadas.
-	 * 
-	 * @param c
-	 * @param manaRestante Mana restante no turno atual.
-	 * @return
-	 */
-	public Set<Card> provaveis(Card c, int manaRestante, CLASS opo) {
-		// Set<Sinergia> sub = new LinkedHashSet<Sinergia>();
-		Set<Card> sub = new LinkedHashSet<Card>();
-		if (c != null) {
-			for (Sinergy<Card> s : cardsSynergies) {
-				if (s.getE1() == c || s.getE2() == c) {
-					Card c2 = (Card) s.getE2();
-					if (c == c2) {
-						c = (Card) s.getE1();
-					}
-					// cartas com sinergia com custo provavel no turno
-					if (CLASS.contem(opo, c2.getClasse()) && c2.getCost() <= manaRestante) {
-						sub.add(c2);
-						System.out.println(c2 + "\t" + s.getValor() + "\t" + s.getMechs());
-					}
-				}
-			}
-		}
-		return sub;
-	}
-
-	/**
-	 * Le arquivo de sinergias da web.
+	 * Read sinergy cached file.
 	 */
 	private void readSynergies() {
 		JSONParser parser = new JSONParser();
@@ -317,11 +273,6 @@ public class CardBuilder {
 		}
 	}
 
-	/**
-	 * Apos arquivo de sinergias lido, gera a lista de sinergias.
-	 * 
-	 * @param sets
-	 */
 	private void generateNumIds(JSONArray sets) {
 		Iterator<JSONObject> iterator = sets.iterator();
 		while (iterator.hasNext()) {
@@ -352,33 +303,6 @@ public class CardBuilder {
 		}
 	}
 
-	/**
-	 * Gera lista de cartas que tem sinergia com as cartas informadas.
-	 * 
-	 * @param classe       Limita as classes de cartas que podem entrar na lista.
-	 * @param initialCards Cartas para se verificar sinergia com.
-	 * @param deck         Lista de saida?!
-	 * @param depth        Limita profundidade de busca no grafo das sinergias.
-	 * @return Lista de cartas com sinergia às informadas.
-	 */
-	private Set<Card> buildDeck(Card.CLASS classe, String[] initialCards, Set<Card> deck, int depth) {
-		System.out.println("Sinergias para " + initialCards[0]);
-		for (String cardname : initialCards) {
-			Card c = getCard(cardname);
-			for (Sinergy<Card> s : cardsSynergies) {
-				Card c1 = (Card) s.getE1();
-				Card c2 = (Card) s.getE2();
-				if (c == c1 || c == c2) {
-					if (Card.CLASS.contem(classe, c1.getClasse()) || Card.CLASS.contem(classe, c2.getClasse())) {
-						deck.add(c1);
-						deck.add(c2);
-					}
-				}
-			}
-		}
-		return deck;
-	}
-
 	private void printCard(String n) {
 		Card card = getCard(n);
 		for (Mechanic m : card.getMechanics()) {
@@ -387,31 +311,7 @@ public class CardBuilder {
 	}
 
 	/**
-	 * Imprime todas cartas que tem sinergia com a informada.
-	 * 
-	 * @param card Carta consultada.
-	 */
-	private void printCardSynergies(Card card) {
-		Set<Sinergy<Card>> minhaS = getCardSinergies(card, 10, card.getClasse());
-		// Collections.sort(minhaS);
-		for (Sinergy<Card> s : minhaS) {
-			System.out.println(s.getE1().getName() + "\t");
-		}
-	}
-
-	public void printCardsTags(String[] cards) {
-		for (String n : cards) {
-			Card c = getCard(n);
-			for (Tag tag : c.getTags()) {
-				System.out.println("assertTrue(CardBuilder.getCard(\"" + c.getName()
-						+ "\").getTags().contains(TagBuilder.getTags().get(\"" + tag.getName() + "\")));//"
-						+ c.getText());
-			}
-		}
-	}
-
-	/**
-	 * Le sinergias precalculadas do arquivo cache.
+	 * Read sinergies from cache file.
 	 */
 	private void readCardSinergies() {
 		Scanner sc = null;
@@ -459,7 +359,7 @@ public class CardBuilder {
 	}
 
 	/**
-	 * Partindo da base de jogos, gera sinergias dos pares de cartas jogadas.
+	 * Calculate pairs of sinergies from game files.
 	 */
 	private void geraSinergias(JSONArray games) {
 		Iterator<JSONObject> iterator = games.iterator();
@@ -504,7 +404,36 @@ public class CardBuilder {
 			}
 		}
 	}
-
+	
+	/**
+	 * Calculate possible cards sinergy.
+	 * 
+	 * @param c
+	 * @param currentMana Mana restante no turno atual.
+	 * @return Set of Cards with sinergy.
+	 */
+	//TODO here or in DeckBuilder?
+	public Set<Card> provaveis(Card c, int currentMana, CLASS hsClass) {
+		// Set<Sinergia> sub = new LinkedHashSet<Sinergia>();
+		Set<Card> sub = new LinkedHashSet<Card>();
+		if (c != null) {
+			for (Sinergy<Card> s : cardsSynergies) {
+				if (s.getE1() == c || s.getE2() == c) {
+					Card c2 = (Card) s.getE2();
+					if (c == c2) {
+						c = (Card) s.getE1();
+					}
+					// cartas com sinergia com custo provavel no turno
+					if (CLASS.contem(hsClass, c2.getClasse()) && c2.getCost() <= currentMana) {
+						sub.add(c2);
+						System.out.println(c2 + "\t" + s.getValor() + "\t" + s.getMechs());
+					}
+				}
+			}
+		}
+		return sub;
+	}
+	
 	/**
 	 * Calcula as provaveis jogadas.
 	 * 
