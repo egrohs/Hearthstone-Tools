@@ -1,4 +1,5 @@
-- Decide which type, location and file format should contains tags sinergies (must be readable like a graph, and easy to modify).
+TODOS
+- Which type, location and file format should contains tags sinergies? (must be graph readable, and easy to modify)
 - This file should contain card race, cost and type condition formulas.
 - How should be calculation output, a json webservice to be consumed?
 - Which UI tech for deckbuilder? Angular?
