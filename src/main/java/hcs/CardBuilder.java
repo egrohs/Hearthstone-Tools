@@ -214,8 +214,7 @@ public class CardBuilder {
 				+ (System.currentTimeMillis() - ini) / 60000 + " minutes.");
 	}
 
-	//TODO public?
-	public void generateCardSynergies(Card c) {
+	private void generateCardSynergies(Card c) {
 		if (!c.isCalculada()) {
 			for (Sinergy<Tag> ts : tb.getTagsSynergies()) {
 				Tag tag1 = (Tag) ts.getE1();
@@ -316,7 +315,7 @@ public class CardBuilder {
 	private void readCardSinergies() {
 		Scanner sc = null;
 		try {
-			sc = new Scanner(new File(cl.getResource("output/sinergias.csv").getFile()));
+			sc = new Scanner(new File(cl.getResource("sinergias.csv").getFile()));
 		} catch (FileNotFoundException e) {
 			// TODO deve gera-lo...
 			e.printStackTrace();
@@ -344,10 +343,10 @@ public class CardBuilder {
 			sb.append(line + "\r\n");
 			System.out.println(line);
 		}
-		// EscreveArquivo.escreveArquivo("res/output/sinergias.csv", sb.toString());
+		// EscreveArquivo.escreveArquivo("sinergias.csv", sb.toString());
 		PrintWriter out = null;
 		try {
-			out = new PrintWriter(new File(cl.getResource("output/sinergias.csv").getFile()));
+			out = new PrintWriter(new File(cl.getResource("sinergias.csv").getFile()));
 			out.println(sb.toString());
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
