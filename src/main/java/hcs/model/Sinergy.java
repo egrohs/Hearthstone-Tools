@@ -15,21 +15,28 @@ import lombok.Data;
 public class Sinergy<T extends Entity> implements Comparable<Sinergy<T>> {
 	private Entity e1, e2;
 	private int freq;
-	private Float valor = 0f;
-	private String mechs;
+	private Float weight = 0f;
+	private String label, mechs;
 
 	public Sinergy(Entity e1, Entity e2, int freq, Float v, String mm) {
 		this.e1 = e1;
 		this.e2 = e2;
 		this.freq = freq;
-		this.valor = v;
+		this.weight = v;
 		this.mechs = mm;
+	}
+
+	public Sinergy(Entity e1, Entity e2, String label, Float v) {
+		this.e1 = e1;
+		this.e2 = e2;
+		this.weight = v;
+		this.label = label;
 	}
 
 	public Sinergy(Entity e1, Entity e2, float v, String mm) {
 		this.e1 = e1;
 		this.e2 = e2;
-		this.valor = v;
+		this.weight = v;
 		this.mechs = mm;
 	}
 
@@ -47,7 +54,7 @@ public class Sinergy<T extends Entity> implements Comparable<Sinergy<T>> {
 			return false;
 		Sinergy<T> s2 = (Sinergy<T>) obj;
 		// from here, must not test for nulls.
-		if (valor != s2.getValor())
+		if (weight != s2.getWeight())
 			return false;
 		if ((e1 != s2.getE1() || e2 != s2.getE2()) && e1 != s2.getE2())
 			return false;
@@ -61,9 +68,9 @@ public class Sinergy<T extends Entity> implements Comparable<Sinergy<T>> {
 		} else if (freq < o.freq) {
 			return 1;
 		}
-		if (valor > o.getValor()) {
+		if (weight > o.getWeight()) {
 			return -1;
-		} else if (valor < o.getValor()) {
+		} else if (weight < o.getWeight()) {
 			return 1;
 		}
 		return 0;

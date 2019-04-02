@@ -5,16 +5,12 @@ import lombok.Data;
 @Data
 //@EqualsAndHashCode(callSuper=true)
 public class Tag extends Entity {
-	private String regex, description, type, cost, attack, hp, sinergies;
+	private String regex, description, expr;
 
-	public Tag(String name, String regex, String type, String cost, String attack, String hp, String sinergies, String description) {
+	public Tag(String name, String regex, String expr, String description) {
 		this.name = name;
 		this.regex = regex;
-		this.type = type;
-		this.cost = cost;
-		this.attack = attack;
-		this.hp = hp;
-		this.sinergies = sinergies;
+		this.expr = expr;
 		this.description = description;
 	}
 

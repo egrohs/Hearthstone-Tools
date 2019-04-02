@@ -144,4 +144,32 @@ public class Card extends Entity {
 	public void incLoses() {
 		this.loses++;
 	}
+
+	/** Modify the expression replacing variables. */
+	// TODO 
+	public String replaceVars(String expr) {
+		String[] tokens = expr.split(" ");
+		for (int i = 0; i < tokens.length; i++) {
+			String t = tokens[i];
+			try {
+				Object r = this.getClass().getDeclaredField(t).get(this);
+				String o = r == null ? "1000" : r.toString();
+				if (o.matches("\\d+")) {
+					expr = expr.replaceFirst(t, o);
+				} else {
+					expr = expr.replaceFirst(t, "\"" + o + "\"");
+				}
+			} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
+				// TODO Auto-generated catch block
+				// e.printStackTrace();
+			}
+		}
+		return expr;
+	}
+
+	public static void main(String[] args) {
+		Card c = new Card("My card", "My card", null, null, null, "spell", null, null, null, null, null, null, null,
+				null);
+		System.out.println(c.replaceVars("type == \"spell\""));
+	}
 }

@@ -4,714 +4,844 @@
  */
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.junit.Test;
 
 import hcs.CardBuilder;
 import hcs.TagBuilder;
-import hcs.model.Card;
-import hcs.model.Card.CLASS;
-import hcs.model.Sinergy;
 
 public class CardsTest {
+
+//TODO fazer not asserts introspectivos, de forma que todas tags que as cartas nao tiverem devem ser geradas automaticamente. 
 	@Test
 	public void testCardsTags() {
 		CardBuilder cb = new CardBuilder();
-		//cb.printCardsTags(cutsa);
-		
-		//assertTrue(cb.containsTag(TagBuilder.getTags().get("ECHO")) == 13);
-		// 15 = MECH TEXT, 1 NON-MECH text but is mech, 96 MECHS
-		//assertTrue(cb.containsTag(TagBuilder.getTags().get("MECH")) == 111);
-		
-		//assertTrue(cb.containsTag(TagBuilder.getTags().get("ATTACK_MODIFY")) == 178);
-		//assertTrue(cb.containsTag(TagBuilder.getTags().get("GENERATE")) == 178);//153
-		
-		//assertTrue(CardBuilder.getCard("face collector").getTags().size() == 3);
-		assertTrue(CardBuilder.getCard("face collector").getTags().contains(TagBuilder.getTags().get("ECHO")));
-		assertTrue(CardBuilder.getCard("face collector").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));
-		assertTrue(CardBuilder.getCard("face collector").getTags().contains(TagBuilder.getTags().get("GENERATE")));
-
-		//assertTrue(CardBuilder.getCard("corpsetaker").getTags().size() == 5);
-		assertTrue(CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("DIVINE_SHIELD")));//[x]battlecry: gain taunt if your deck has a taunt minion. repeat for divine shield, lifesteal, windfury. -
-		assertTrue(CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("TAUNT")));//[x]battlecry: gain taunt if your deck has a taunt minion. repeat for divine shield, lifesteal, windfury. -
-		assertTrue(CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//[x]battlecry: gain taunt if your deck has a taunt minion. repeat for divine shield, lifesteal, windfury. -
-		assertTrue(CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("LIFESTEAL")));//[x]battlecry: gain taunt if your deck has a taunt minion. repeat for divine shield, lifesteal, windfury. -
-		assertTrue(CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("WINDFURY")));//[x]battlecry: gain taunt if your deck has a taunt minion. repeat for divine shield, lifesteal, windfury. -
-		//assertTrue(CardBuilder.getCard("jan'alai, the dragonhawk").getTags().size() == 4);
-		assertTrue(CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("HERO_POWER")));//[x]battlecry: if your hero power dealt 8 damage this game, summon ragnaros the firelord.@ ({0} left!)@ (ready!) - beast
-		assertTrue(CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//[x]battlecry: if your hero power dealt 8 damage this game, summon ragnaros the firelord.@ ({0} left!)@ (ready!) - beast
-assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//[x]battlecry: if your hero power dealt 8 damage this game, summon ragnaros the firelord.@ ({0} left!)@ (ready!) - beast
-//assertTrue("HERO_POWER");
-		assertTrue(CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("SUMMON")));//[x]battlecry: if your hero power dealt 8 damage this game, summon ragnaros the firelord.@ ({0} left!)@ (ready!) - beast
-		assertTrue(CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("BEAST")));//[x]battlecry: if your hero power dealt 8 damage this game, summon ragnaros the firelord.@ ({0} left!)@ (ready!) - beast
-		//assertTrue(CardBuilder.getCard("zandalari templar").getTags().size() == 4);
-assertTrue(CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("HEALTH_RESTORE")));
-		assertTrue(CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("TAUNT")));//[x]battlecry: if you've restored 10 health this game, gain +4/+4 and taunt.@ ({0} left!)@ (ready!) -
-		assertTrue(CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//[x]battlecry: if you've restored 10 health this game, gain +4/+4 and taunt.@ ({0} left!)@ (ready!) -
-assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//[x]battlecry: if you've restored 10 health this game, gain +4/+4 and taunt.@ ({0} left!)@ (ready!) -
-		//assertTrue(CardBuilder.getCard("shudderwock").getTags().size() == 1);// TODO cost less?
-		assertTrue(CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//[x]battlecry: repeat all other battlecries from cards you played this game (targets chosen randomly). -
-		//assertTrue(CardBuilder.getCard("tess greymane").getTags().size() == 1);// TODO cost less?
-		assertTrue(CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//[x]battlecry: replay every card from another class you've played this game (targets chosen randomly). -
-		//assertTrue(CardBuilder.getCard("enhance-o mechano").getTags().size() == 5);
-		assertTrue(CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("DIVINE_SHIELD")));//battlecry: give your other minions windfury, taunt, or divine shield (at random). - mechanical
-		assertTrue(CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("TAUNT")));//battlecry: give your other minions windfury, taunt, or divine shield (at random). - mechanical
-		assertTrue(CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//battlecry: give your other minions windfury, taunt, or divine shield (at random). - mechanical
-assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//battlecry: give your other minions windfury, taunt, or divine shield (at random). - mechanical
-		assertTrue(CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("MECH")));//battlecry: give your other minions windfury, taunt, or divine shield (at random). - mechanical
-		assertTrue(CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("WINDFURY")));//battlecry: give your other minions windfury, taunt, or divine shield (at random). - mechanical
-		//assertTrue(CardBuilder.getCard("master jouster").getTags().size() == 4);
-		assertTrue(CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("DIVINE_SHIELD")));//battlecry: reveal a minion in each deck. if yours costs more, gain taunt and divine shield. -
-// deve ser cost modify ou reduce? essa carta entra nisso?
-//assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("COST_MODIFY")));//battlecry: reveal a minion in each deck. if yours costs more, gain taunt and divine shield. -
-		//NECESSARIO TAG REVEAL???
-		assertTrue(CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("REVEAL")));//battlecry: reveal a minion in each deck. if yours costs more, gain taunt and divine shield. -
-		assertTrue(CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("TAUNT")));//battlecry: reveal a minion in each deck. if yours costs more, gain taunt and divine shield. -
-		assertTrue(CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//battlecry: reveal a minion in each deck. if yours costs more, gain taunt and divine shield. -
-		//assertTrue(CardBuilder.getCard("shaku, the collector").getTags().size() == 2);//TODO sinergia com windfury
-		assertTrue(CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("GENERATE")));//[x]stealth. whenever this attacks, add a random card to your hand (from your opponent's class). -
-		assertTrue(CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("STEALTH")));//[x]stealth. whenever this attacks, add a random card to your hand (from your opponent's class). -
-		//assertTrue(CardBuilder.getCard("gral, the shark").getTags().size() == 4);
-assertTrue(!CardBuilder.getCard("shirvallah, the tiger").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));
-		assertTrue(CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("DEATHRATTLE")));//[x]battlecry: eat a minion in your deck and gain its stats. deathrattle: add it to your hand. - beast
-		assertTrue(CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("GENERATE")));//[x]battlecry: eat a minion in your deck and gain its stats. deathrattle: add it to your hand. - beast
-		assertTrue(CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//[x]battlecry: eat a minion in your deck and gain its stats. deathrattle: add it to your hand. - beast
-		assertTrue(CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("BEAST")));//[x]battlecry: eat a minion in your deck and gain its stats. deathrattle: add it to your hand. - beast
-		//assertTrue(CardBuilder.getCard("shirvallah, the tiger").getTags().size() == 5);// TODO sinergia com spells
-		assertTrue(CardBuilder.getCard("shirvallah, the tiger").getTags().contains(TagBuilder.getTags().get("RUSH")));//[x]divine shield, rush, lifesteal costs (1) less for each mana you've spent on spells. - beast
-		assertTrue(CardBuilder.getCard("shirvallah, the tiger").getTags().contains(TagBuilder.getTags().get("DIVINE_SHIELD")));//[x]divine shield, rush, lifesteal costs (1) less for each mana you've spent on spells. - beast
-		assertTrue(CardBuilder.getCard("shirvallah, the tiger").getTags().contains(TagBuilder.getTags().get("COST_MODIFY")));//[x]divine shield, rush, lifesteal costs (1) less for each mana you've spent on spells. - beast
-assertTrue(!CardBuilder.getCard("shirvallah, the tiger").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//[x]divine shield, rush, lifesteal costs (1) less for each mana you've spent on spells. - beast
-		assertTrue(CardBuilder.getCard("shirvallah, the tiger").getTags().contains(TagBuilder.getTags().get("LIFESTEAL")));//[x]divine shield, rush, lifesteal costs (1) less for each mana you've spent on spells. - beast
-		assertTrue(CardBuilder.getCard("shirvallah, the tiger").getTags().contains(TagBuilder.getTags().get("BEAST")));//[x]divine shield, rush, lifesteal costs (1) less for each mana you've spent on spells. - beast
-		//assertTrue(CardBuilder.getCard("curious glimmerroot").getTags().size() == 2); //TODO GENERATE e/ou COPY? 
-		assertTrue(CardBuilder.getCard("curious glimmerroot").getTags().contains(TagBuilder.getTags().get("COPY")));//[x]battlecry: look at 3 cards. guess which one started in your opponent's deck to get a copy of it. -
-		assertTrue(CardBuilder.getCard("curious glimmerroot").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//[x]battlecry: look at 3 cards. guess which one started in your opponent's deck to get a copy of it. -
-assertTrue(!CardBuilder.getCard("curious glimmerroot").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//[x]battlecry: look at 3 cards. guess which one started in your opponent's deck to get a copy of it. -
-		//assertTrue(CardBuilder.getCard("lady in white").getTags().size() == 2);
-		assertTrue(CardBuilder.getCard("lady in white").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//[x]battlecry: cast 'inner fire' �on every minion in your deck� (set attack equal to health). -
-		assertTrue(CardBuilder.getCard("lady in white").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//[x]battlecry: cast 'inner fire' �on every minion in your deck� (set attack equal to health). -
-		//assertTrue(CardBuilder.getCard("yogg-saron, hope's end").getTags().size() == 1);//TODO CHEAP SPELLS
-		assertTrue(CardBuilder.getCard("yogg-saron, hope's end").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//battlecry: cast a random spell for each spell you've cast this game (targets chosen randomly). -
-//assertTrue(CardBuilder.getCard("spirit of the frog").getTags().size() == 2);// TODO (2) whenever cast a SPELL. Dificil eliminar o COST_MODIFY que contem "that cost"
-		assertTrue(CardBuilder.getCard("spirit of the frog").getTags().contains(TagBuilder.getTags().get("DRAW")));//[x]stealth for 1 turn. whenever you cast a spell, draw a spell from your deck that costs (1) more. -
-		assertTrue(CardBuilder.getCard("spirit of the frog").getTags().contains(TagBuilder.getTags().get("STEALTH")));//[x]stealth for 1 turn. whenever you cast a spell, draw a spell from your deck that costs (1) more. -
-assertTrue(!CardBuilder.getCard("spirit of the frog").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//[x]stealth for 1 turn. whenever you cast a spell, draw a spell from your deck that costs (1) more. -
-//assertTrue(!CardBuilder.getCard("spirit of the frog").getTags().contains(TagBuilder.getTags().get("COST_MODIFY")));//[x]stealth for 1 turn. whenever you cast a spell, draw a spell from your deck that costs (1) more. -
-		//assertTrue(CardBuilder.getCard("cult sorcerer").getTags().size() == 3);//TODO CHEAP? after you cast a SPELLS
-		assertTrue(CardBuilder.getCard("cult sorcerer").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//[x]spell damage +1 after you cast a spell, give your c'thun +1/+1 (wherever it is). -
-		assertTrue(CardBuilder.getCard("cult sorcerer").getTags().contains(TagBuilder.getTags().get("SPELL_DAMAGE")));//[x]spell damage +1 after you cast a spell, give your c'thun +1/+1 (wherever it is). -
-		assertTrue(CardBuilder.getCard("cult sorcerer").getTags().contains(TagBuilder.getTags().get("RITUAL")));//[x]spell damage +1 after you cast a spell, give your c'thun +1/+1 (wherever it is). -
-		//assertTrue(CardBuilder.getCard("mecha'thun").getTags().size() == 2);
-assertTrue(!CardBuilder.getCard("mecha'thun").getTags().contains(TagBuilder.getTags().get("DESTROY")));//[x]deathrattle: if you have no cards in your deck, hand, and battlefield, destroy the enemy hero. - mechanical
-		assertTrue(CardBuilder.getCard("mecha'thun").getTags().contains(TagBuilder.getTags().get("DEATHRATTLE")));//[x]deathrattle: if you have no cards in your deck, hand, and battlefield, destroy the enemy hero. - mechanical
-		assertTrue(CardBuilder.getCard("mecha'thun").getTags().contains(TagBuilder.getTags().get("MECH")));//[x]deathrattle: if you have no cards in your deck, hand, and battlefield, destroy the enemy hero. - mechanical
-		//assertTrue(CardBuilder.getCard("doomcaller").getTags().size() == 4);
-		assertTrue(CardBuilder.getCard("doomcaller").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//battlecry: give your c'thun +2/+2 (wherever it is). if it's dead, shuffle it into your deck. -
-		assertTrue(CardBuilder.getCard("doomcaller").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//battlecry: give your c'thun +2/+2 (wherever it is). if it's dead, shuffle it into your deck. -
-		assertTrue(CardBuilder.getCard("doomcaller").getTags().contains(TagBuilder.getTags().get("SHUFFLE")));//battlecry: give your c'thun +2/+2 (wherever it is). if it's dead, shuffle it into your deck. -
-		assertTrue(CardBuilder.getCard("doomcaller").getTags().contains(TagBuilder.getTags().get("RITUAL")));//battlecry: give your c'thun +2/+2 (wherever it is). if it's dead, shuffle it into your deck. -
-		//assertTrue(CardBuilder.getCard("spirit of the dead").getTags().size() == 4);
-assertTrue(CardBuilder.getCard("spirit of the dead").getTags().contains(TagBuilder.getTags().get("DEATHRATTLE")));//[x]stealth for 1 turn. after a friendly minion dies, shuffle a 1-cost copy of it into your deck. -
-assertTrue(!CardBuilder.getCard("spirit of the dead").getTags().contains(TagBuilder.getTags().get("COST_MODIFY")));//[x]stealth for 1 turn. after a friendly minion dies, shuffle a 1-cost copy of it into your deck. -
-		assertTrue(CardBuilder.getCard("spirit of the dead").getTags().contains(TagBuilder.getTags().get("COPY")));//[x]stealth for 1 turn. after a friendly minion dies, shuffle a 1-cost copy of it into your deck. -
-		assertTrue(CardBuilder.getCard("spirit of the dead").getTags().contains(TagBuilder.getTags().get("STEALTH")));//[x]stealth for 1 turn. after a friendly minion dies, shuffle a 1-cost copy of it into your deck. -
-assertTrue(!CardBuilder.getCard("spirit of the dead").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//[x]stealth for 1 turn. after a friendly minion dies, shuffle a 1-cost copy of it into your deck. -
-		assertTrue(CardBuilder.getCard("spirit of the dead").getTags().contains(TagBuilder.getTags().get("SHUFFLE")));//[x]stealth for 1 turn. after a friendly minion dies, shuffle a 1-cost copy of it into your deck. -
-		//assertTrue(CardBuilder.getCard("tol'vir stoneshaper").getTags().size() == 4);
-		assertTrue(CardBuilder.getCard("tol'vir stoneshaper").getTags().contains(TagBuilder.getTags().get("TAUNT")));//[x]battlecry: if you played an elemental last turn, gain �taunt and divine�shield. -
-assertTrue(CardBuilder.getCard("tol'vir stoneshaper").getTags().contains(TagBuilder.getTags().get("DIVINE_SHIELD")));//[x]battlecry: if you played an elemental last turn, gain �taunt and divine�shield. -
-		assertTrue(CardBuilder.getCard("tol'vir stoneshaper").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//[x]battlecry: if you played an elemental last turn, gain �taunt and divine�shield. -
-		assertTrue(CardBuilder.getCard("tol'vir stoneshaper").getTags().contains(TagBuilder.getTags().get("ELEMENTAL")));//[x]battlecry: if you played an elemental last turn, gain �taunt and divine�shield. -
-		//assertTrue(CardBuilder.getCard("bomb squad").getTags().size() == 4);
-//TODO assertTrue(!CardBuilder.getCard("bomb squad").getTags().contains(TagBuilder.getTags().get("DAMAGE_YOU???")));//[x]battlecry: deal 5 damage to an enemy minion. deathrattle: deal 5 damage to your hero. -		
-		assertTrue(CardBuilder.getCard("bomb squad").getTags().contains(TagBuilder.getTags().get("DAMAGE_ENEMIES")));//[x]battlecry: deal 5 damage to an enemy minion. deathrattle: deal 5 damage to your hero. -
-		assertTrue(CardBuilder.getCard("bomb squad").getTags().contains(TagBuilder.getTags().get("DEAL_DAMAGE")));//[x]battlecry: deal 5 damage to an enemy minion. deathrattle: deal 5 damage to your hero. -
-		assertTrue(CardBuilder.getCard("bomb squad").getTags().contains(TagBuilder.getTags().get("DEATHRATTLE")));//[x]battlecry: deal 5 damage to an enemy minion. deathrattle: deal 5 damage to your hero. -
-		assertTrue(CardBuilder.getCard("bomb squad").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//[x]battlecry: deal 5 damage to an enemy minion. deathrattle: deal 5 damage to your hero. -
-assertTrue(!CardBuilder.getCard("bomb squad").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//[x]battlecry: deal 5 damage to an enemy minion. deathrattle: deal 5 damage to your hero. -
-		//assertTrue(CardBuilder.getCard("countess ashmore").getTags().size() == 5);
-		assertTrue(CardBuilder.getCard("countess ashmore").getTags().contains(TagBuilder.getTags().get("RUSH")));//[x]battlecry: draw a rush, lifesteal, and deathrattle card from your deck. -
-		assertTrue(CardBuilder.getCard("countess ashmore").getTags().contains(TagBuilder.getTags().get("DEATHRATTLE")));//[x]battlecry: draw a rush, lifesteal, and deathrattle card from your deck. -
-		assertTrue(CardBuilder.getCard("countess ashmore").getTags().contains(TagBuilder.getTags().get("DRAW")));//[x]battlecry: draw a rush, lifesteal, and deathrattle card from your deck. -
-		assertTrue(CardBuilder.getCard("countess ashmore").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//[x]battlecry: draw a rush, lifesteal, and deathrattle card from your deck. -
-		assertTrue(CardBuilder.getCard("countess ashmore").getTags().contains(TagBuilder.getTags().get("LIFESTEAL")));//[x]battlecry: draw a rush, lifesteal, and deathrattle card from your deck. -
-		//assertTrue(CardBuilder.getCard("the darkness").getTags().size() == 3);
-		assertTrue(CardBuilder.getCard("the darkness").getTags().contains(TagBuilder.getTags().get("DRAW")));//[x]starts dormant. battlecry: shuffle 3 candles into the enemy deck. when drawn, this awakens. -
-		assertTrue(CardBuilder.getCard("the darkness").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//[x]starts dormant. battlecry: shuffle 3 candles into the enemy deck. when drawn, this awakens. -
-assertTrue(!CardBuilder.getCard("the darkness").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//[x]starts dormant. battlecry: shuffle 3 candles into the enemy deck. when drawn, this awakens. -
-		assertTrue(CardBuilder.getCard("the darkness").getTags().contains(TagBuilder.getTags().get("SHUFFLE")));//[x]starts dormant. battlecry: shuffle 3 candles into the enemy deck. when drawn, this awakens. -
-		assertTrue(CardBuilder.getCard("jade idol").getTags().contains(TagBuilder.getTags().get("COPY")));//choose one - summon a{1} {0} jade golem; or shuffle 3 copies of this card into your deck. -
-		assertTrue(CardBuilder.getCard("jade idol").getTags().contains(TagBuilder.getTags().get("JADE_GOLEM")));//choose one - summon a{1} {0} jade golem; or shuffle 3 copies of this card into your deck. -
-assertTrue(!CardBuilder.getCard("jade idol").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//choose one - summon a{1} {0} jade golem; or shuffle 3 copies of this card into your deck. -
-		assertTrue(CardBuilder.getCard("jade idol").getTags().contains(TagBuilder.getTags().get("SHUFFLE")));//choose one - summon a{1} {0} jade golem; or shuffle 3 copies of this card into your deck. -
-		assertTrue(CardBuilder.getCard("jade idol").getTags().contains(TagBuilder.getTags().get("CHOOSE_ONE")));//choose one - summon a{1} {0} jade golem; or shuffle 3 copies of this card into your deck. -
-		assertTrue(CardBuilder.getCard("jade idol").getTags().contains(TagBuilder.getTags().get("SUMMON")));//choose one - summon a{1} {0} jade golem; or shuffle 3 copies of this card into your deck. -
-		assertTrue(CardBuilder.getCard("leyline manipulator").getTags().contains(TagBuilder.getTags().get("COST_MODIFY")));//battlecry: if you're holding any cards that didn't start in your deck, reduce their cost by (2). - elemental
-		assertTrue(CardBuilder.getCard("leyline manipulator").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//battlecry: if you're holding any cards that didn't start in your deck, reduce their cost by (2). - elemental
-assertTrue(!CardBuilder.getCard("leyline manipulator").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//battlecry: if you're holding any cards that didn't start in your deck, reduce their cost by (2). - elemental
-		assertTrue(CardBuilder.getCard("leyline manipulator").getTags().contains(TagBuilder.getTags().get("ELEMENTAL")));//battlecry: if you're holding any cards that didn't start in your deck, reduce their cost by (2). - elemental
-		assertTrue(CardBuilder.getCard("blade of c'thun").getTags().contains(TagBuilder.getTags().get("DESTROY")));//battlecry: destroy a minion. add its attack and health to�your c'thun's (wherever it is). -
-assertTrue(!CardBuilder.getCard("blade of c'thun").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));
-		assertTrue(CardBuilder.getCard("blade of c'thun").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//battlecry: destroy a minion. add its attack and health to�your c'thun's (wherever it is). -
-		assertTrue(CardBuilder.getCard("blade of c'thun").getTags().contains(TagBuilder.getTags().get("RITUAL")));//battlecry: destroy a minion. add its attack and health to�your c'thun's (wherever it is). -
-		assertTrue(CardBuilder.getCard("genn greymane").getTags().contains(TagBuilder.getTags().get("COST_MODIFY")));//[x]start of game: if your deck has only even- cost cards, your starting hero power costs (1). -
-assertTrue(CardBuilder.getCard("genn greymane").getTags().contains(TagBuilder.getTags().get("EVEN")));
-		assertTrue(CardBuilder.getCard("genn greymane").getTags().contains(TagBuilder.getTags().get("START_GAME")));//[x]start of game: if your deck has only even- cost cards, your starting hero power costs (1). -
-		assertTrue(CardBuilder.getCard("genn greymane").getTags().contains(TagBuilder.getTags().get("HERO_POWER")));//[x]start of game: if your deck has only even- cost cards, your starting hero power costs (1). -
-assertTrue(!CardBuilder.getCard("genn greymane").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//[x]start of game: if your deck has only even- cost cards, your starting hero power costs (1). -
-		assertTrue(CardBuilder.getCard("seaforium bomber").getTags().contains(TagBuilder.getTags().get("DRAW")));//[x]battlecry: shuffle a bomb into your opponent's deck. when drawn, it explodes for 5 damage. -
-		assertTrue(CardBuilder.getCard("seaforium bomber").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//[x]battlecry: shuffle a bomb into your opponent's deck. when drawn, it explodes for 5 damage. -
-assertTrue(!CardBuilder.getCard("seaforium bomber").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//[x]battlecry: shuffle a bomb into your opponent's deck. when drawn, it explodes for 5 damage. -
-		assertTrue(CardBuilder.getCard("seaforium bomber").getTags().contains(TagBuilder.getTags().get("SHUFFLE")));//[x]battlecry: shuffle a bomb into your opponent's deck. when drawn, it explodes for 5 damage. -
-		assertTrue(CardBuilder.getCard("da undatakah").getTags().contains(TagBuilder.getTags().get("DEATHRATTLE")));//[x]battlecry: gain the deathrattle effects of 3 friendly minions that died this game. -
-		assertTrue(CardBuilder.getCard("da undatakah").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//[x]battlecry: gain the deathrattle effects of 3 friendly minions that died this game. -
-assertTrue(!CardBuilder.getCard("da undatakah").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//[x]battlecry: gain the deathrattle effects of 3 friendly minions that died this game. -
-		assertTrue(CardBuilder.getCard("frost lich jaina").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//[x]battlecry: summon a 3/6 water elemental. your elementals have lifesteal this game. -
-assertTrue(!CardBuilder.getCard("frost lich jaina").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//[x]battlecry: summon a 3/6 water elemental. your elementals have lifesteal this game. -
-		assertTrue(CardBuilder.getCard("frost lich jaina").getTags().contains(TagBuilder.getTags().get("LIFESTEAL")));//[x]battlecry: summon a 3/6 water elemental. your elementals have lifesteal this game. -
-		assertTrue(CardBuilder.getCard("frost lich jaina").getTags().contains(TagBuilder.getTags().get("SUMMON")));//[x]battlecry: summon a 3/6 water elemental. your elementals have lifesteal this game. -
-		assertTrue(CardBuilder.getCard("frost lich jaina").getTags().contains(TagBuilder.getTags().get("ELEMENTAL")));//[x]battlecry: summon a 3/6 water elemental. your elementals have lifesteal this game. -
-		assertTrue(CardBuilder.getCard("explosive runes").getTags().contains(TagBuilder.getTags().get("SECRET")));//secret: after your opponent plays a minion, deal 6 damage to it and any excess to their hero. -
-		assertTrue(CardBuilder.getCard("explosive runes").getTags().contains(TagBuilder.getTags().get("DEAL_DAMAGE")));//secret: after your opponent plays a minion, deal 6 damage to it and any excess to their hero. -
-assertTrue(!CardBuilder.getCard("explosive runes").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//secret: after your opponent plays a minion, deal 6 damage to it and any excess to their hero. -
-assertTrue(!CardBuilder.getCard("spirit of the tiger").getTags().contains(TagBuilder.getTags().get("COST_MODIFY")));//[x]stealth for 1 turn. after you cast a spell, summon a tiger with stats equal to its cost. -
-		assertTrue(CardBuilder.getCard("spirit of the tiger").getTags().contains(TagBuilder.getTags().get("STEALTH")));//[x]stealth for 1 turn. after you cast a spell, summon a tiger with stats equal to its cost. -
-assertTrue(!CardBuilder.getCard("spirit of the tiger").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//[x]stealth for 1 turn. after you cast a spell, summon a tiger with stats equal to its cost. -
-		assertTrue(CardBuilder.getCard("spirit of the tiger").getTags().contains(TagBuilder.getTags().get("SUMMON")));//[x]stealth for 1 turn. after you cast a spell, summon a tiger with stats equal to its cost. -
-		assertTrue(CardBuilder.getCard("myra rotspring").getTags().contains(TagBuilder.getTags().get("DISCOVER")));//[x]battlecry: discover a deathrattle minion. also gain its deathrattle. -
-		assertTrue(CardBuilder.getCard("myra rotspring").getTags().contains(TagBuilder.getTags().get("DEATHRATTLE")));//[x]battlecry: discover a deathrattle minion. also gain its deathrattle. -
-		assertTrue(CardBuilder.getCard("myra rotspring").getTags().contains(TagBuilder.getTags().get("GENERATE")));//[x]battlecry: discover a deathrattle minion. also gain its deathrattle. -
-		assertTrue(CardBuilder.getCard("myra rotspring").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//[x]battlecry: discover a deathrattle minion. also gain its deathrattle. -
-		assertTrue(CardBuilder.getCard("lilian voss").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//battlecry: replace spells in your hand with random spells (from your opponent's class). -
-		assertTrue(CardBuilder.getCard("lord godfrey").getTags().contains(TagBuilder.getTags().get("DAMAGE_ALL")));//[x]battlecry: deal 2 damage to all other minions. if any die, repeat this battlecry. -
-		assertTrue(CardBuilder.getCard("lord godfrey").getTags().contains(TagBuilder.getTags().get("DEAL_DAMAGE")));//[x]battlecry: deal 2 damage to all other minions. if any die, repeat this battlecry. -
-		assertTrue(CardBuilder.getCard("lord godfrey").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//[x]battlecry: deal 2 damage to all other minions. if any die, repeat this battlecry. -
-assertTrue(!CardBuilder.getCard("lord godfrey").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//[x]battlecry: deal 2 damage to all other minions. if any die, repeat this battlecry. -
-		assertTrue(CardBuilder.getCard("inkmaster solia").getTags().contains(TagBuilder.getTags().get("COST_MODIFY")));//[x]battlecry: if your deck has no duplicates, the next spell you cast this turn costs (0). -
-		assertTrue(CardBuilder.getCard("inkmaster solia").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//[x]battlecry: if your deck has no duplicates, the next spell you cast this turn costs (0). -
-assertTrue(!CardBuilder.getCard("inkmaster solia").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//[x]battlecry: if your deck has no duplicates, the next spell you cast this turn costs (0). -
-		assertTrue(!CardBuilder.getCard("tuskarr jouster").getTags().contains(TagBuilder.getTags().get("COST_MODIFY")));//battlecry: reveal a minion in each deck. if yours costs more, restore 7 health to your hero. -
-		assertTrue(CardBuilder.getCard("tuskarr jouster").getTags().contains(TagBuilder.getTags().get("REVEAL")));//battlecry: reveal a minion in each deck. if yours costs more, restore 7 health to your hero. -
-		assertTrue(CardBuilder.getCard("tuskarr jouster").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//battlecry: reveal a minion in each deck. if yours costs more, restore 7 health to your hero. -
-assertTrue(!CardBuilder.getCard("tuskarr jouster").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//battlecry: reveal a minion in each deck. if yours costs more, restore 7 health to your hero. -
-		assertTrue(CardBuilder.getCard("stone sentinel").getTags().contains(TagBuilder.getTags().get("TAUNT")));//battlecry: if you played an elemental last turn, summon two 2/3 elementals with taunt. - elemental
-		assertTrue(CardBuilder.getCard("stone sentinel").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//battlecry: if you played an elemental last turn, summon two 2/3 elementals with taunt. - elemental
-assertTrue(!CardBuilder.getCard("stone sentinel").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//battlecry: if you played an elemental last turn, summon two 2/3 elementals with taunt. - elemental
-		assertTrue(CardBuilder.getCard("stone sentinel").getTags().contains(TagBuilder.getTags().get("SUMMON")));//battlecry: if you played an elemental last turn, summon two 2/3 elementals with taunt. - elemental
-		assertTrue(CardBuilder.getCard("stone sentinel").getTags().contains(TagBuilder.getTags().get("ELEMENTAL")));//battlecry: if you played an elemental last turn, summon two 2/3 elementals with taunt. - elemental
-		assertTrue(CardBuilder.getCard("marin the fox").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//battlecry: summon a 0/8 treasure chest for your opponent. (break it for awesome loot!) -
-assertTrue(!CardBuilder.getCard("marin the fox").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//battlecry: summon a 0/8 treasure chest for your opponent. (break it for awesome loot!) -
-		assertTrue(CardBuilder.getCard("marin the fox").getTags().contains(TagBuilder.getTags().get("SUMMON")));//battlecry: summon a 0/8 treasure chest for your opponent. (break it for awesome loot!) -
-		assertTrue(CardBuilder.getCard("drakonid operative").getTags().contains(TagBuilder.getTags().get("DISCOVER")));//[x]battlecry: if you're holding a dragon, discover a card in �your opponent's deck. - dragon
-		assertTrue(CardBuilder.getCard("drakonid operative").getTags().contains(TagBuilder.getTags().get("DRAGON")));//[x]battlecry: if you're holding a dragon, discover a card in �your opponent's deck. - dragon
-		assertTrue(CardBuilder.getCard("drakonid operative").getTags().contains(TagBuilder.getTags().get("GENERATE")));//[x]battlecry: if you're holding a dragon, discover a card in �your opponent's deck. - dragon
-		assertTrue(CardBuilder.getCard("drakonid operative").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//[x]battlecry: if you're holding a dragon, discover a card in �your opponent's deck. - dragon
-		assertTrue(CardBuilder.getCard("twin emperor vek'lor").getTags().contains(TagBuilder.getTags().get("TAUNT")));//[x]taunt battlecry: if your c'thun has at least 10 attack, summon another emperor. -
-		assertTrue(CardBuilder.getCard("twin emperor vek'lor").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//[x]taunt battlecry: if your c'thun has at least 10 attack, summon another emperor. -
-assertTrue(!CardBuilder.getCard("twin emperor vek'lor").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//[x]taunt battlecry: if your c'thun has at least 10 attack, summon another emperor. -
-		assertTrue(CardBuilder.getCard("twin emperor vek'lor").getTags().contains(TagBuilder.getTags().get("SUMMON")));//[x]taunt battlecry: if your c'thun has at least 10 attack, summon another emperor. -
-		assertTrue(CardBuilder.getCard("twin emperor vek'lor").getTags().contains(TagBuilder.getTags().get("RITUAL")));//[x]taunt battlecry: if your c'thun has at least 10 attack, summon another emperor. -
-		assertTrue(CardBuilder.getCard("omega mind").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//[x]battlecry: if you have 10 mana crystals, your spells have lifesteal this turn. -
-assertTrue(!CardBuilder.getCard("omega mind").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//[x]battlecry: if you have 10 mana crystals, your spells have lifesteal this turn. -
-		assertTrue(CardBuilder.getCard("omega mind").getTags().contains(TagBuilder.getTags().get("LIFESTEAL")));//[x]battlecry: if you have 10 mana crystals, your spells have lifesteal this turn. -
-		assertTrue(CardBuilder.getCard("spirit of the shark").getTags().contains(TagBuilder.getTags().get("STEALTH")));//[x]stealth for 1 turn. your minions' battlecries ��and combos trigger twice.� -
-assertTrue(!CardBuilder.getCard("spirit of the shark").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//[x]stealth for 1 turn. your minions' battlecries ��and combos trigger twice.� -
-		assertTrue(CardBuilder.getCard("spirit of the shark").getTags().contains(TagBuilder.getTags().get("COMBO")));//[x]stealth for 1 turn. your minions' battlecries ��and combos trigger twice.� -
-assertTrue(!CardBuilder.getCard("spiteful summoner").getTags().contains(TagBuilder.getTags().get("COST_MODIFY")));//[x]battlecry: reveal a spell from your deck. summon a random minion with the same cost. -
-		assertTrue(CardBuilder.getCard("spiteful summoner").getTags().contains(TagBuilder.getTags().get("REVEAL")));//[x]battlecry: reveal a spell from your deck. summon a random minion with the same cost. -
-		assertTrue(CardBuilder.getCard("spiteful summoner").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//[x]battlecry: reveal a spell from your deck. summon a random minion with the same cost. -
-		assertTrue(CardBuilder.getCard("spiteful summoner").getTags().contains(TagBuilder.getTags().get("SUMMON")));//[x]battlecry: reveal a spell from your deck. summon a random minion with the same cost. -
-		assertTrue(CardBuilder.getCard("iron juggernaut").getTags().contains(TagBuilder.getTags().get("DRAW")));//battlecry: shuffle a mine into your opponent's deck. when drawn, it explodes for 10 damage. - mechanical
-		assertTrue(CardBuilder.getCard("iron juggernaut").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//battlecry: shuffle a mine into your opponent's deck. when drawn, it explodes for 10 damage. - mechanical
-assertTrue(!CardBuilder.getCard("iron juggernaut").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//battlecry: shuffle a mine into your opponent's deck. when drawn, it explodes for 10 damage. - mechanical
-		assertTrue(CardBuilder.getCard("iron juggernaut").getTags().contains(TagBuilder.getTags().get("SHUFFLE")));//battlecry: shuffle a mine into your opponent's deck. when drawn, it explodes for 10 damage. - mechanical
-		assertTrue(CardBuilder.getCard("iron juggernaut").getTags().contains(TagBuilder.getTags().get("MECH")));//battlecry: shuffle a mine into your opponent's deck. when drawn, it explodes for 10 damage. - mechanical
-		assertTrue(CardBuilder.getCard("finja, the flying star").getTags().contains(TagBuilder.getTags().get("STEALTH")));//[x]stealth whenever this attacks and kills a minion, summon 2 �murlocs from your deck. - murloc
-		assertTrue(CardBuilder.getCard("finja, the flying star").getTags().contains(TagBuilder.getTags().get("MURLOC")));//[x]stealth whenever this attacks and kills a minion, summon 2 �murlocs from your deck. - murloc
-assertTrue(!CardBuilder.getCard("finja, the flying star").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//[x]stealth whenever this attacks and kills a minion, summon 2 �murlocs from your deck. - murloc
-		assertTrue(CardBuilder.getCard("finja, the flying star").getTags().contains(TagBuilder.getTags().get("SUMMON")));//[x]stealth whenever this attacks and kills a minion, summon 2 �murlocs from your deck. - murloc
-		assertTrue(CardBuilder.getCard("gilnean royal guard").getTags().contains(TagBuilder.getTags().get("RUSH")));//[x]divine shield, rush each turn this is in your hand, swap its attack and health. -
-		assertTrue(CardBuilder.getCard("gilnean royal guard").getTags().contains(TagBuilder.getTags().get("DIVINE_SHIELD")));//[x]divine shield, rush each turn this is in your hand, swap its attack and health. -
-		assertTrue(CardBuilder.getCard("ancient shade").getTags().contains(TagBuilder.getTags().get("DRAW")));//battlecry: shuffle an 'ancient curse' into your deck that deals 7 damage to you when drawn. -
-		assertTrue(CardBuilder.getCard("ancient shade").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//battlecry: shuffle an 'ancient curse' into your deck that deals 7 damage to you when drawn. -
-assertTrue(!CardBuilder.getCard("ancient shade").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//battlecry: shuffle an 'ancient curse' into your deck that deals 7 damage to you when drawn. -
-		assertTrue(CardBuilder.getCard("ancient shade").getTags().contains(TagBuilder.getTags().get("SHUFFLE")));//battlecry: shuffle an 'ancient curse' into your deck that deals 7 damage to you when drawn. -
-		assertTrue(CardBuilder.getCard("spirit of the rhino").getTags().contains(TagBuilder.getTags().get("RUSH")));//stealth for 1 turn. your rush minions are immune the turn they're summoned. -
-		assertTrue(CardBuilder.getCard("spirit of the rhino").getTags().contains(TagBuilder.getTags().get("IMMUNE")));//stealth for 1 turn. your rush minions are immune the turn they're summoned. -
-		assertTrue(CardBuilder.getCard("spirit of the rhino").getTags().contains(TagBuilder.getTags().get("STEALTH")));//stealth for 1 turn. your rush minions are immune the turn they're summoned. -
-assertTrue(!CardBuilder.getCard("spirit of the rhino").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//stealth for 1 turn. your rush minions are immune the turn they're summoned. -
-		assertTrue(CardBuilder.getCard("spirit of the rhino").getTags().contains(TagBuilder.getTags().get("SUMMON")));//stealth for 1 turn. your rush minions are immune the turn they're summoned. -
-		assertTrue(CardBuilder.getCard("ice block").getTags().contains(TagBuilder.getTags().get("SECRET")));//secret: when your hero takes fatal damage, prevent it and become immune this turn. -
-		assertTrue(CardBuilder.getCard("ice block").getTags().contains(TagBuilder.getTags().get("IMMUNE")));//secret: when your hero takes fatal damage, prevent it and become immune this turn. -
-		assertTrue(CardBuilder.getCard("zul'jin").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//[x]battlecry: cast all spells you've played this game (targets chosen randomly). -
-		assertTrue(CardBuilder.getCard("steam surger").getTags().contains(TagBuilder.getTags().get("GENERATE")));//[x]battlecry: if you played an elemental last turn, add a 'flame geyser' to your hand. - elemental
-		assertTrue(CardBuilder.getCard("steam surger").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//[x]battlecry: if you played an elemental last turn, add a 'flame geyser' to your hand. - elemental
-		assertTrue(CardBuilder.getCard("steam surger").getTags().contains(TagBuilder.getTags().get("ELEMENTAL")));//[x]battlecry: if you played an elemental last turn, add a 'flame geyser' to your hand. - elemental
-assertTrue(!CardBuilder.getCard("geosculptor yip").getTags().contains(TagBuilder.getTags().get("COST_MODIFY")));//at the end of your turn, summon a random minion with�cost�equal�to�your armor (up to 10). -
-assertTrue(!CardBuilder.getCard("geosculptor yip").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//at the end of your turn, summon a random minion with�cost�equal�to�your armor (up to 10). -
-		assertTrue(CardBuilder.getCard("geosculptor yip").getTags().contains(TagBuilder.getTags().get("SUMMON")));//at the end of your turn, summon a random minion with�cost�equal�to�your armor (up to 10). -
-		assertTrue(CardBuilder.getCard("chillmaw").getTags().contains(TagBuilder.getTags().get("DAMAGE_ALL")));//[x]taunt deathrattle: if you're holding a dragon, deal 3 damage to all minions. - dragon
-		assertTrue(CardBuilder.getCard("chillmaw").getTags().contains(TagBuilder.getTags().get("DEAL_DAMAGE")));//[x]taunt deathrattle: if you're holding a dragon, deal 3 damage to all minions. - dragon
-		assertTrue(CardBuilder.getCard("chillmaw").getTags().contains(TagBuilder.getTags().get("DRAGON")));//[x]taunt deathrattle: if you're holding a dragon, deal 3 damage to all minions. - dragon
-		assertTrue(CardBuilder.getCard("chillmaw").getTags().contains(TagBuilder.getTags().get("DEATHRATTLE")));//[x]taunt deathrattle: if you're holding a dragon, deal 3 damage to all minions. - dragon
-		assertTrue(CardBuilder.getCard("chillmaw").getTags().contains(TagBuilder.getTags().get("TAUNT")));//[x]taunt deathrattle: if you're holding a dragon, deal 3 damage to all minions. - dragon
-assertTrue(!CardBuilder.getCard("chillmaw").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//[x]taunt deathrattle: if you're holding a dragon, deal 3 damage to all minions. - dragon
-		assertTrue(CardBuilder.getCard("crazed worshipper").getTags().contains(TagBuilder.getTags().get("TAUNT")));//taunt. whenever this minion takes damage, give your c'thun +1/+1 (wherever it is). -
-		assertTrue(CardBuilder.getCard("crazed worshipper").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//taunt. whenever this minion takes damage, give your c'thun +1/+1 (wherever it is). -
-		assertTrue(CardBuilder.getCard("crazed worshipper").getTags().contains(TagBuilder.getTags().get("RITUAL")));//taunt. whenever this minion takes damage, give your c'thun +1/+1 (wherever it is). -
-assertTrue(!CardBuilder.getCard("glitter moth").getTags().contains(TagBuilder.getTags().get("COST_MODIFY")));//battlecry: if your deck has only odd-cost cards, double the health of your other minions. - beast
-		assertTrue(CardBuilder.getCard("glitter moth").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//battlecry: if your deck has only odd-cost cards, double the health of your other minions. - beast
-assertTrue(!CardBuilder.getCard("glitter moth").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//battlecry: if your deck has only odd-cost cards, double the health of your other minions. - beast
-		assertTrue(CardBuilder.getCard("glitter moth").getTags().contains(TagBuilder.getTags().get("ODD")));//battlecry: if your deck has only odd-cost cards, double the health of your other minions. - beast
-		assertTrue(CardBuilder.getCard("glitter moth").getTags().contains(TagBuilder.getTags().get("BEAST")));//battlecry: if your deck has only odd-cost cards, double the health of your other minions. - beast
-		assertTrue(CardBuilder.getCard("rattling rascal").getTags().contains(TagBuilder.getTags().get("DEATHRATTLE")));//[x]battlecry: summon a 5/5 skeleton. deathrattle: summon one for your opponent. -
-		assertTrue(CardBuilder.getCard("rattling rascal").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//[x]battlecry: summon a 5/5 skeleton. deathrattle: summon one for your opponent. -
-assertTrue(!CardBuilder.getCard("rattling rascal").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//[x]battlecry: summon a 5/5 skeleton. deathrattle: summon one for your opponent. -
-		assertTrue(CardBuilder.getCard("rattling rascal").getTags().contains(TagBuilder.getTags().get("SUMMON")));//[x]battlecry: summon a 5/5 skeleton. deathrattle: summon one for your opponent. -
-		assertTrue(CardBuilder.getCard("tinkmaster overspark").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//[x]battlecry: transform another random minion into a 5/5 devilsaur or a 1/1 squirrel. -
-assertTrue(!CardBuilder.getCard("tinkmaster overspark").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//[x]battlecry: transform another random minion into a 5/5 devilsaur or a 1/1 squirrel. -
-		assertTrue(CardBuilder.getCard("tinkmaster overspark").getTags().contains(TagBuilder.getTags().get("TRANSFORM")));//[x]battlecry: transform another random minion into a 5/5 devilsaur or a 1/1 squirrel. -
-assertTrue(!CardBuilder.getCard("the skeleton knight").getTags().contains(TagBuilder.getTags().get("COST_MODIFY")));//deathrattle: reveal a minion in each deck. if yours costs more, return this to your hand. -
-		assertTrue(CardBuilder.getCard("the skeleton knight").getTags().contains(TagBuilder.getTags().get("DEATHRATTLE")));//deathrattle: reveal a minion in each deck. if yours costs more, return this to your hand. -
-		assertTrue(CardBuilder.getCard("the skeleton knight").getTags().contains(TagBuilder.getTags().get("REVEAL")));//deathrattle: reveal a minion in each deck. if yours costs more, return this to your hand. -
-		assertTrue(CardBuilder.getCard("the skeleton knight").getTags().contains(TagBuilder.getTags().get("RETURN_TO_HAND")));//deathrattle: reveal a minion in each deck. if yours costs more, return this to your hand. -
-		assertTrue(CardBuilder.getCard("the lich king").getTags().contains(TagBuilder.getTags().get("GENERATE")));//[x]taunt at the end of your turn, add a random death knight card to your hand. -
-		assertTrue(CardBuilder.getCard("the lich king").getTags().contains(TagBuilder.getTags().get("TAUNT")));//[x]taunt at the end of your turn, add a random death knight card to your hand. -
-		assertTrue(CardBuilder.getCard("twilight acolyte").getTags().contains(TagBuilder.getTags().get("DRAGON")));//battlecry: if you're holding a dragon, swap this minion's attack with another minion's. -
-		assertTrue(CardBuilder.getCard("twilight acolyte").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//battlecry: if you're holding a dragon, swap this minion's attack with another minion's. -
-		assertTrue(CardBuilder.getCard("dragoncaller alanna").getTags().contains(TagBuilder.getTags().get("COST_MODIFY")));//battlecry: summon a 5/5 dragon for each spell you cast this game that costs (5) or more. -
-		assertTrue(CardBuilder.getCard("dragoncaller alanna").getTags().contains(TagBuilder.getTags().get("DRAGON")));//battlecry: summon a 5/5 dragon for each spell you cast this game that costs (5) or more. -
-		assertTrue(CardBuilder.getCard("dragoncaller alanna").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//battlecry: summon a 5/5 dragon for each spell you cast this game that costs (5) or more. -
-assertTrue(!CardBuilder.getCard("dragoncaller alanna").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//battlecry: summon a 5/5 dragon for each spell you cast this game that costs (5) or more. -
-		assertTrue(CardBuilder.getCard("dragoncaller alanna").getTags().contains(TagBuilder.getTags().get("SUMMON")));//battlecry: summon a 5/5 dragon for each spell you cast this game that costs (5) or more. -
-		assertTrue(CardBuilder.getCard("cenarius").getTags().contains(TagBuilder.getTags().get("TAUNT")));//choose one - give your other minions +2/+2; or summon two 2/2 treants with taunt. -
-		assertTrue(CardBuilder.getCard("cenarius").getTags().contains(TagBuilder.getTags().get("TREANTS")));//choose one - give your other minions +2/+2; or summon two 2/2 treants with taunt. -
-		assertTrue(CardBuilder.getCard("cenarius").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//choose one - give your other minions +2/+2; or summon two 2/2 treants with taunt. -
-		assertTrue(CardBuilder.getCard("cenarius").getTags().contains(TagBuilder.getTags().get("CHOOSE_ONE")));//choose one - give your other minions +2/+2; or summon two 2/2 treants with taunt. -
-		assertTrue(CardBuilder.getCard("cenarius").getTags().contains(TagBuilder.getTags().get("SUMMON")));//choose one - give your other minions +2/+2; or summon two 2/2 treants with taunt. -
-		assertTrue(CardBuilder.getCard("druid of the saber").getTags().contains(TagBuilder.getTags().get("STEALTH")));//[x]choose one - transform into a 2/1 with charge; or a 3/2 with stealth. -
-		assertTrue(CardBuilder.getCard("druid of the saber").getTags().contains(TagBuilder.getTags().get("CHARGE")));//[x]choose one - transform into a 2/1 with charge; or a 3/2 with stealth. -
-assertTrue(!CardBuilder.getCard("druid of the saber").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//[x]choose one - transform into a 2/1 with charge; or a 3/2 with stealth. -
-		assertTrue(CardBuilder.getCard("druid of the saber").getTags().contains(TagBuilder.getTags().get("CHOOSE_ONE")));//[x]choose one - transform into a 2/1 with charge; or a 3/2 with stealth. -
-		assertTrue(CardBuilder.getCard("druid of the saber").getTags().contains(TagBuilder.getTags().get("TRANSFORM")));//[x]choose one - transform into a 2/1 with charge; or a 3/2 with stealth. -
-		assertTrue(CardBuilder.getCard("blood imp").getTags().contains(TagBuilder.getTags().get("STEALTH")));//[x] stealth. at the end of your turn, give another random friendly minion +1 health. - demon
-		assertTrue(CardBuilder.getCard("blood imp").getTags().contains(TagBuilder.getTags().get("DEMON")));//[x] stealth. at the end of your turn, give another random friendly minion +1 health. - demon
-assertTrue(!CardBuilder.getCard("blood imp").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//[x] stealth. at the end of your turn, give another random friendly minion +1 health. - demon
-		assertTrue(CardBuilder.getCard("splintergraft").getTags().contains(TagBuilder.getTags().get("COST_MODIFY")));//[x]battlecry: choose a friendly minion. add a 10/10 copy to your hand that costs (10). -
-		assertTrue(CardBuilder.getCard("splintergraft").getTags().contains(TagBuilder.getTags().get("COPY")));//[x]battlecry: choose a friendly minion. add a 10/10 copy to your hand that costs (10). -
-		assertTrue(CardBuilder.getCard("splintergraft").getTags().contains(TagBuilder.getTags().get("GENERATE")));//[x]battlecry: choose a friendly minion. add a 10/10 copy to your hand that costs (10). -
-		assertTrue(CardBuilder.getCard("splintergraft").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//[x]battlecry: choose a friendly minion. add a 10/10 copy to your hand that costs (10). -
-assertTrue(!CardBuilder.getCard("splintergraft").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//[x]battlecry: choose a friendly minion. add a 10/10 copy to your hand that costs (10). -
-		assertTrue(CardBuilder.getCard("tomb lurker").getTags().contains(TagBuilder.getTags().get("DEATHRATTLE")));//[x]battlecry: add a random deathrattle minion that died this game to your hand. -
-		assertTrue(CardBuilder.getCard("tomb lurker").getTags().contains(TagBuilder.getTags().get("GENERATE")));//[x]battlecry: add a random deathrattle minion that died this game to your hand. -
-		assertTrue(CardBuilder.getCard("tomb lurker").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//[x]battlecry: add a random deathrattle minion that died this game to your hand. -
-//COSTS do enemy tb?
-		assertTrue(CardBuilder.getCard("freezing trap").getTags().contains(TagBuilder.getTags().get("COST_MODIFY")));//secret: when an enemy minion attacks, return it to its owner's hand. it costs (2) more. -
-//return ??
-		assertTrue(CardBuilder.getCard("freezing trap").getTags().contains(TagBuilder.getTags().get("SECRET")));//secret: when an enemy minion attacks, return it to its owner's hand. it costs (2) more. -
-assertTrue(!CardBuilder.getCard("freezing trap").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//secret: when an enemy minion attacks, return it to its owner's hand. it costs (2) more. -
-		assertTrue(CardBuilder.getCard("raza the chained").getTags().contains(TagBuilder.getTags().get("COST_MODIFY")));//[x] battlecry: if your deck has no duplicates, your hero power costs (1) this game. -
-		assertTrue(CardBuilder.getCard("raza the chained").getTags().contains(TagBuilder.getTags().get("HERO_POWER")));//[x] battlecry: if your deck has no duplicates, your hero power costs (1) this game. -
-		assertTrue(CardBuilder.getCard("raza the chained").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//[x] battlecry: if your deck has no duplicates, your hero power costs (1) this game. -
-assertTrue(!CardBuilder.getCard("raza the chained").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//[x] battlecry: if your deck has no duplicates, your hero power costs (1) this game. -
-		assertTrue(CardBuilder.getCard("lone champion").getTags().contains(TagBuilder.getTags().get("DIVINE_SHIELD")));//battlecry: if you control no other minions, gain taunt and divine shield. -
-		assertTrue(CardBuilder.getCard("lone champion").getTags().contains(TagBuilder.getTags().get("TAUNT")));//battlecry: if you control no other minions, gain taunt and divine shield. -
-		assertTrue(CardBuilder.getCard("lone champion").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//battlecry: if you control no other minions, gain taunt and divine shield. -
-		assertTrue(CardBuilder.getCard("mind control tech").getTags().contains(TagBuilder.getTags().get("CONTROL")));//[x]battlecry: if your opponent has 4 or more minions, take control of one at random. -
-		assertTrue(CardBuilder.getCard("mind control tech").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//[x]battlecry: if your opponent has 4 or more minions, take control of one at random. -
-assertTrue(!CardBuilder.getCard("mind control tech").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//[x]battlecry: if your opponent has 4 or more minions, take control of one at random. -
-		assertTrue(CardBuilder.getCard("lesser amethyst spellstone").getTags().contains(TagBuilder.getTags().get("DEAL_DAMAGE")));//lifesteal. deal 3 damage to a minion. (take damage from your cards to upgrade.) -
-assertTrue(!CardBuilder.getCard("lesser amethyst spellstone").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//lifesteal. deal 3 damage to a minion. (take damage from your cards to upgrade.) -
-		assertTrue(CardBuilder.getCard("lesser amethyst spellstone").getTags().contains(TagBuilder.getTags().get("LIFESTEAL")));//lifesteal. deal 3 damage to a minion. (take damage from your cards to upgrade.) -
-		assertTrue(CardBuilder.getCard("shellshifter").getTags().contains(TagBuilder.getTags().get("STEALTH")));//[x]choose one - transform into a 5/3 with stealth; or a 3/5 with taunt. -
-		assertTrue(CardBuilder.getCard("shellshifter").getTags().contains(TagBuilder.getTags().get("TAUNT")));//[x]choose one - transform into a 5/3 with stealth; or a 3/5 with taunt. -
-assertTrue(!CardBuilder.getCard("shellshifter").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//[x]choose one - transform into a 5/3 with stealth; or a 3/5 with taunt. -
-		assertTrue(CardBuilder.getCard("shellshifter").getTags().contains(TagBuilder.getTags().get("CHOOSE_ONE")));//[x]choose one - transform into a 5/3 with stealth; or a 3/5 with taunt. -
-		assertTrue(CardBuilder.getCard("shellshifter").getTags().contains(TagBuilder.getTags().get("TRANSFORM")));//[x]choose one - transform into a 5/3 with stealth; or a 3/5 with taunt. -
-assertTrue(!CardBuilder.getCard("prince liam").getTags().contains(TagBuilder.getTags().get("COST_MODIFY")));//[x]battlecry: transform all 1-cost cards in your deck �into legendary minions. -
-		assertTrue(CardBuilder.getCard("prince liam").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//[x]battlecry: transform all 1-cost cards in your deck �into legendary minions. -
-assertTrue(!CardBuilder.getCard("prince liam").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//[x]battlecry: transform all 1-cost cards in your deck �into legendary minions. -
-		assertTrue(CardBuilder.getCard("prince liam").getTags().contains(TagBuilder.getTags().get("TRANSFORM")));//[x]battlecry: transform all 1-cost cards in your deck �into legendary minions. -
-		assertTrue(CardBuilder.getCard("ivory knight").getTags().contains(TagBuilder.getTags().get("DISCOVER")));//[x]battlecry: discover a spell. restore health to your hero equal to its cost. -
-assertTrue(!CardBuilder.getCard("ivory knight").getTags().contains(TagBuilder.getTags().get("COST_MODIFY")));//[x]battlecry: discover a spell. restore health to your hero equal to its cost. -
-		assertTrue(CardBuilder.getCard("ivory knight").getTags().contains(TagBuilder.getTags().get("GENERATE")));//[x]battlecry: discover a spell. restore health to your hero equal to its cost. -
-		assertTrue(CardBuilder.getCard("ivory knight").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//[x]battlecry: discover a spell. restore health to your hero equal to its cost. -
-		assertTrue(CardBuilder.getCard("servant of yogg-saron").getTags().contains(TagBuilder.getTags().get("COST_MODIFY")));//battlecry: cast a random spell that costs (5) or less (targets chosen randomly). -
-		assertTrue(CardBuilder.getCard("servant of yogg-saron").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//battlecry: cast a random spell that costs (5) or less (targets chosen randomly). -
-assertTrue(!CardBuilder.getCard("servant of yogg-saron").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//battlecry: cast a random spell that costs (5) or less (targets chosen randomly). -
-//assertTrue(CardBuilder.getCard("mimiron's head").getTags().contains(TagBuilder.getTags().get("DESTROY")));//at the start of your turn, if you have at least 3 mechs, destroy them all and form v-07-tr-0n. - mechanical
-assertTrue(!CardBuilder.getCard("mimiron's head").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//at the start of your turn, if you have at least 3 mechs, destroy them all and form v-07-tr-0n. - mechanical
-		assertTrue(CardBuilder.getCard("mimiron's head").getTags().contains(TagBuilder.getTags().get("MECH")));//at the start of your turn, if you have at least 3 mechs, destroy them all and form v-07-tr-0n. - mechanical
-		assertTrue(CardBuilder.getCard("druid of the claw").getTags().contains(TagBuilder.getTags().get("CHARGE")));//[x]choose one - transform into a 4/4 with charge; or a 4/6 with taunt. -
-		assertTrue(CardBuilder.getCard("druid of the claw").getTags().contains(TagBuilder.getTags().get("TAUNT")));//[x]choose one - transform into a 4/4 with charge; or a 4/6 with taunt. -
-assertTrue(!CardBuilder.getCard("druid of the claw").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//[x]choose one - transform into a 4/4 with charge; or a 4/6 with taunt. -
-		assertTrue(CardBuilder.getCard("druid of the claw").getTags().contains(TagBuilder.getTags().get("CHOOSE_ONE")));//[x]choose one - transform into a 4/4 with charge; or a 4/6 with taunt. -
-		assertTrue(CardBuilder.getCard("druid of the claw").getTags().contains(TagBuilder.getTags().get("TRANSFORM")));//[x]choose one - transform into a 4/4 with charge; or a 4/6 with taunt. -
-		assertTrue(CardBuilder.getCard("c'thun").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//battlecry: deal damage equal to this minion's attack randomly split among all enemies. -
-assertTrue(!CardBuilder.getCard("black cat").getTags().contains(TagBuilder.getTags().get("COST_MODIFY")));//spell damage +1 battlecry: if your deck has only odd-cost cards, draw a card. - beast
-		assertTrue(CardBuilder.getCard("black cat").getTags().contains(TagBuilder.getTags().get("DRAW")));//spell damage +1 battlecry: if your deck has only odd-cost cards, draw a card. - beast
-		assertTrue(CardBuilder.getCard("black cat").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//spell damage +1 battlecry: if your deck has only odd-cost cards, draw a card. - beast
-assertTrue(!CardBuilder.getCard("black cat").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//spell damage +1 battlecry: if your deck has only odd-cost cards, draw a card. - beast
-		assertTrue(CardBuilder.getCard("black cat").getTags().contains(TagBuilder.getTags().get("SPELL_DAMAGE")));//spell damage +1 battlecry: if your deck has only odd-cost cards, draw a card. - beast
-		assertTrue(CardBuilder.getCard("black cat").getTags().contains(TagBuilder.getTags().get("ODD")));//spell damage +1 battlecry: if your deck has only odd-cost cards, draw a card. - beast
-		assertTrue(CardBuilder.getCard("black cat").getTags().contains(TagBuilder.getTags().get("BEAST")));//spell damage +1 battlecry: if your deck has only odd-cost cards, draw a card. - beast
-		assertTrue(CardBuilder.getCard("king togwaggle").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//[x]battlecry: swap decks with your opponent. give them a ransom spell to swap back. -
-assertTrue(!CardBuilder.getCard("king togwaggle").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//[x]battlecry: swap decks with your opponent. give them a ransom spell to swap back. -
-		assertTrue(CardBuilder.getCard("fireworks tech").getTags().contains(TagBuilder.getTags().get("DEATHRATTLE")));//[x]battlecry: give a friendly mech +1/+1. if it has deathrattle, trigger it. -
-		assertTrue(CardBuilder.getCard("fireworks tech").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//[x]battlecry: give a friendly mech +1/+1. if it has deathrattle, trigger it. -
-		assertTrue(CardBuilder.getCard("fireworks tech").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//[x]battlecry: give a friendly mech +1/+1. if it has deathrattle, trigger it. -
-		assertTrue(CardBuilder.getCard("high priestess jeklik").getTags().contains(TagBuilder.getTags().get("COPY")));//[x]taunt, lifesteal when you discard this, add 2 copies of it to your hand. -
-		assertTrue(CardBuilder.getCard("high priestess jeklik").getTags().contains(TagBuilder.getTags().get("GENERATE")));//[x]taunt, lifesteal when you discard this, add 2 copies of it to your hand. -
-		assertTrue(CardBuilder.getCard("high priestess jeklik").getTags().contains(TagBuilder.getTags().get("TAUNT")));//[x]taunt, lifesteal when you discard this, add 2 copies of it to your hand. -
-assertTrue(!CardBuilder.getCard("high priestess jeklik").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//[x]taunt, lifesteal when you discard this, add 2 copies of it to your hand. -
-		assertTrue(CardBuilder.getCard("high priestess jeklik").getTags().contains(TagBuilder.getTags().get("LIFESTEAL")));//[x]taunt, lifesteal when you discard this, add 2 copies of it to your hand. -
-		assertTrue(CardBuilder.getCard("the voraxx").getTags().contains(TagBuilder.getTags().get("COPY")));//[x]after you cast a spell on this minion, summon a 1/1 plant and cast another copy on it. -
-assertTrue(!CardBuilder.getCard("the voraxx").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//[x]after you cast a spell on this minion, summon a 1/1 plant and cast another copy on it. -
-		assertTrue(CardBuilder.getCard("the voraxx").getTags().contains(TagBuilder.getTags().get("SUMMON")));//[x]after you cast a spell on this minion, summon a 1/1 plant and cast another copy on it. -
-		assertTrue(CardBuilder.getCard("belligerent gnome").getTags().contains(TagBuilder.getTags().get("TAUNT")));//[x]taunt battlecry: if your opponent has 2 or more minions, gain +1 attack. -
-		assertTrue(CardBuilder.getCard("belligerent gnome").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//[x]taunt battlecry: if your opponent has 2 or more minions, gain +1 attack. -
-assertTrue(!CardBuilder.getCard("belligerent gnome").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//[x]taunt battlecry: if your opponent has 2 or more minions, gain +1 attack. -
-		assertTrue(CardBuilder.getCard("book wyrm").getTags().contains(TagBuilder.getTags().get("DESTROY")));//battlecry: if you're holding a dragon, destroy an enemy minion with 3 or less attack. - dragon
-		assertTrue(CardBuilder.getCard("book wyrm").getTags().contains(TagBuilder.getTags().get("DRAGON")));//battlecry: if you're holding a dragon, destroy an enemy minion with 3 or less attack. - dragon
-		assertTrue(CardBuilder.getCard("book wyrm").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//battlecry: if you're holding a dragon, destroy an enemy minion with 3 or less attack. - dragon
-assertTrue(!CardBuilder.getCard("book wyrm").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//battlecry: if you're holding a dragon, destroy an enemy minion with 3 or less attack. - dragon
-		assertTrue(CardBuilder.getCard("malfurion the pestilent").getTags().contains(TagBuilder.getTags().get("TAUNT")));//[x]choose one - summon 2 poisonous spiders; or 2 scarabs with taunt. -
-assertTrue(!CardBuilder.getCard("malfurion the pestilent").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//[x]choose one - summon 2 poisonous spiders; or 2 scarabs with taunt. -
-		assertTrue(CardBuilder.getCard("malfurion the pestilent").getTags().contains(TagBuilder.getTags().get("CHOOSE_ONE")));//[x]choose one - summon 2 poisonous spiders; or 2 scarabs with taunt. -
-		assertTrue(CardBuilder.getCard("malfurion the pestilent").getTags().contains(TagBuilder.getTags().get("SUMMON")));//[x]choose one - summon 2 poisonous spiders; or 2 scarabs with taunt. -
-		assertTrue(CardBuilder.getCard("misdirection").getTags().contains(TagBuilder.getTags().get("SECRET")));//secret: when an enemy attacks your hero, instead it attacks another random character. -
-		assertTrue(CardBuilder.getCard("deathlord").getTags().contains(TagBuilder.getTags().get("DEATHRATTLE")));//taunt. deathrattle: your opponent puts a minion from their deck into the battlefield. -
-		assertTrue(CardBuilder.getCard("deathlord").getTags().contains(TagBuilder.getTags().get("TAUNT")));//taunt. deathrattle: your opponent puts a minion from their deck into the battlefield. -
-		assertTrue(CardBuilder.getCard("ozruk").getTags().contains(TagBuilder.getTags().get("TAUNT")));//[x]taunt battlecry: gain +5 health for each elemental you played last turn. - elemental
-		assertTrue(CardBuilder.getCard("ozruk").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//[x]taunt battlecry: gain +5 health for each elemental you played last turn. - elemental
-assertTrue(!CardBuilder.getCard("ozruk").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//[x]taunt battlecry: gain +5 health for each elemental you played last turn. - elemental
-		assertTrue(CardBuilder.getCard("ozruk").getTags().contains(TagBuilder.getTags().get("ELEMENTAL")));//[x]taunt battlecry: gain +5 health for each elemental you played last turn. - elemental
-		assertTrue(CardBuilder.getCard("star aligner").getTags().contains(TagBuilder.getTags().get("DAMAGE_ENEMIES")));//[x]battlecry: if you control 3 minions with 7 health, deal 7 damage to all enemies. -
-		assertTrue(CardBuilder.getCard("star aligner").getTags().contains(TagBuilder.getTags().get("DAMAGE_ALL")));//[x]battlecry: if you control 3 minions with 7 health, deal 7 damage to all enemies. -
-		assertTrue(CardBuilder.getCard("star aligner").getTags().contains(TagBuilder.getTags().get("DEAL_DAMAGE")));//[x]battlecry: if you control 3 minions with 7 health, deal 7 damage to all enemies. -
-		assertTrue(CardBuilder.getCard("star aligner").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//[x]battlecry: if you control 3 minions with 7 health, deal 7 damage to all enemies. -
-assertTrue(!CardBuilder.getCard("star aligner").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//[x]battlecry: if you control 3 minions with 7 health, deal 7 damage to all enemies. -
-		assertTrue(CardBuilder.getCard("fal'dorei strider").getTags().contains(TagBuilder.getTags().get("DRAW")));//[x]battlecry: shuffle 3 ambushes into your deck. when drawn, summon a 4/4 spider. -
-		assertTrue(CardBuilder.getCard("fal'dorei strider").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//[x]battlecry: shuffle 3 ambushes into your deck. when drawn, summon a 4/4 spider. -
-assertTrue(!CardBuilder.getCard("fal'dorei strider").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//[x]battlecry: shuffle 3 ambushes into your deck. when drawn, summon a 4/4 spider. -
-		assertTrue(CardBuilder.getCard("fal'dorei strider").getTags().contains(TagBuilder.getTags().get("SHUFFLE")));//[x]battlecry: shuffle 3 ambushes into your deck. when drawn, summon a 4/4 spider. -
-		assertTrue(CardBuilder.getCard("fal'dorei strider").getTags().contains(TagBuilder.getTags().get("SUMMON")));//[x]battlecry: shuffle 3 ambushes into your deck. when drawn, summon a 4/4 spider. -
-		assertTrue(CardBuilder.getCard("druid of the swarm").getTags().contains(TagBuilder.getTags().get("TAUNT")));//choose one - transform into a 1/2 with poisonous; or a 1/5 with taunt. -
-assertTrue(!CardBuilder.getCard("druid of the swarm").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//choose one - transform into a 1/2 with poisonous; or a 1/5 with taunt. -
-		assertTrue(CardBuilder.getCard("druid of the swarm").getTags().contains(TagBuilder.getTags().get("CHOOSE_ONE")));//choose one - transform into a 1/2 with poisonous; or a 1/5 with taunt. -
-		assertTrue(CardBuilder.getCard("druid of the swarm").getTags().contains(TagBuilder.getTags().get("TRANSFORM")));//choose one - transform into a 1/2 with poisonous; or a 1/5 with taunt. -
-		assertTrue(CardBuilder.getCard("c'thun's chosen").getTags().contains(TagBuilder.getTags().get("DIVINE_SHIELD")));//[x]divine shield battlecry: give your c'thun +2/+2 (wherever it is). -
-		assertTrue(CardBuilder.getCard("c'thun's chosen").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//[x]divine shield battlecry: give your c'thun +2/+2 (wherever it is). -
-		assertTrue(CardBuilder.getCard("c'thun's chosen").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//[x]divine shield battlecry: give your c'thun +2/+2 (wherever it is). -
-		assertTrue(CardBuilder.getCard("c'thun's chosen").getTags().contains(TagBuilder.getTags().get("RITUAL")));//[x]divine shield battlecry: give your c'thun +2/+2 (wherever it is). -
-		assertTrue(CardBuilder.getCard("servant of kalimos").getTags().contains(TagBuilder.getTags().get("DISCOVER")));//[x]battlecry: if you played an elemental last turn, �discover an elemental. - elemental
-		assertTrue(CardBuilder.getCard("servant of kalimos").getTags().contains(TagBuilder.getTags().get("GENERATE")));//[x]battlecry: if you played an elemental last turn, �discover an elemental. - elemental
-		assertTrue(CardBuilder.getCard("servant of kalimos").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//[x]battlecry: if you played an elemental last turn, �discover an elemental. - elemental
-		assertTrue(CardBuilder.getCard("servant of kalimos").getTags().contains(TagBuilder.getTags().get("ELEMENTAL")));//[x]battlecry: if you played an elemental last turn, �discover an elemental. - elemental
-assertTrue(!CardBuilder.getCard("baku the mooneater").getTags().contains(TagBuilder.getTags().get("COST_MODIFY")));//[x]start of game: if your deck has only odd- cost cards, upgrade your hero power. - beast
-		assertTrue(CardBuilder.getCard("baku the mooneater").getTags().contains(TagBuilder.getTags().get("START_GAME")));//[x]start of game: if your deck has only odd- cost cards, upgrade your hero power. - beast
-		assertTrue(CardBuilder.getCard("baku the mooneater").getTags().contains(TagBuilder.getTags().get("HERO_POWER")));//[x]start of game: if your deck has only odd- cost cards, upgrade your hero power. - beast
-		assertTrue(CardBuilder.getCard("baku the mooneater").getTags().contains(TagBuilder.getTags().get("ODD")));//[x]start of game: if your deck has only odd- cost cards, upgrade your hero power. - beast
-		assertTrue(CardBuilder.getCard("baku the mooneater").getTags().contains(TagBuilder.getTags().get("BEAST")));//[x]start of game: if your deck has only odd- cost cards, upgrade your hero power. - beast
-		assertTrue(CardBuilder.getCard("cat trick").getTags().contains(TagBuilder.getTags().get("SECRET")));//secret: after your opponent casts a spell, summon a 4/2 panther with stealth. -
-		assertTrue(CardBuilder.getCard("cat trick").getTags().contains(TagBuilder.getTags().get("STEALTH")));//secret: after your opponent casts a spell, summon a 4/2 panther with stealth. -
-assertTrue(!CardBuilder.getCard("cat trick").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//secret: after your opponent casts a spell, summon a 4/2 panther with stealth. -
-		assertTrue(CardBuilder.getCard("cat trick").getTags().contains(TagBuilder.getTags().get("SUMMON")));//secret: after your opponent casts a spell, summon a 4/2 panther with stealth. -
-		assertTrue(CardBuilder.getCard("dirty rat").getTags().contains(TagBuilder.getTags().get("TAUNT")));//[x]taunt battlecry: your opponent summons a random minion from their hand. -
-		assertTrue(CardBuilder.getCard("dirty rat").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//[x]taunt battlecry: your opponent summons a random minion from their hand. -
-		assertTrue(CardBuilder.getCard("dirty rat").getTags().contains(TagBuilder.getTags().get("SUMMON")));//[x]taunt battlecry: your opponent summons a random minion from their hand. -
-		assertTrue(CardBuilder.getCard("druid of the scythe").getTags().contains(TagBuilder.getTags().get("RUSH")));//[x]choose one - transform into a 4/2 with rush; or a 2/4 with taunt. -
-		assertTrue(CardBuilder.getCard("druid of the scythe").getTags().contains(TagBuilder.getTags().get("TAUNT")));//[x]choose one - transform into a 4/2 with rush; or a 2/4 with taunt. -
-assertTrue(!CardBuilder.getCard("druid of the scythe").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//[x]choose one - transform into a 4/2 with rush; or a 2/4 with taunt. -
-		assertTrue(CardBuilder.getCard("druid of the scythe").getTags().contains(TagBuilder.getTags().get("CHOOSE_ONE")));//[x]choose one - transform into a 4/2 with rush; or a 2/4 with taunt. -
-		assertTrue(CardBuilder.getCard("druid of the scythe").getTags().contains(TagBuilder.getTags().get("TRANSFORM")));//[x]choose one - transform into a 4/2 with rush; or a 2/4 with taunt. -
-		assertTrue(CardBuilder.getCard("curse of rafaam").getTags().contains(TagBuilder.getTags().get("GENERATE")));//give your opponent a 'cursed!' card. while they hold it, they take 2 damage on their turn. -
-assertTrue(!CardBuilder.getCard("curse of rafaam").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//give your opponent a 'cursed!' card. while they hold it, they take 2 damage on their turn. -
-		assertTrue(CardBuilder.getCard("ethereal peddler").getTags().contains(TagBuilder.getTags().get("COST_MODIFY")));//battlecry: if you're holding any cards from another class, reduce their cost by (2). -
-		assertTrue(CardBuilder.getCard("ethereal peddler").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//battlecry: if you're holding any cards from another class, reduce their cost by (2). -
-assertTrue(!CardBuilder.getCard("ethereal peddler").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//battlecry: if you're holding any cards from another class, reduce their cost by (2). -
-		assertTrue(CardBuilder.getCard("hidden cache").getTags().contains(TagBuilder.getTags().get("SECRET")));//secret: after your opponent plays a minion, give a random minion in your hand +2/+2. -
-		assertTrue(CardBuilder.getCard("hidden cache").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//secret: after your opponent plays a minion, give a random minion in your hand +2/+2. -
-		assertTrue(CardBuilder.getCard("arcanosaur").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//battlecry: if you played an�elemental last turn, deal�3�damage�to�all other minions. - elemental
-assertTrue(!CardBuilder.getCard("arcanosaur").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//battlecry: if you played an�elemental last turn, deal�3�damage�to�all other minions. - elemental
-		assertTrue(CardBuilder.getCard("arcanosaur").getTags().contains(TagBuilder.getTags().get("ELEMENTAL")));//battlecry: if you played an�elemental last turn, deal�3�damage�to�all other minions. - elemental
-		assertTrue(CardBuilder.getCard("drakkari trickster").getTags().contains(TagBuilder.getTags().get("COPY")));//[x]battlecry: give each player a copy of a random card from their opponent's deck. -
-		assertTrue(CardBuilder.getCard("drakkari trickster").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//[x]battlecry: give each player a copy of a random card from their opponent's deck. -
-assertTrue(!CardBuilder.getCard("drakkari trickster").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//[x]battlecry: give each player a copy of a random card from their opponent's deck. -
-		//assertTrue(CardBuilder.getCard("spirit of the bat").getTags().size() == 3);
-		assertTrue(CardBuilder.getCard("spirit of the bat").getTags().contains(TagBuilder.getTags().get("DEATHRATTLE")));//stealth for 1 turn. after a friendly minion dies, give a minion in your hand +1/+1. -
-		assertTrue(CardBuilder.getCard("spirit of the bat").getTags().contains(TagBuilder.getTags().get("STEALTH")));//stealth for 1 turn. after a friendly minion dies, give a minion in your hand +1/+1. -
-		assertTrue(CardBuilder.getCard("spirit of the bat").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//stealth for 1 turn. after a friendly minion dies, give a minion in your hand +1/+1. -
-		//assertTrue(CardBuilder.getCard("meat wagon").getTags().size() == 3);
-		assertTrue(CardBuilder.getCard("meat wagon").getTags().contains(TagBuilder.getTags().get("DEATHRATTLE")));//[x]deathrattle: summon a minion from your deck with less attack than this minion. - mechanical
-		assertTrue(CardBuilder.getCard("meat wagon").getTags().contains(TagBuilder.getTags().get("SUMMON")));//[x]deathrattle: summon a minion from your deck with less attack than this minion. - mechanical
-		assertTrue(CardBuilder.getCard("meat wagon").getTags().contains(TagBuilder.getTags().get("MECH")));//[x]deathrattle: summon a minion from your deck with less attack than this minion. - mechanical
-assertTrue(!CardBuilder.getCard("prince valanar").getTags().contains(TagBuilder.getTags().get("COST_MODIFY")));//battlecry: if your deck has no 4-cost cards, gain lifesteal and taunt. -
-		assertTrue(CardBuilder.getCard("prince valanar").getTags().contains(TagBuilder.getTags().get("TAUNT")));//battlecry: if your deck has no 4-cost cards, gain lifesteal and taunt. -
-		assertTrue(CardBuilder.getCard("prince valanar").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//battlecry: if your deck has no 4-cost cards, gain lifesteal and taunt. -
-assertTrue(!CardBuilder.getCard("prince valanar").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//battlecry: if your deck has no 4-cost cards, gain lifesteal and taunt. -
-		assertTrue(CardBuilder.getCard("prince valanar").getTags().contains(TagBuilder.getTags().get("LIFESTEAL")));//battlecry: if your deck has no 4-cost cards, gain lifesteal and taunt. -
-		assertTrue(CardBuilder.getCard("kalimos, primal lord").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//[x]battlecry: if you played an elemental last turn, cast an elemental invocation. - elemental
-		assertTrue(CardBuilder.getCard("kalimos, primal lord").getTags().contains(TagBuilder.getTags().get("ELEMENTAL")));//[x]battlecry: if you played an elemental last turn, cast an elemental invocation. - elemental
-		assertTrue(CardBuilder.getCard("open the waygate").getTags().contains(TagBuilder.getTags().get("QUEST")));//[x]quest: cast 6 spells that didn't start in your deck. reward: time warp. -
-assertTrue(!CardBuilder.getCard("open the waygate").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//[x]quest: cast 6 spells that didn't start in your deck. reward: time warp. -
-		assertTrue(CardBuilder.getCard("awaken the makers").getTags().contains(TagBuilder.getTags().get("DEATHRATTLE")));//quest: summon 7 deathrattle minions. reward: amara, warden of hope. -
-		assertTrue(CardBuilder.getCard("awaken the makers").getTags().contains(TagBuilder.getTags().get("QUEST")));//quest: summon 7 deathrattle minions. reward: amara, warden of hope. -
-assertTrue(!CardBuilder.getCard("awaken the makers").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//quest: summon 7 deathrattle minions. reward: amara, warden of hope. -
-		assertTrue(CardBuilder.getCard("awaken the makers").getTags().contains(TagBuilder.getTags().get("SUMMON")));//quest: summon 7 deathrattle minions. reward: amara, warden of hope. -
-		assertTrue(CardBuilder.getCard("direhorn hatchling").getTags().contains(TagBuilder.getTags().get("DEATHRATTLE")));//taunt deathrattle: shuffle a 6/9 direhorn with taunt into your deck. - beast
-		assertTrue(CardBuilder.getCard("direhorn hatchling").getTags().contains(TagBuilder.getTags().get("TAUNT")));//taunt deathrattle: shuffle a 6/9 direhorn with taunt into your deck. - beast
-assertTrue(!CardBuilder.getCard("direhorn hatchling").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//taunt deathrattle: shuffle a 6/9 direhorn with taunt into your deck. - beast
-		assertTrue(CardBuilder.getCard("direhorn hatchling").getTags().contains(TagBuilder.getTags().get("SHUFFLE")));//taunt deathrattle: shuffle a 6/9 direhorn with taunt into your deck. - beast
-		assertTrue(CardBuilder.getCard("direhorn hatchling").getTags().contains(TagBuilder.getTags().get("BEAST")));//taunt deathrattle: shuffle a 6/9 direhorn with taunt into your deck. - beast
-		assertTrue(CardBuilder.getCard("tinkertown technician").getTags().contains(TagBuilder.getTags().get("GENERATE")));//battlecry: if you have a mech, gain +1/+1 and add a spare part to your hand. -
-		assertTrue(CardBuilder.getCard("tinkertown technician").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//battlecry: if you have a mech, gain +1/+1 and add a spare part to your hand. -
-assertTrue(!CardBuilder.getCard("tinkertown technician").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//battlecry: if you have a mech, gain +1/+1 and add a spare part to your hand. -
-		assertTrue(CardBuilder.getCard("bellringer sentry").getTags().contains(TagBuilder.getTags().get("SECRET")));//battlecry and deathrattle: put a secret from your deck into the battlefield. -
-		assertTrue(CardBuilder.getCard("bellringer sentry").getTags().contains(TagBuilder.getTags().get("DEATHRATTLE")));//battlecry and deathrattle: put a secret from your deck into the battlefield. -
-		assertTrue(CardBuilder.getCard("bellringer sentry").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//battlecry and deathrattle: put a secret from your deck into the battlefield. -
-		assertTrue(CardBuilder.getCard("spreading plague").getTags().contains(TagBuilder.getTags().get("TAUNT")));//summon a 1/5 scarab with taunt. if your�opponent has more minions, cast this again. -
-assertTrue(!CardBuilder.getCard("spreading plague").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//summon a 1/5 scarab with taunt. if your�opponent has more minions, cast this again. -
-		assertTrue(CardBuilder.getCard("spreading plague").getTags().contains(TagBuilder.getTags().get("SUMMON")));//summon a 1/5 scarab with taunt. if your�opponent has more minions, cast this again. -
-		assertTrue(CardBuilder.getCard("fatespinner").getTags().contains(TagBuilder.getTags().get("DAMAGE_ALL")));//choose a deathrattle (secretly) - deal 3 damage to all minions; or give them +2/+2. -
-		assertTrue(CardBuilder.getCard("fatespinner").getTags().contains(TagBuilder.getTags().get("SECRET")));//choose a deathrattle (secretly) - deal 3 damage to all minions; or give them +2/+2. -
-		assertTrue(CardBuilder.getCard("fatespinner").getTags().contains(TagBuilder.getTags().get("DEAL_DAMAGE")));//choose a deathrattle (secretly) - deal 3 damage to all minions; or give them +2/+2. -
-		assertTrue(CardBuilder.getCard("fatespinner").getTags().contains(TagBuilder.getTags().get("DEATHRATTLE")));//choose a deathrattle (secretly) - deal 3 damage to all minions; or give them +2/+2. -
-		assertTrue(CardBuilder.getCard("fatespinner").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//choose a deathrattle (secretly) - deal 3 damage to all minions; or give them +2/+2. -
-assertTrue(!CardBuilder.getCard("healing wave").getTags().contains(TagBuilder.getTags().get("COST_MODIFY")));//restore 7 health. reveal a minion in each deck. if yours costs more, restore 14 instead. -
-		assertTrue(CardBuilder.getCard("healing wave").getTags().contains(TagBuilder.getTags().get("REVEAL")));//restore 7 health. reveal a minion in each deck. if yours costs more, restore 14 instead. -
-assertTrue(!CardBuilder.getCard("healing wave").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//restore 7 health. reveal a minion in each deck. if yours costs more, restore 14 instead. -
-		assertTrue(CardBuilder.getCard("healing wave").getTags().contains(TagBuilder.getTags().get("HEALTH_RESTORE")));//restore 7 health. reveal a minion in each deck. if yours costs more, restore 14 instead. -
-		assertTrue(CardBuilder.getCard("corpse raiser").getTags().contains(TagBuilder.getTags().get("DEATHRATTLE")));//[x]battlecry: give a friendly minion "deathrattle: resummon this minion." -
-		assertTrue(CardBuilder.getCard("corpse raiser").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//[x]battlecry: give a friendly minion "deathrattle: resummon this minion." -
-assertTrue(!CardBuilder.getCard("corpse raiser").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//[x]battlecry: give a friendly minion "deathrattle: resummon this minion." -
-		assertTrue(CardBuilder.getCard("corpse raiser").getTags().contains(TagBuilder.getTags().get("REVIVE")));//[x]battlecry: give a friendly minion "deathrattle: resummon this minion." -
-		assertTrue(CardBuilder.getCard("corpse raiser").getTags().contains(TagBuilder.getTags().get("SUMMON")));//[x]battlecry: give a friendly minion "deathrattle: resummon this minion." -
-		assertTrue(CardBuilder.getCard("twilight geomancer").getTags().contains(TagBuilder.getTags().get("TAUNT")));//[x]taunt battlecry: give your c'thun taunt (wherever it is). -
-		assertTrue(CardBuilder.getCard("twilight geomancer").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//[x]taunt battlecry: give your c'thun taunt (wherever it is). -
-assertTrue(!CardBuilder.getCard("twilight geomancer").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//[x]taunt battlecry: give your c'thun taunt (wherever it is). -
-		assertTrue(CardBuilder.getCard("twilight geomancer").getTags().contains(TagBuilder.getTags().get("RITUAL")));//[x]taunt battlecry: give your c'thun taunt (wherever it is). -
-		assertTrue(CardBuilder.getCard("spectral pillager").getTags().contains(TagBuilder.getTags().get("COMBO")));//[x]combo: deal damage equal to the number of other cards you've played this turn. -
-assertTrue(!CardBuilder.getCard("prince taldaram").getTags().contains(TagBuilder.getTags().get("COST_MODIFY")));//battlecry: if your deck has�no 3-cost cards, transform into a 3/3 copy of a minion. -
-		assertTrue(CardBuilder.getCard("prince taldaram").getTags().contains(TagBuilder.getTags().get("COPY")));//battlecry: if your deck has�no 3-cost cards, transform into a 3/3 copy of a minion. -
-		assertTrue(CardBuilder.getCard("prince taldaram").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//battlecry: if your deck has�no 3-cost cards, transform into a 3/3 copy of a minion. -
-assertTrue(!CardBuilder.getCard("prince taldaram").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//battlecry: if your deck has�no 3-cost cards, transform into a 3/3 copy of a minion. -
-		assertTrue(CardBuilder.getCard("prince taldaram").getTags().contains(TagBuilder.getTags().get("TRANSFORM")));//battlecry: if your deck has�no 3-cost cards, transform into a 3/3 copy of a minion. -
-		assertTrue(CardBuilder.getCard("witchwood grizzly").getTags().contains(TagBuilder.getTags().get("TAUNT")));//[x]taunt battlecry: lose 1 health for each card in your opponent's hand. - beast
-		assertTrue(CardBuilder.getCard("witchwood grizzly").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//[x]taunt battlecry: lose 1 health for each card in your opponent's hand. - beast
-assertTrue(!CardBuilder.getCard("witchwood grizzly").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//[x]taunt battlecry: lose 1 health for each card in your opponent's hand. - beast
-		assertTrue(CardBuilder.getCard("witchwood grizzly").getTags().contains(TagBuilder.getTags().get("BEAST")));//[x]taunt battlecry: lose 1 health for each card in your opponent's hand. - beast
-		assertTrue(CardBuilder.getCard("twilight darkmender").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//battlecry: if your c'thun has at least 10 attack, restore 10 health to your hero. -
-assertTrue(!CardBuilder.getCard("twilight darkmender").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//battlecry: if your c'thun has at least 10 attack, restore 10 health to your hero. -
-		assertTrue(CardBuilder.getCard("twilight darkmender").getTags().contains(TagBuilder.getTags().get("RITUAL")));//battlecry: if your c'thun has at least 10 attack, restore 10 health to your hero. -
-		assertTrue(CardBuilder.getCard("carnivorous cube").getTags().contains(TagBuilder.getTags().get("DESTROY")));//battlecry: destroy a friendly minion. deathrattle: summon 2 copies of it. -
-		assertTrue(CardBuilder.getCard("carnivorous cube").getTags().contains(TagBuilder.getTags().get("COPY")));//battlecry: destroy a friendly minion. deathrattle: summon 2 copies of it. -
-		assertTrue(CardBuilder.getCard("carnivorous cube").getTags().contains(TagBuilder.getTags().get("DEATHRATTLE")));//battlecry: destroy a friendly minion. deathrattle: summon 2 copies of it. -
-		assertTrue(CardBuilder.getCard("carnivorous cube").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//battlecry: destroy a friendly minion. deathrattle: summon 2 copies of it. -
-assertTrue(!CardBuilder.getCard("carnivorous cube").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//battlecry: destroy a friendly minion. deathrattle: summon 2 copies of it. -
-		assertTrue(CardBuilder.getCard("carnivorous cube").getTags().contains(TagBuilder.getTags().get("SUMMON")));//battlecry: destroy a friendly minion. deathrattle: summon 2 copies of it. -
-		assertTrue(CardBuilder.getCard("krul the unshackled").getTags().contains(TagBuilder.getTags().get("DEMON")));//[x]battlecry: if your deck has no duplicates, summon all �demons from your hand.� - demon
-		assertTrue(CardBuilder.getCard("krul the unshackled").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//[x]battlecry: if your deck has no duplicates, summon all �demons from your hand.� - demon
-		assertTrue(CardBuilder.getCard("krul the unshackled").getTags().contains(TagBuilder.getTags().get("SUMMON")));//[x]battlecry: if your deck has no duplicates, summon all �demons from your hand.� - demon
-		assertTrue(CardBuilder.getCard("venomstrike trap").getTags().contains(TagBuilder.getTags().get("SECRET")));//secret: when one of your minions is attacked, summon a 2/3�poisonous cobra. -
-assertTrue(!CardBuilder.getCard("venomstrike trap").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//secret: when one of your minions is attacked, summon a 2/3�poisonous cobra. -
-		assertTrue(CardBuilder.getCard("venomstrike trap").getTags().contains(TagBuilder.getTags().get("SUMMON")));//secret: when one of your minions is attacked, summon a 2/3�poisonous cobra. -
-assertTrue(!CardBuilder.getCard("wandering monster").getTags().contains(TagBuilder.getTags().get("COST_MODIFY")));//secret: when an enemy attacks your hero, summon a 3-cost minion as the new target. -
-		assertTrue(CardBuilder.getCard("wandering monster").getTags().contains(TagBuilder.getTags().get("SECRET")));//secret: when an enemy attacks your hero, summon a 3-cost minion as the new target. -
-assertTrue(!CardBuilder.getCard("wandering monster").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//secret: when an enemy attacks your hero, summon a 3-cost minion as the new target. -
-		assertTrue(CardBuilder.getCard("wandering monster").getTags().contains(TagBuilder.getTags().get("SUMMON")));//secret: when an enemy attacks your hero, summon a 3-cost minion as the new target. -
-		assertTrue(CardBuilder.getCard("cathedral gargoyle").getTags().contains(TagBuilder.getTags().get("DIVINE_SHIELD")));//battlecry: if you're holding a dragon, gain taunt and divine shield. -
-		assertTrue(CardBuilder.getCard("cathedral gargoyle").getTags().contains(TagBuilder.getTags().get("DRAGON")));//battlecry: if you're holding a dragon, gain taunt and divine shield. -
-		assertTrue(CardBuilder.getCard("cathedral gargoyle").getTags().contains(TagBuilder.getTags().get("TAUNT")));//battlecry: if you're holding a dragon, gain taunt and divine shield. -
-		assertTrue(CardBuilder.getCard("cathedral gargoyle").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//battlecry: if you're holding a dragon, gain taunt and divine shield. -
-		assertTrue(CardBuilder.getCard("blood knight").getTags().contains(TagBuilder.getTags().get("DIVINE_SHIELD")));//battlecry: all minions lose divine shield. gain +3/+3 for each shield lost. -
-		assertTrue(CardBuilder.getCard("blood knight").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//battlecry: all minions lose divine shield. gain +3/+3 for each shield lost. -
-assertTrue(!CardBuilder.getCard("blood knight").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//battlecry: all minions lose divine shield. gain +3/+3 for each shield lost. -
-		assertTrue(CardBuilder.getCard("hex lord malacrass").getTags().contains(TagBuilder.getTags().get("COPY")));//battlecry: add a copy of your opening hand to your hand (except this card). -
-		assertTrue(CardBuilder.getCard("hex lord malacrass").getTags().contains(TagBuilder.getTags().get("GENERATE")));//battlecry: add a copy of your opening hand to your hand (except this card). -
-		assertTrue(CardBuilder.getCard("hex lord malacrass").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//battlecry: add a copy of your opening hand to your hand (except this card). -
-		assertTrue(CardBuilder.getCard("bolvar, fireblood").getTags().contains(TagBuilder.getTags().get("DIVINE_SHIELD")));//divine shield after a friendly minion loses�divine shield, gain +2 attack. -
-assertTrue(!CardBuilder.getCard("bolvar, fireblood").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//divine shield after a friendly minion loses�divine shield, gain +2 attack. -
-		assertTrue(CardBuilder.getCard("lesser sapphire spellstone").getTags().contains(TagBuilder.getTags().get("COPY")));//summon 1 copy of a friendly minion. @(overload 3 mana crystals to upgrade.) -
-assertTrue(!CardBuilder.getCard("lesser sapphire spellstone").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//summon 1 copy of a friendly minion. @(overload 3 mana crystals to upgrade.) -
-		assertTrue(CardBuilder.getCard("lesser sapphire spellstone").getTags().contains(TagBuilder.getTags().get("SUMMON")));//summon 1 copy of a friendly minion. @(overload 3 mana crystals to upgrade.) -
-		assertTrue(CardBuilder.getCard("lesser sapphire spellstone").getTags().contains(TagBuilder.getTags().get("OVERLOAD")));//summon 1 copy of a friendly minion. @(overload 3 mana crystals to upgrade.) -
-		assertTrue(CardBuilder.getCard("spirit of the raptor").getTags().contains(TagBuilder.getTags().get("DRAW")));//[x]stealth for 1 turn. after your hero attacks and ��kills a minion, draw a card.�� -
-		assertTrue(CardBuilder.getCard("spirit of the raptor").getTags().contains(TagBuilder.getTags().get("STEALTH")));//[x]stealth for 1 turn. after your hero attacks and ��kills a minion, draw a card.�� -
-assertTrue(!CardBuilder.getCard("spirit of the raptor").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//[x]stealth for 1 turn. after your hero attacks and ��kills a minion, draw a card.�� -
-		assertTrue(CardBuilder.getCard("crystalline oracle").getTags().contains(TagBuilder.getTags().get("COPY")));//[x]deathrattle: copy a card from your opponent's deck �and add it to your hand. - elemental
-		assertTrue(CardBuilder.getCard("crystalline oracle").getTags().contains(TagBuilder.getTags().get("DEATHRATTLE")));//[x]deathrattle: copy a card from your opponent's deck �and add it to your hand. - elemental
-		assertTrue(CardBuilder.getCard("crystalline oracle").getTags().contains(TagBuilder.getTags().get("GENERATE")));//[x]deathrattle: copy a card from your opponent's deck �and add it to your hand. - elemental
-		assertTrue(CardBuilder.getCard("crystalline oracle").getTags().contains(TagBuilder.getTags().get("ELEMENTAL")));//[x]deathrattle: copy a card from your opponent's deck �and add it to your hand. - elemental
-//assertTrue(CardBuilder.getCard("harrison jones").getTags().contains(TagBuilder.getTags().get("DESTROY")));//battlecry: destroy your opponent's weapon and draw cards equal to its durability. -
-		assertTrue(CardBuilder.getCard("harrison jones").getTags().contains(TagBuilder.getTags().get("DRAW")));//battlecry: destroy your opponent's weapon and draw cards equal to its durability. -
-		assertTrue(CardBuilder.getCard("harrison jones").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//battlecry: destroy your opponent's weapon and draw cards equal to its durability. -
-		assertTrue(CardBuilder.getCard("professor putricide").getTags().contains(TagBuilder.getTags().get("SECRET")));//after you play a secret, put a random hunter secret into the battlefield. -
-		assertTrue(CardBuilder.getCard("shifting shade").getTags().contains(TagBuilder.getTags().get("COPY")));//[x]deathrattle: copy a card from your opponent's deck �and add it to your hand. -
-		assertTrue(CardBuilder.getCard("shifting shade").getTags().contains(TagBuilder.getTags().get("DEATHRATTLE")));//[x]deathrattle: copy a card from your opponent's deck �and add it to your hand. -
-		assertTrue(CardBuilder.getCard("shifting shade").getTags().contains(TagBuilder.getTags().get("GENERATE")));//[x]deathrattle: copy a card from your opponent's deck �and add it to your hand. -
-		assertTrue(CardBuilder.getCard("mana bind").getTags().contains(TagBuilder.getTags().get("COST_MODIFY")));//secret: when your opponent casts a spell, add a copy to your hand that costs (0). -
-		assertTrue(CardBuilder.getCard("mana bind").getTags().contains(TagBuilder.getTags().get("SECRET")));//secret: when your opponent casts a spell, add a copy to your hand that costs (0). -
-		assertTrue(CardBuilder.getCard("mana bind").getTags().contains(TagBuilder.getTags().get("COPY")));//secret: when your opponent casts a spell, add a copy to your hand that costs (0). -
-		assertTrue(CardBuilder.getCard("mana bind").getTags().contains(TagBuilder.getTags().get("GENERATE")));//secret: when your opponent casts a spell, add a copy to your hand that costs (0). -
-assertTrue(!CardBuilder.getCard("mana bind").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//secret: when your opponent casts a spell, add a copy to your hand that costs (0). -
-		assertTrue(CardBuilder.getCard("varian wrynn").getTags().contains(TagBuilder.getTags().get("DRAW")));//battlecry: draw 3 cards. put any minions you drew directly into the battlefield. -
-		assertTrue(CardBuilder.getCard("varian wrynn").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//battlecry: draw 3 cards. put any minions you drew directly into the battlefield. -
-assertTrue(!CardBuilder.getCard("varian wrynn").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//battlecry: draw 3 cards. put any minions you drew directly into the battlefield. -
-		assertTrue(CardBuilder.getCard("ratcatcher").getTags().contains(TagBuilder.getTags().get("RUSH")));//rush battlecry: destroy a friendly minion and gain its attack and health. -
-		assertTrue(CardBuilder.getCard("ratcatcher").getTags().contains(TagBuilder.getTags().get("DESTROY")));//rush battlecry: destroy a friendly minion and gain its attack and health. -
-		assertTrue(CardBuilder.getCard("ratcatcher").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//rush battlecry: destroy a friendly minion and gain its attack and health. -
-		assertTrue(CardBuilder.getCard("thunderhead").getTags().contains(TagBuilder.getTags().get("RUSH")));//[x]after you play a card with overload, summon two 1/1 sparks with rush. - elemental
-assertTrue(!CardBuilder.getCard("thunderhead").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//[x]after you play a card with overload, summon two 1/1 sparks with rush. - elemental
-		assertTrue(CardBuilder.getCard("thunderhead").getTags().contains(TagBuilder.getTags().get("SUMMON")));//[x]after you play a card with overload, summon two 1/1 sparks with rush. - elemental
-		assertTrue(CardBuilder.getCard("thunderhead").getTags().contains(TagBuilder.getTags().get("ELEMENTAL")));//[x]after you play a card with overload, summon two 1/1 sparks with rush. - elemental
-		assertTrue(CardBuilder.getCard("thunderhead").getTags().contains(TagBuilder.getTags().get("OVERLOAD")));//[x]after you play a card with overload, summon two 1/1 sparks with rush. - elemental
-		assertTrue(CardBuilder.getCard("renounce darkness").getTags().contains(TagBuilder.getTags().get("COST_MODIFY")));//replace your hero power and warlock cards with another class's. the cards cost (1) less. -
-		assertTrue(CardBuilder.getCard("renounce darkness").getTags().contains(TagBuilder.getTags().get("HERO_POWER")));//replace your hero power and warlock cards with another class's. the cards cost (1) less. -
-assertTrue(!CardBuilder.getCard("renounce darkness").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//replace your hero power and warlock cards with another class's. the cards cost (1) less. -
-		assertTrue(CardBuilder.getCard("sudden betrayal").getTags().contains(TagBuilder.getTags().get("SECRET")));//secret: when a minion attacks your hero, instead it attacks one of�its neighbors. -
-		assertTrue(CardBuilder.getCard("gurubashi hypemon").getTags().contains(TagBuilder.getTags().get("DISCOVER")));//battlecry: discover a 1/1 copy of a battlecry minion. it costs (1). -
-		assertTrue(CardBuilder.getCard("gurubashi hypemon").getTags().contains(TagBuilder.getTags().get("COST_MODIFY")));//battlecry: discover a 1/1 copy of a battlecry minion. it costs (1). -
-		assertTrue(CardBuilder.getCard("gurubashi hypemon").getTags().contains(TagBuilder.getTags().get("COPY")));//battlecry: discover a 1/1 copy of a battlecry minion. it costs (1). -
-		assertTrue(CardBuilder.getCard("gurubashi hypemon").getTags().contains(TagBuilder.getTags().get("GENERATE")));//battlecry: discover a 1/1 copy of a battlecry minion. it costs (1). -
-		assertTrue(CardBuilder.getCard("gurubashi hypemon").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//battlecry: discover a 1/1 copy of a battlecry minion. it costs (1). -
-assertTrue(!CardBuilder.getCard("gurubashi hypemon").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//battlecry: discover a 1/1 copy of a battlecry minion. it costs (1). -
-		assertTrue(CardBuilder.getCard("sacred trial").getTags().contains(TagBuilder.getTags().get("SECRET")));//secret: after your opponent has at least 3 minions and plays another, destroy it. -
-//assertTrue(CardBuilder.getCard("sacred trial").getTags().contains(TagBuilder.getTags().get("DESTROY")));//secret: after your opponent has at least 3 minions and plays another, destroy it. -
-assertTrue(!CardBuilder.getCard("sacred trial").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//secret: after your opponent has at least 3 minions and plays another, destroy it. -
-//assertTrue(CardBuilder.getCard("seadevil stinger").getTags().contains(TagBuilder.getTags().get("COST_MODIFY")));//[x]battlecry: the next murloc you play this turn costs �health instead of mana. - murloc
-		assertTrue(CardBuilder.getCard("seadevil stinger").getTags().contains(TagBuilder.getTags().get("MURLOC")));//[x]battlecry: the next murloc you play this turn costs �health instead of mana. - murloc
-		assertTrue(CardBuilder.getCard("seadevil stinger").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//[x]battlecry: the next murloc you play this turn costs �health instead of mana. - murloc
-assertTrue(!CardBuilder.getCard("prince keleseth").getTags().contains(TagBuilder.getTags().get("COST_MODIFY")));//battlecry: if your deck has�no 2-cost cards, give�all minions in your deck +1/+1. -
-		assertTrue(CardBuilder.getCard("prince keleseth").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//battlecry: if your deck has�no 2-cost cards, give�all minions in your deck +1/+1. -
-		assertTrue(CardBuilder.getCard("prince keleseth").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//battlecry: if your deck has�no 2-cost cards, give�all minions in your deck +1/+1. -
-		assertTrue(CardBuilder.getCard("big bad voodoo").getTags().contains(TagBuilder.getTags().get("COST_MODIFY")));//give a friendly minion "deathrattle: summon a random minion that costs (1) more." -
-		assertTrue(CardBuilder.getCard("big bad voodoo").getTags().contains(TagBuilder.getTags().get("DEATHRATTLE")));//give a friendly minion "deathrattle: summon a random minion that costs (1) more." -
-assertTrue(!CardBuilder.getCard("big bad voodoo").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//give a friendly minion "deathrattle: summon a random minion that costs (1) more." -
-		assertTrue(CardBuilder.getCard("big bad voodoo").getTags().contains(TagBuilder.getTags().get("SUMMON")));//give a friendly minion "deathrattle: summon a random minion that costs (1) more." -
-assertTrue(!CardBuilder.getCard("armored warhorse").getTags().contains(TagBuilder.getTags().get("COST_MODIFY")));//battlecry: reveal a minion in each deck. if yours costs more, gain charge. - beast
-		assertTrue(CardBuilder.getCard("armored warhorse").getTags().contains(TagBuilder.getTags().get("REVEAL")));//battlecry: reveal a minion in each deck. if yours costs more, gain charge. - beast
-		assertTrue(CardBuilder.getCard("armored warhorse").getTags().contains(TagBuilder.getTags().get("CHARGE")));//battlecry: reveal a minion in each deck. if yours costs more, gain charge. - beast
-		assertTrue(CardBuilder.getCard("armored warhorse").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//battlecry: reveal a minion in each deck. if yours costs more, gain charge. - beast
-		assertTrue(CardBuilder.getCard("armored warhorse").getTags().contains(TagBuilder.getTags().get("BEAST")));//battlecry: reveal a minion in each deck. if yours costs more, gain charge. - beast
-		assertTrue(CardBuilder.getCard("darnassus aspirant").getTags().contains(TagBuilder.getTags().get("DEATHRATTLE")));//battlecry: gain an empty mana crystal. deathrattle: lose a mana crystal. -
-		assertTrue(CardBuilder.getCard("darnassus aspirant").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//battlecry: gain an empty mana crystal. deathrattle: lose a mana crystal. -
-		assertTrue(CardBuilder.getCard("darnassus aspirant").getTags().contains(TagBuilder.getTags().get("MANA")));//battlecry: gain an empty mana crystal. deathrattle: lose a mana crystal. -
-		assertTrue(CardBuilder.getCard("shadowcaster").getTags().contains(TagBuilder.getTags().get("COST_MODIFY")));//battlecry: choose a friendly minion. add a 1/1 copy to�your hand that costs�(1). -
-		assertTrue(CardBuilder.getCard("shadowcaster").getTags().contains(TagBuilder.getTags().get("COPY")));//battlecry: choose a friendly minion. add a 1/1 copy to�your hand that costs�(1). -
-		assertTrue(CardBuilder.getCard("shadowcaster").getTags().contains(TagBuilder.getTags().get("GENERATE")));//battlecry: choose a friendly minion. add a 1/1 copy to�your hand that costs�(1). -
-		assertTrue(CardBuilder.getCard("shadowcaster").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//battlecry: choose a friendly minion. add a 1/1 copy to�your hand that costs�(1). -
-assertTrue(!CardBuilder.getCard("shadowcaster").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//battlecry: choose a friendly minion. add a 1/1 copy to�your hand that costs�(1). -
-		assertTrue(CardBuilder.getCard("undercity huckster").getTags().contains(TagBuilder.getTags().get("DEATHRATTLE")));//deathrattle: add a random card to your hand (from your opponent's class). -
-		assertTrue(CardBuilder.getCard("undercity huckster").getTags().contains(TagBuilder.getTags().get("GENERATE")));//deathrattle: add a random card to your hand (from your opponent's class). -
-// sim!
-//assertTrue(CardBuilder.getCard("void terror").getTags().contains(TagBuilder.getTags().get("DESTROY")));//[x]battlecry: destroy both adjacent minions and gain their attack and health. - demon
-		assertTrue(CardBuilder.getCard("void terror").getTags().contains(TagBuilder.getTags().get("DEMON")));//[x]battlecry: destroy both adjacent minions and gain their attack and health. - demon
-		assertTrue(CardBuilder.getCard("void terror").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//[x]battlecry: destroy both adjacent minions and gain their attack and health. - demon
-		assertTrue(CardBuilder.getCard("void terror").getTags().contains(TagBuilder.getTags().get("ADJACENT")));//[x]battlecry: destroy both adjacent minions and gain their attack and health. - demon
-//assertTrue(CardBuilder.getCard("nightmare amalgam").getTags().size() == 8);
-		assertTrue(CardBuilder.getCard("nightmare amalgam").getTags().contains(TagBuilder.getTags().get("PIRATE")));//[x]this is an elemental, mech, demon, murloc, dragon, beast, pirate and totem. - all
-		assertTrue(CardBuilder.getCard("nightmare amalgam").getTags().contains(TagBuilder.getTags().get("DRAGON")));//[x]this is an elemental, mech, demon, murloc, dragon, beast, pirate and totem. - all
-		assertTrue(CardBuilder.getCard("nightmare amalgam").getTags().contains(TagBuilder.getTags().get("ELEMENTAL")));//[x]this is an elemental, mech, demon, murloc, dragon, beast, pirate and totem. - all
-		assertTrue(CardBuilder.getCard("nightmare amalgam").getTags().contains(TagBuilder.getTags().get("BEAST")));//[x]this is an elemental, mech, demon, murloc, dragon, beast, pirate and totem. - all
-		assertTrue(CardBuilder.getCard("nefarian").getTags().contains(TagBuilder.getTags().get("DRAGON")));//battlecry: add 2 random spells to your hand (from your opponent's class). - dragon
-		assertTrue(CardBuilder.getCard("nefarian").getTags().contains(TagBuilder.getTags().get("GENERATE")));//battlecry: add 2 random spells to your hand (from your opponent's class). - dragon
-		assertTrue(CardBuilder.getCard("nefarian").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//battlecry: add 2 random spells to your hand (from your opponent's class). - dragon
-assertTrue(!CardBuilder.getCard("nefarian").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//battlecry: add 2 random spells to your hand (from your opponent's class). - dragon
-		assertTrue(CardBuilder.getCard("reckless experimenter").getTags().contains(TagBuilder.getTags().get("COST_MODIFY")));//[x]deathrattle minions you play cost (3) less, but die at the end of the turn. -
-		assertTrue(CardBuilder.getCard("reckless experimenter").getTags().contains(TagBuilder.getTags().get("DEATHRATTLE")));//[x]deathrattle minions you play cost (3) less, but die at the end of the turn. -
-assertTrue(!CardBuilder.getCard("reckless experimenter").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//[x]deathrattle minions you play cost (3) less, but die at the end of the turn. -
-		//assertTrue(CardBuilder.getCard("cheat death").getTags().size() == 4);
-		assertTrue(CardBuilder.getCard("cheat death").getTags().contains(TagBuilder.getTags().get("DEATHRATTLE")));//secret: when a friendly minion dies, return it to your hand. it costs (2) less. -
-		assertTrue(CardBuilder.getCard("cheat death").getTags().contains(TagBuilder.getTags().get("COST_MODIFY")));//secret: when a friendly minion dies, return it to your hand. it costs (2) less. -
-		assertTrue(CardBuilder.getCard("cheat death").getTags().contains(TagBuilder.getTags().get("SECRET")));//secret: when a friendly minion dies, return it to your hand. it costs (2) less. -
-assertTrue(!CardBuilder.getCard("cheat death").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//secret: when a friendly minion dies, return it to your hand. it costs (2) less. -
-		assertTrue(CardBuilder.getCard("cheat death").getTags().contains(TagBuilder.getTags().get("RETURN_TO_HAND")));//secret: when a friendly minion dies, return it to your hand. it costs (2) less. -
-		assertTrue(CardBuilder.getCard("lynessa sunsorrow").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//[x]battlecry: cast each spell you cast on your minions this game on this one. -
-		assertTrue(CardBuilder.getCard("spellbender").getTags().contains(TagBuilder.getTags().get("SECRET")));//secret: when an enemy casts a spell on a minion, summon a 1/3 as the new target. -
-assertTrue(!CardBuilder.getCard("spellbender").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//secret: when an enemy casts a spell on a minion, summon a 1/3 as the new target. -
-		assertTrue(CardBuilder.getCard("spellbender").getTags().contains(TagBuilder.getTags().get("SUMMON")));//secret: when an enemy casts a spell on a minion, summon a 1/3 as the new target. -
-		assertTrue(CardBuilder.getCard("lifedrinker").getTags().contains(TagBuilder.getTags().get("DAMAGE_ENEMIES")));//[x]battlecry: deal 3 damage to the enemy hero. restore 3 health to your hero. - beast
-		assertTrue(CardBuilder.getCard("lifedrinker").getTags().contains(TagBuilder.getTags().get("DEAL_DAMAGE")));//[x]battlecry: deal 3 damage to the enemy hero. restore 3 health to your hero. - beast
-		assertTrue(CardBuilder.getCard("lifedrinker").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//[x]battlecry: deal 3 damage to the enemy hero. restore 3 health to your hero. - beast
-assertTrue(!CardBuilder.getCard("lifedrinker").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//[x]battlecry: deal 3 damage to the enemy hero. restore 3 health to your hero. - beast
-		assertTrue(CardBuilder.getCard("lifedrinker").getTags().contains(TagBuilder.getTags().get("BEAST")));//[x]battlecry: deal 3 damage to the enemy hero. restore 3 health to your hero. - beast
-		assertTrue(CardBuilder.getCard("rat trap").getTags().contains(TagBuilder.getTags().get("SECRET")));//[x]secret: after your opponent plays three cards in a turn, summon a 6/6 rat. -
-assertTrue(!CardBuilder.getCard("rat trap").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//[x]secret: after your opponent plays three cards in a turn, summon a 6/6 rat. -
-		assertTrue(CardBuilder.getCard("rat trap").getTags().contains(TagBuilder.getTags().get("SUMMON")));//[x]secret: after your opponent plays three cards in a turn, summon a 6/6 rat. -
-		assertTrue(CardBuilder.getCard("illuminator").getTags().contains(TagBuilder.getTags().get("SECRET")));//if you control a secret at the end of your turn, restore 4 health to your hero. -
-assertTrue(!CardBuilder.getCard("illuminator").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//if you control a secret at the end of your turn, restore 4 health to your hero. -
-		assertTrue(CardBuilder.getCard("toki, time-tinker").getTags().contains(TagBuilder.getTags().get("GENERATE")));//[x]battlecry: add a random legendary minion from the past to your hand. -
-		assertTrue(CardBuilder.getCard("toki, time-tinker").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//[x]battlecry: add a random legendary minion from the past to your hand. -
-		assertTrue(CardBuilder.getCard("mark of the loa").getTags().contains(TagBuilder.getTags().get("TAUNT")));//choose one - give a minion +2/+4 and taunt; or summon two 3/2 raptors. -
-		assertTrue(CardBuilder.getCard("mark of the loa").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//choose one - give a minion +2/+4 and taunt; or summon two 3/2 raptors. -
-		assertTrue(CardBuilder.getCard("mark of the loa").getTags().contains(TagBuilder.getTags().get("CHOOSE_ONE")));//choose one - give a minion +2/+4 and taunt; or summon two 3/2 raptors. -
-		assertTrue(CardBuilder.getCard("mark of the loa").getTags().contains(TagBuilder.getTags().get("SUMMON")));//choose one - give a minion +2/+4 and taunt; or summon two 3/2 raptors. -
-		assertTrue(CardBuilder.getCard("blackhowl gunspire").getTags().contains(TagBuilder.getTags().get("DAMAGE_ENEMIES")));//[x]can't attack. whenever this minion takes damage, deal 3 damage to a random enemy. -
-		assertTrue(CardBuilder.getCard("blackhowl gunspire").getTags().contains(TagBuilder.getTags().get("DEAL_DAMAGE")));//[x]can't attack. whenever this minion takes damage, deal 3 damage to a random enemy. -
-assertTrue(!CardBuilder.getCard("blackhowl gunspire").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//[x]can't attack. whenever this minion takes damage, deal 3 damage to a random enemy. -
-		assertTrue(CardBuilder.getCard("blackhowl gunspire").getTags().contains(TagBuilder.getTags().get("CANT_ATTACK")));//[x]can't attack. whenever this minion takes damage, deal 3 damage to a random enemy. -
-assertTrue(!CardBuilder.getCard("spectral cutlass").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//[x]lifesteal whenever you play a card from another class, gain +1 durability. - - weapon
-		assertTrue(CardBuilder.getCard("spectral cutlass").getTags().contains(TagBuilder.getTags().get("LIFESTEAL")));//[x]lifesteal whenever you play a card from another class, gain +1 durability. - - weapon
-//?
-//assertTrue(CardBuilder.getCard("spellshifter").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//[x]spell damage +1 each turn this is in your hand, swap its attack and health. -
-		assertTrue(CardBuilder.getCard("spellshifter").getTags().contains(TagBuilder.getTags().get("SPELL_DAMAGE")));//[x]spell damage +1 each turn this is in your hand, swap its attack and health. -
-		assertTrue(CardBuilder.getCard("coghammer").getTags().contains(TagBuilder.getTags().get("DIVINE_SHIELD")));//battlecry: give a random friendly minion divine shield and taunt. - - weapon
-		assertTrue(CardBuilder.getCard("coghammer").getTags().contains(TagBuilder.getTags().get("TAUNT")));//battlecry: give a random friendly minion divine shield and taunt. - - weapon
-		assertTrue(CardBuilder.getCard("coghammer").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//battlecry: give a random friendly minion divine shield and taunt. - - weapon
-assertTrue(!CardBuilder.getCard("coghammer").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//battlecry: give a random friendly minion divine shield and taunt. - - weapon
-		//assertTrue(CardBuilder.getCard("effigy").getTags().size() ==3);
-		assertTrue(CardBuilder.getCard("effigy").getTags().contains(TagBuilder.getTags().get("DEATHRATTLE")));//secret: when a friendly minion dies, summon a random minion with the same cost. -
-assertTrue(!CardBuilder.getCard("effigy").getTags().contains(TagBuilder.getTags().get("COST_MODIFY")));//secret: when a friendly minion dies, summon a random minion with the same cost. -
-		assertTrue(CardBuilder.getCard("effigy").getTags().contains(TagBuilder.getTags().get("SECRET")));//secret: when a friendly minion dies, summon a random minion with the same cost. -
-		assertTrue(CardBuilder.getCard("effigy").getTags().contains(TagBuilder.getTags().get("SUMMON")));//secret: when a friendly minion dies, summon a random minion with the same cost. -
-		assertTrue(CardBuilder.getCard("masked contender").getTags().contains(TagBuilder.getTags().get("SECRET")));//battlecry: if you control a�secret, play a secret from�your deck. -
-		assertTrue(CardBuilder.getCard("masked contender").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//battlecry: if you control a�secret, play a secret from�your deck. -
-		assertTrue(CardBuilder.getCard("a new challenger...").getTags().contains(TagBuilder.getTags().get("DISCOVER")));//discover a 6-cost minion. summon it with taunt and divine shield. -
-		assertTrue(CardBuilder.getCard("a new challenger...").getTags().contains(TagBuilder.getTags().get("DIVINE_SHIELD")));//discover a 6-cost minion. summon it with taunt and divine shield. -
-assertTrue(!CardBuilder.getCard("a new challenger...").getTags().contains(TagBuilder.getTags().get("COST_MODIFY")));//discover a 6-cost minion. summon it with taunt and divine shield. -
-		assertTrue(CardBuilder.getCard("a new challenger...").getTags().contains(TagBuilder.getTags().get("GENERATE")));//discover a 6-cost minion. summon it with taunt and divine shield. -
-		assertTrue(CardBuilder.getCard("a new challenger...").getTags().contains(TagBuilder.getTags().get("TAUNT")));//discover a 6-cost minion. summon it with taunt and divine shield. -
-assertTrue(!CardBuilder.getCard("a new challenger...").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//discover a 6-cost minion. summon it with taunt and divine shield. -
-		assertTrue(CardBuilder.getCard("a new challenger...").getTags().contains(TagBuilder.getTags().get("SUMMON")));//discover a 6-cost minion. summon it with taunt and divine shield. -
-assertTrue(!CardBuilder.getCard("recombobulator").getTags().contains(TagBuilder.getTags().get("COST_MODIFY")));//battlecry: transform a friendly minion into a random minion with the same cost. -
-		assertTrue(CardBuilder.getCard("recombobulator").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//battlecry: transform a friendly minion into a random minion with the same cost. -
-		assertTrue(CardBuilder.getCard("recombobulator").getTags().contains(TagBuilder.getTags().get("TRANSFORM")));//battlecry: transform a friendly minion into a random minion with the same cost. -
-		assertTrue(CardBuilder.getCard("akali, the rhino").getTags().contains(TagBuilder.getTags().get("RUSH")));//rush overkill: draw a rush minion from your deck. give it +5/+5. - beast
-		assertTrue(CardBuilder.getCard("akali, the rhino").getTags().contains(TagBuilder.getTags().get("DRAW")));//rush overkill: draw a rush minion from your deck. give it +5/+5. - beast
-		assertTrue(CardBuilder.getCard("akali, the rhino").getTags().contains(TagBuilder.getTags().get("OVERKILL")));//rush overkill: draw a rush minion from your deck. give it +5/+5. - beast
-		assertTrue(CardBuilder.getCard("akali, the rhino").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//rush overkill: draw a rush minion from your deck. give it +5/+5. - beast
-		assertTrue(CardBuilder.getCard("akali, the rhino").getTags().contains(TagBuilder.getTags().get("BEAST")));//rush overkill: draw a rush minion from your deck. give it +5/+5. - beast
-		assertTrue(CardBuilder.getCard("fight promoter").getTags().contains(TagBuilder.getTags().get("DRAW")));//[x]battlecry: if you control a minion with 6 or more �health, draw two cards. -
-		assertTrue(CardBuilder.getCard("fight promoter").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//[x]battlecry: if you control a minion with 6 or more �health, draw two cards. -
-assertTrue(!CardBuilder.getCard("fight promoter").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//[x]battlecry: if you control a minion with 6 or more �health, draw two cards. -
-		assertTrue(CardBuilder.getCard("blast wave").getTags().contains(TagBuilder.getTags().get("DEAL_DAMAGE")));//deal 2 damage to�all minions. overkill: add a random mage spell to your hand. -
-		assertTrue(CardBuilder.getCard("blast wave").getTags().contains(TagBuilder.getTags().get("GENERATE")));//deal 2 damage to�all minions. overkill: add a random mage spell to your hand. -
-		assertTrue(CardBuilder.getCard("blast wave").getTags().contains(TagBuilder.getTags().get("OVERKILL")));//deal 2 damage to�all minions. overkill: add a random mage spell to your hand. -
-assertTrue(!CardBuilder.getCard("blast wave").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//deal 2 damage to�all minions. overkill: add a random mage spell to your hand. -
-		assertTrue(CardBuilder.getCard("dart trap").getTags().contains(TagBuilder.getTags().get("DAMAGE_ENEMIES")));//secret: after an opposing hero power is used, deal 5 damage to a random enemy. -
-		assertTrue(CardBuilder.getCard("dart trap").getTags().contains(TagBuilder.getTags().get("SECRET")));//secret: after an opposing hero power is used, deal 5 damage to a random enemy. -
-		assertTrue(CardBuilder.getCard("dart trap").getTags().contains(TagBuilder.getTags().get("DEAL_DAMAGE")));//secret: after an opposing hero power is used, deal 5 damage to a random enemy. -
-		assertTrue(CardBuilder.getCard("dart trap").getTags().contains(TagBuilder.getTags().get("HERO_POWER")));//secret: after an opposing hero power is used, deal 5 damage to a random enemy. -
-assertTrue(!CardBuilder.getCard("dart trap").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//secret: after an opposing hero power is used, deal 5 damage to a random enemy. -
-		assertTrue(CardBuilder.getCard("chittering tunneler").getTags().contains(TagBuilder.getTags().get("DISCOVER")));//battlecry: discover a spell. deal damage to your hero equal to its cost. - beast
-assertTrue(!CardBuilder.getCard("chittering tunneler").getTags().contains(TagBuilder.getTags().get("COST_MODIFY")));//battlecry: discover a spell. deal damage to your hero equal to its cost. - beast
-		assertTrue(CardBuilder.getCard("chittering tunneler").getTags().contains(TagBuilder.getTags().get("GENERATE")));//battlecry: discover a spell. deal damage to your hero equal to its cost. - beast
-		assertTrue(CardBuilder.getCard("chittering tunneler").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//battlecry: discover a spell. deal damage to your hero equal to its cost. - beast
-		assertTrue(CardBuilder.getCard("chittering tunneler").getTags().contains(TagBuilder.getTags().get("BEAST")));//battlecry: discover a spell. deal damage to your hero equal to its cost. - beast
-		assertTrue(CardBuilder.getCard("griftah").getTags().contains(TagBuilder.getTags().get("DISCOVER")));//[x]battlecry: discover two cards. give one to your opponent at random. -
-		assertTrue(CardBuilder.getCard("griftah").getTags().contains(TagBuilder.getTags().get("GENERATE")));//[x]battlecry: discover two cards. give one to your opponent at random. -
-		assertTrue(CardBuilder.getCard("griftah").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));//[x]battlecry: discover two cards. give one to your opponent at random. -
-assertTrue(!CardBuilder.getCard("griftah").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));//[x]battlecry: discover two cards. give one to your opponent at random. -
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("FREEZE")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("OVERLOAD")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("ELUSIVE")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("ATTACKS")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("GIVE_DIVINE_SHIELD")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("DAMAGE_ALL")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("LOW_COST_MINION")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("POISONOUS")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("STEALTH")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("CHOOSE_ONE")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("ECHO")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("DISCOVER")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("SILENCE")));
+		assertTrue(CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("DIVINE_SHIELD")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("COST_MODIFY")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("SHUFFLE")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("OVERKILL")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("ADJACENT")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("ODD")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("HERO_POWER")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("MURLOC")));
+		assertTrue(CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("DAMAGE_ENEMIES")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("TREANTS")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("PLAY")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("DISCARD")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("DEMON")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("REMOVE_FROM_DECK")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("SUMMON")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("HIGH_HP")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("TRANSFORM")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("CANT_ATTACK")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("RETURN_TO_HAND")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("LOW_ATTACK")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("ARMOR")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("GIVE_STEALTH")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("JADE_GOLEM")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("ELEMENTAL")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("REVEAL")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("START_GAME")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("ADAPT")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("HIGH_ATTACK")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("SPELL_DAMAGE")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("REVIVE")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("DAMAGE_SPELL")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("DRAGON")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("EVEN")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("RITUAL")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("COMBO")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("COUNTER")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("SECRET")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("CONTROL")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("SPELL")));
+		assertTrue(CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("LIFESTEAL")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("LOW_HP")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("HEALTH_RESTORE")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("DESTROY")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("MAGNETIC")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("RECRUIT")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("DEATHRATTLE")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("HIGH_COST")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("INSPIRE")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("LOW_COST")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("TWINSPELL")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("DEAL_DAMAGE")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("ENRAGE")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("MECH")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("FORGETFUL")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("CHARGE")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("QUEST")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("EQUIP")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("DRAW")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("MANA")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("TOTEM")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("COPY")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("AOE_BUFF")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("EOT")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("IMMUNE")));
+		assertTrue(CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("TAUNT")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("LACKEY")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("PIRATE")));
+		assertTrue(CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("WINDFURY")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("SOT")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("GENERATE")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("AURA")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("BEAST")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("HIGH_COST_MINION")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("RUSH")));
+		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("FREEZE")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("OVERLOAD")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("ELUSIVE")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("ATTACKS")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("GIVE_DIVINE_SHIELD")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("DAMAGE_ALL")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("LOW_COST_MINION")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("POISONOUS")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("STEALTH")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("CHOOSE_ONE")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("ECHO")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("DISCOVER")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("SILENCE")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("DIVINE_SHIELD")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("COST_MODIFY")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("SHUFFLE")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("OVERKILL")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("ADJACENT")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("ODD")));
+		assertTrue(CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("HERO_POWER")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("MURLOC")));
+		assertTrue(CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("DAMAGE_ENEMIES")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("TREANTS")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("PLAY")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("DISCARD")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("DEMON")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("REMOVE_FROM_DECK")));
+		assertTrue(CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("SUMMON")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("HIGH_HP")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("TRANSFORM")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("CANT_ATTACK")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("RETURN_TO_HAND")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("LOW_ATTACK")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("ARMOR")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("GIVE_STEALTH")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("JADE_GOLEM")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("ELEMENTAL")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("REVEAL")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("START_GAME")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("ADAPT")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("HIGH_ATTACK")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("SPELL_DAMAGE")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("REVIVE")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("DAMAGE_SPELL")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("DRAGON")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("EVEN")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("RITUAL")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("COMBO")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("COUNTER")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("SECRET")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("CONTROL")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("SPELL")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("LIFESTEAL")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("LOW_HP")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("HEALTH_RESTORE")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("DESTROY")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("MAGNETIC")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("RECRUIT")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("DEATHRATTLE")));
+		assertTrue(CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("HIGH_COST")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("INSPIRE")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("LOW_COST")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("TWINSPELL")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("DEAL_DAMAGE")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("ENRAGE")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("MECH")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("FORGETFUL")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("CHARGE")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("QUEST")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("EQUIP")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("DRAW")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("MANA")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("TOTEM")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("COPY")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("AOE_BUFF")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("EOT")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("IMMUNE")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("TAUNT")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("LACKEY")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("PIRATE")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("WINDFURY")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("SOT")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("GENERATE")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("AURA")));
+		assertTrue(CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("BEAST")));
+		assertTrue(CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("HIGH_COST_MINION")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("RUSH")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("FREEZE")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("OVERLOAD")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("ELUSIVE")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("ATTACKS")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("GIVE_DIVINE_SHIELD")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("DAMAGE_ALL")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("LOW_COST_MINION")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("POISONOUS")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("STEALTH")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("CHOOSE_ONE")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("ECHO")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("DISCOVER")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("SILENCE")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("DIVINE_SHIELD")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("COST_MODIFY")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("SHUFFLE")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("OVERKILL")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("ADJACENT")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("ODD")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("HERO_POWER")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("MURLOC")));
+		assertTrue(CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("DAMAGE_ENEMIES")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("TREANTS")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("PLAY")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("DISCARD")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("DEMON")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("REMOVE_FROM_DECK")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("SUMMON")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("HIGH_HP")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("TRANSFORM")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("CANT_ATTACK")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("RETURN_TO_HAND")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("LOW_ATTACK")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("ARMOR")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("GIVE_STEALTH")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("JADE_GOLEM")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("ELEMENTAL")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("REVEAL")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("START_GAME")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("ADAPT")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("HIGH_ATTACK")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("SPELL_DAMAGE")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("REVIVE")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("DAMAGE_SPELL")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("DRAGON")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("EVEN")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("RITUAL")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("COMBO")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("COUNTER")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("SECRET")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("CONTROL")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("SPELL")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("LIFESTEAL")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("LOW_HP")));
+		assertTrue(CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("HEALTH_RESTORE")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("DESTROY")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("MAGNETIC")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("RECRUIT")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("DEATHRATTLE")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("HIGH_COST")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("INSPIRE")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("LOW_COST")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("TWINSPELL")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("DEAL_DAMAGE")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("ENRAGE")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("MECH")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("FORGETFUL")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("CHARGE")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("QUEST")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("EQUIP")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("DRAW")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("MANA")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("TOTEM")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("COPY")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("AOE_BUFF")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("EOT")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("IMMUNE")));
+		assertTrue(CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("TAUNT")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("LACKEY")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("PIRATE")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("WINDFURY")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("SOT")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("GENERATE")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("AURA")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("BEAST")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("HIGH_COST_MINION")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("RUSH")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("FREEZE")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("OVERLOAD")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("ELUSIVE")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("ATTACKS")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("GIVE_DIVINE_SHIELD")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("DAMAGE_ALL")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("LOW_COST_MINION")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("POISONOUS")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("STEALTH")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("CHOOSE_ONE")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("ECHO")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("DISCOVER")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("SILENCE")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("DIVINE_SHIELD")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("COST_MODIFY")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("SHUFFLE")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("OVERKILL")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("ADJACENT")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("ODD")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("HERO_POWER")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("MURLOC")));
+		assertTrue(CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("DAMAGE_ENEMIES")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("TREANTS")));
+		assertTrue(CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("PLAY")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("DISCARD")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("DEMON")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("REMOVE_FROM_DECK")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("SUMMON")));
+		assertTrue(CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("HIGH_HP")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("TRANSFORM")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("CANT_ATTACK")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("RETURN_TO_HAND")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("LOW_ATTACK")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("ARMOR")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("GIVE_STEALTH")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("JADE_GOLEM")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("ELEMENTAL")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("REVEAL")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("START_GAME")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("ADAPT")));
+		assertTrue(CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("HIGH_ATTACK")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("SPELL_DAMAGE")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("REVIVE")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("DAMAGE_SPELL")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("DRAGON")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("EVEN")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("RITUAL")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("COMBO")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("COUNTER")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("SECRET")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("CONTROL")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("SPELL")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("LIFESTEAL")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("LOW_HP")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("HEALTH_RESTORE")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("DESTROY")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("MAGNETIC")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("RECRUIT")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("DEATHRATTLE")));
+		assertTrue(CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("HIGH_COST")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("INSPIRE")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("LOW_COST")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("TWINSPELL")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("DEAL_DAMAGE")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("ENRAGE")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("MECH")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("FORGETFUL")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("CHARGE")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("QUEST")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("EQUIP")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("DRAW")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("MANA")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("TOTEM")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("COPY")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("AOE_BUFF")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("EOT")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("IMMUNE")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("TAUNT")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("LACKEY")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("PIRATE")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("WINDFURY")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("SOT")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("GENERATE")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("AURA")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("BEAST")));
+		assertTrue(CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("HIGH_COST_MINION")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("RUSH")));
+		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("FREEZE")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("OVERLOAD")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("ELUSIVE")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("ATTACKS")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("GIVE_DIVINE_SHIELD")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("DAMAGE_ALL")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("LOW_COST_MINION")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("POISONOUS")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("STEALTH")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("CHOOSE_ONE")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("ECHO")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("DISCOVER")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("SILENCE")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("DIVINE_SHIELD")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("COST_MODIFY")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("SHUFFLE")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("OVERKILL")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("ADJACENT")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("ODD")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("HERO_POWER")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("MURLOC")));
+		assertTrue(CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("DAMAGE_ENEMIES")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("TREANTS")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("PLAY")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("DISCARD")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("DEMON")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("REMOVE_FROM_DECK")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("SUMMON")));
+		assertTrue(CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("HIGH_HP")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("TRANSFORM")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("CANT_ATTACK")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("RETURN_TO_HAND")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("LOW_ATTACK")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("ARMOR")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("GIVE_STEALTH")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("JADE_GOLEM")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("ELEMENTAL")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("REVEAL")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("START_GAME")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("ADAPT")));
+		assertTrue(CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("HIGH_ATTACK")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("SPELL_DAMAGE")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("REVIVE")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("DAMAGE_SPELL")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("DRAGON")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("EVEN")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("RITUAL")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("COMBO")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("COUNTER")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("SECRET")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("CONTROL")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("SPELL")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("LIFESTEAL")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("LOW_HP")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("HEALTH_RESTORE")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("DESTROY")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("MAGNETIC")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("RECRUIT")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("DEATHRATTLE")));
+		assertTrue(CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("HIGH_COST")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("INSPIRE")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("LOW_COST")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("TWINSPELL")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("DEAL_DAMAGE")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("ENRAGE")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("MECH")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("FORGETFUL")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("CHARGE")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("QUEST")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("EQUIP")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("DRAW")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("MANA")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("TOTEM")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("COPY")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("AOE_BUFF")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("EOT")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("IMMUNE")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("TAUNT")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("LACKEY")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("PIRATE")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("WINDFURY")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("SOT")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("GENERATE")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("AURA")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("BEAST")));
+		assertTrue(CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("HIGH_COST_MINION")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("RUSH")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("FREEZE")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("OVERLOAD")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("ELUSIVE")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("ATTACKS")));
+		assertTrue(CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("GIVE_DIVINE_SHIELD")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("DAMAGE_ALL")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("LOW_COST_MINION")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("POISONOUS")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("STEALTH")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("CHOOSE_ONE")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("ECHO")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("DISCOVER")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("SILENCE")));
+		assertTrue(CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("DIVINE_SHIELD")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("COST_MODIFY")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("SHUFFLE")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("OVERKILL")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("ADJACENT")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("ODD")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("HERO_POWER")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("MURLOC")));
+		assertTrue(CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("DAMAGE_ENEMIES")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("TREANTS")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("PLAY")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("DISCARD")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("DEMON")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("REMOVE_FROM_DECK")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("SUMMON")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("HIGH_HP")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("TRANSFORM")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("CANT_ATTACK")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("RETURN_TO_HAND")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("LOW_ATTACK")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("ARMOR")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("GIVE_STEALTH")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("JADE_GOLEM")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("ELEMENTAL")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("REVEAL")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("START_GAME")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("ADAPT")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("HIGH_ATTACK")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("SPELL_DAMAGE")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("REVIVE")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("DAMAGE_SPELL")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("DRAGON")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("EVEN")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("RITUAL")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("COMBO")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("COUNTER")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("SECRET")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("CONTROL")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("SPELL")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("LIFESTEAL")));
+		assertTrue(CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("LOW_HP")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("HEALTH_RESTORE")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("DESTROY")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("MAGNETIC")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("RECRUIT")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("DEATHRATTLE")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("HIGH_COST")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("INSPIRE")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("LOW_COST")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("TWINSPELL")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("DEAL_DAMAGE")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("ENRAGE")));
+		assertTrue(CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("MECH")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("FORGETFUL")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("CHARGE")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("QUEST")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("EQUIP")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("DRAW")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("MANA")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("TOTEM")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("COPY")));
+		assertTrue(CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("AOE_BUFF")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("EOT")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("IMMUNE")));
+		assertTrue(CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("TAUNT")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("LACKEY")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("PIRATE")));
+		assertTrue(CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("WINDFURY")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("SOT")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("GENERATE")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("AURA")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("BEAST")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("HIGH_COST_MINION")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("RUSH")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("FREEZE")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("OVERLOAD")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("ELUSIVE")));
+		assertTrue(CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("ATTACKS")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("GIVE_DIVINE_SHIELD")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("DAMAGE_ALL")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("LOW_COST_MINION")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("POISONOUS")));
+		assertTrue(CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("STEALTH")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("CHOOSE_ONE")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("ECHO")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("DISCOVER")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("SILENCE")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("DIVINE_SHIELD")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("COST_MODIFY")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("SHUFFLE")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("OVERKILL")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("ADJACENT")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("ODD")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("HERO_POWER")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("MURLOC")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("DAMAGE_ENEMIES")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("TREANTS")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("PLAY")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("DISCARD")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("DEMON")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("REMOVE_FROM_DECK")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("SUMMON")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("HIGH_HP")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("TRANSFORM")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("CANT_ATTACK")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("RETURN_TO_HAND")));
+		assertTrue(CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("LOW_ATTACK")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("ARMOR")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("GIVE_STEALTH")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("JADE_GOLEM")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("ELEMENTAL")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("REVEAL")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("START_GAME")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("ADAPT")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("HIGH_ATTACK")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("SPELL_DAMAGE")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("REVIVE")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("DAMAGE_SPELL")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("DRAGON")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("EVEN")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("RITUAL")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("COMBO")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("COUNTER")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("SECRET")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("CONTROL")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("SPELL")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("LIFESTEAL")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("LOW_HP")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("HEALTH_RESTORE")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("DESTROY")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("MAGNETIC")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("RECRUIT")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("DEATHRATTLE")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("HIGH_COST")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("INSPIRE")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("LOW_COST")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("TWINSPELL")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("DEAL_DAMAGE")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("ENRAGE")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("MECH")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("FORGETFUL")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("CHARGE")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("QUEST")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("EQUIP")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("DRAW")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("MANA")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("TOTEM")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("COPY")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("AOE_BUFF")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("EOT")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("IMMUNE")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("TAUNT")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("LACKEY")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("PIRATE")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("WINDFURY")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("SOT")));
+		assertTrue(CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("GENERATE")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("AURA")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("BEAST")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("HIGH_COST_MINION")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("RUSH")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("FREEZE")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("OVERLOAD")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("ELUSIVE")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("ATTACKS")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("GIVE_DIVINE_SHIELD")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("DAMAGE_ALL")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("LOW_COST_MINION")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("POISONOUS")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("STEALTH")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("CHOOSE_ONE")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("ECHO")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("DISCOVER")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("SILENCE")));
+		assertTrue(CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("DIVINE_SHIELD")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("COST_MODIFY")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("SHUFFLE")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("OVERKILL")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("ADJACENT")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("ODD")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("HERO_POWER")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("MURLOC")));
+		assertTrue(CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("DAMAGE_ENEMIES")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("TREANTS")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("PLAY")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("DISCARD")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("DEMON")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("REMOVE_FROM_DECK")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("SUMMON")));
+		assertTrue(CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("HIGH_HP")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("TRANSFORM")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("CANT_ATTACK")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("RETURN_TO_HAND")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("LOW_ATTACK")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("ARMOR")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("GIVE_STEALTH")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("JADE_GOLEM")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("ELEMENTAL")));
+		assertTrue(CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("REVEAL")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("START_GAME")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("ADAPT")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("HIGH_ATTACK")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("SPELL_DAMAGE")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("REVIVE")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("DAMAGE_SPELL")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("DRAGON")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("EVEN")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("RITUAL")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("COMBO")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("COUNTER")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("SECRET")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("CONTROL")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("SPELL")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("LIFESTEAL")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("LOW_HP")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("HEALTH_RESTORE")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("DESTROY")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("MAGNETIC")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("RECRUIT")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("DEATHRATTLE")));
+		assertTrue(CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("HIGH_COST")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("INSPIRE")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("LOW_COST")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("TWINSPELL")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("DEAL_DAMAGE")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("ENRAGE")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("MECH")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("FORGETFUL")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("CHARGE")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("QUEST")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("EQUIP")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("DRAW")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("MANA")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("TOTEM")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("COPY")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("AOE_BUFF")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("EOT")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("IMMUNE")));
+		assertTrue(CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("TAUNT")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("LACKEY")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("PIRATE")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("WINDFURY")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("SOT")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("GENERATE")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("AURA")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("BEAST")));
+		assertTrue(CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("HIGH_COST_MINION")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("RUSH")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("FREEZE")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("OVERLOAD")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("ELUSIVE")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("ATTACKS")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("GIVE_DIVINE_SHIELD")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("DAMAGE_ALL")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("LOW_COST_MINION")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("POISONOUS")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("STEALTH")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("CHOOSE_ONE")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("ECHO")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("DISCOVER")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("SILENCE")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("DIVINE_SHIELD")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("COST_MODIFY")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("SHUFFLE")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("OVERKILL")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("ADJACENT")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("ODD")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("HERO_POWER")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("MURLOC")));
+		assertTrue(CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("DAMAGE_ENEMIES")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("TREANTS")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("PLAY")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("DISCARD")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("DEMON")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("REMOVE_FROM_DECK")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("SUMMON")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("HIGH_HP")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("TRANSFORM")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("CANT_ATTACK")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("RETURN_TO_HAND")));
+		assertTrue(CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("LOW_ATTACK")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("ARMOR")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("GIVE_STEALTH")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("JADE_GOLEM")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("ELEMENTAL")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("REVEAL")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("START_GAME")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("ADAPT")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("HIGH_ATTACK")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("SPELL_DAMAGE")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("REVIVE")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("DAMAGE_SPELL")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("DRAGON")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("EVEN")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("RITUAL")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("COMBO")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("COUNTER")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("SECRET")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("CONTROL")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("SPELL")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("LIFESTEAL")));
+		assertTrue(CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("LOW_HP")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("HEALTH_RESTORE")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("DESTROY")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("MAGNETIC")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("RECRUIT")));
+		assertTrue(CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("DEATHRATTLE")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("HIGH_COST")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("INSPIRE")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("LOW_COST")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("TWINSPELL")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("DEAL_DAMAGE")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("ENRAGE")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("MECH")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("FORGETFUL")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("CHARGE")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("QUEST")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("EQUIP")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("DRAW")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("MANA")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("TOTEM")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("COPY")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("AOE_BUFF")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("EOT")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("IMMUNE")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("TAUNT")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("LACKEY")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("PIRATE")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("WINDFURY")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("SOT")));
+		assertTrue(CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("GENERATE")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("AURA")));
+		assertTrue(CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("BEAST")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("HIGH_COST_MINION")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("RUSH")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));
 	}
 
-	@Test
+	//@Test
 	public void testCardSinergies() {
 		CardBuilder cb = new CardBuilder();
-		Card c = CardBuilder.getCard("face collector");
-		//cb.generateCardSynergies(c);
-		//for (Sinergy<Card> s : cb.getCardSinergies(c, 10, CLASS.ROGUE)) {
-			//syso
-		//}
+		String[] cs = { "Corpsetaker", "Jan'alai, the Dragonhawk", "Zandalari Templar", "Shudderwock", "Tess Greymane",
+				"Enhance-o Mechano", "Shaku, the Collector", "Master Jouster", "Gral, the Shark" };
+		for (String name : cs) {
+			List<String> ls = CardBuilder.getCard(name).getTags().stream().map(t -> t.getName())
+					.collect(Collectors.toList());
+			for (String tag : TagBuilder.getTags().keySet()) {
+				if (ls.contains(tag))
+					System.out.println("assertTrue(CardBuilder.getCard(\"" + cb.getCard(name)
+							+ "\").getTags().contains(TagBuilder.getTags().get(\"" + tag + "\")));");
+				else
+					System.out.println("assertTrue(!CardBuilder.getCard(\"" + cb.getCard(name)
+							+ "\").getTags().contains(TagBuilder.getTags().get(\"" + tag + "\")));");
+			}
+		}
+
+//cb.generateCardSynergies(c);
+//for (Sinergy<Card> s : cb.getCardSinergies(c, 10, CLASS.ROGUE)) {
+//syso
+//}
 	}
 }

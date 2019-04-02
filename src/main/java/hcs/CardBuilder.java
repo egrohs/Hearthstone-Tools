@@ -12,12 +12,10 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -183,13 +181,13 @@ public class CardBuilder {
 							if (c2.getTags().contains(tag2)) {
 								Sinergy<Card> cardSin = getCardSinergy(c1, c2);
 								if (cardSin == null) {
-									cardSin = new Sinergy<Card>(c1, c2, tagSin.getValor(),
+									cardSin = new Sinergy<Card>(c1, c2, tagSin.getWeight(),
 											tag1.getRegex() + "+" + tag2.getRegex());
 									cardsSynergies.add(cardSin);
 									fw.write(c1.getName() + "\t" + tag1.getName() + "\t" + c2.getName() + "\t"
 											+ tag2.getName() + "\r\n");
 								} else {
-									cardSin.setValor(cardSin.getValor() + tagSin.getValor());
+									cardSin.setWeight(cardSin.getWeight() + tagSin.getWeight());
 								}
 							}
 						}
@@ -224,10 +222,10 @@ public class CardBuilder {
 						if (c2.getTags().contains(tag2)) {
 							Sinergy<Card> cs = getCardSinergy(c, c2);
 							if (cs == null) {
-								cs = new Sinergy<Card>(c, c2, ts.getValor(), tag1.getRegex() + "+" + tag2.getRegex());
+								cs = new Sinergy<Card>(c, c2, ts.getWeight(), tag1.getRegex() + "+" + tag2.getRegex());
 								cardsSynergies.add(cs);
 							} else {
-								cs.setValor(cs.getValor() + ts.getValor());
+								cs.setWeight(cs.getWeight() + ts.getWeight());
 							}
 						}
 					}
@@ -339,7 +337,7 @@ public class CardBuilder {
 		// Collections.sort((List<Sinergy<Card>>) cardsSynergies);
 		StringBuilder sb = new StringBuilder();
 		for (Sinergy<Card> s : cardsSynergies) {
-			String line = s.getE1() + "\t" + s.getE2() + "\t" + s.getFreq() + "\t" + s.getValor() + "\t" + s.getMechs();
+			String line = s.getE1() + "\t" + s.getE2() + "\t" + s.getFreq() + "\t" + s.getWeight() + "\t" + s.getMechs();
 			sb.append(line + "\r\n");
 			System.out.println(line);
 		}
@@ -383,7 +381,7 @@ public class CardBuilder {
 							s = new Sinergy<Card>(myprev, myatual, 1);
 							cardsSynergies.add(s);
 						}
-						s.setValor(s.getValor() + 1);
+						s.setWeight(s.getWeight() + 1);
 					}
 				} else if ("opponent".equals(player)) {
 					if (opoprev == null) {
@@ -397,13 +395,13 @@ public class CardBuilder {
 							s = new Sinergy<Card>(opoprev, opoatual, 1);
 							cardsSynergies.add(s);
 						}
-						s.setValor(s.getValor() + 1);
+						s.setWeight(s.getWeight() + 1);
 					}
 				}
 			}
 		}
 	}
-	
+
 	/**
 	 * Calculate possible cards sinergy.
 	 * 
@@ -411,7 +409,7 @@ public class CardBuilder {
 	 * @param currentMana Mana restante no turno atual.
 	 * @return Set of Cards with sinergy.
 	 */
-	//TODO here or in DeckBuilder?
+	// TODO here or in DeckBuilder?
 	public Set<Card> provaveis(Card c, int currentMana, CLASS hsClass) {
 		// Set<Sinergia> sub = new LinkedHashSet<Sinergia>();
 		Set<Card> sub = new LinkedHashSet<Card>();
@@ -425,14 +423,14 @@ public class CardBuilder {
 					// cartas com sinergia com custo provavel no turno
 					if (CLASS.contem(hsClass, c2.getClasse()) && c2.getCost() <= currentMana) {
 						sub.add(c2);
-						System.out.println(c2 + "\t" + s.getValor() + "\t" + s.getMechs());
+						System.out.println(c2 + "\t" + s.getWeight() + "\t" + s.getMechs());
 					}
 				}
 			}
 		}
 		return sub;
 	}
-	
+
 	/**
 	 * Calcula as provaveis jogadas.
 	 * 
@@ -453,7 +451,7 @@ public class CardBuilder {
 					// cartas com sinergia com custo provavel no turno
 					if (CLASS.contem(opo, c2.getClasse()) && c2.getCost() <= manaRestante) {
 						sub.add(s);
-						System.out.println(c2 + "\t" + s.getValor() + "\t" + s.getMechs());
+						System.out.println(c2 + "\t" + s.getWeight() + "\t" + s.getMechs());
 					}
 				}
 			}
@@ -462,9 +460,11 @@ public class CardBuilder {
 	}
 
 	public static void main(String[] args) {
-		new CardBuilder().buildCards();
-//		for (Carta c : cards) {			
-//			System.out.println(c.m);
-//		}
+		CardBuilder cb = new CardBuilder();
+		for (Card c : cards) {
+			for (Tag t : c.getTags()) {
+				System.out.println(c + " TAG: " + t);
+			}
+		}
 	}
 }

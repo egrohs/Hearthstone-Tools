@@ -32,16 +32,17 @@ public class TagBuilder {
 	private ClassLoader cl = this.getClass().getClassLoader();
 
 	public TagBuilder() {
-		loadTags();
-		calcSinergies();
-		// importTags();
+		// loadTags();
+		importTags();
+		importTagSinergies();
+		// calcSinergies();
 		// printTags();
 	}
 
 	public static Map<String, Tag> getTags() {
 		return tags;
 	}
-	
+
 	public List<Sinergy<Tag>> getTagsSynergies() {
 		return tagsSynergies;
 	}
@@ -141,27 +142,26 @@ public class TagBuilder {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
+		// skip header row
+		sc.nextLine();
 		while (sc.hasNextLine()) {
 			String[] line = sc.nextLine().split("\t");
-			String tag = "", regex = "", type = "", cost = "", attack = "", hp = "", sinergies = "", description = "";
+			String tag = "", regex = "", expr = "", description = "";
 			try {
 				tag = (line[0]);
 				regex = (line[1]);
-				type = (line[2]);
-				cost = (line[3]);
-				attack = line[4];
-				hp = line[5];
-				sinergies = line[6];
-				description = line[7];
+				expr = (line[2]);
+				description = line[3];
 			} catch (ArrayIndexOutOfBoundsException e) {
 				// TODO: handle exception
 			}
-			tags.put(tag, new Tag(tag, regex, type, cost, attack, hp, sinergies, description));
+			tags.put(tag, new Tag(tag, regex, expr, description));
 		}
 		sc.close();
 		System.out.println(tags.size() + " tags loaded.");
 	}
 
+	/** Import tags from google spreadsheet. */
 	private void importTags() {
 		List<List<Object>> values = null;
 		try {
@@ -175,26 +175,35 @@ public class TagBuilder {
 		} else {
 			for (List<Object> row : values) {
 				String name = (String) row.get(0);
-				String regex = (String) row.get(1);
-				String tts = row.size() > 2 ? (String) row.get(2) : "";
+				String regex = row.size() > 1 ? (String) row.get(1) : "";
+				String expr = row.size() > 2 ? (String) row.get(2) : "";
+				String desc = row.size() > 3 ? (String) row.get(3) : "";
 				Tag t = tags.get(name);
-//				if (t == null)
-//					t = new Tag(name, regex, tts);
-//				tags.put(name, t);
+				if (t == null)
+					tags.put(name, new Tag(name, regex, expr, desc));
 
 			}
 		}
 		System.out.println(tags.size() + " tags imported.");
 	}
 
-	private void calcSinergies() {
-		for (Tag tag : tags.values()) {
-			for (String s : tag.getSinergies().split(",")) {
-				Tag t1 = tags.get(tag.getName());
-				Tag t2 = tags.get(s);
-				if (t2 != null) {
-					tagsSynergies.add(new Sinergy<Tag>(t1, t2, 0));
-				}
+	private void importTagSinergies() {
+		List<List<Object>> values = null;
+		try {
+			values = GoogleSheets.getDados("1WNcRrDzxyoy_TRm9v15VSGwEiRPqJhUhReq0Wh8Jp14", "TAG_EDGES!A2:D");
+		} catch (GeneralSecurityException | IOException e) {
+			e.printStackTrace();
+		}
+
+		for (List<Object> row : values) {
+			String source = (String) row.get(0);
+			String taget = row.size() > 1 ? (String) row.get(1) : "";
+			String label = row.size() > 2 ? (String) row.get(2) : "";
+			Float weight = row.size() > 3 ? (Float) row.get(3) : 0.0f;
+			Tag t1 = tags.get(source);
+			Tag t2 = tags.get(taget);
+			if (t2 != null) {
+				tagsSynergies.add(new Sinergy<Tag>(t1, t2, label, weight));
 			}
 		}
 	}
@@ -210,36 +219,25 @@ public class TagBuilder {
 	 * Generate all cards Tags.
 	 */
 	void buildCardTags() {
-		for (Card c : CardBuilder.cards) {
-			// System.out.println(c);
-			for (Tag tag : tags.values()) {
-				if (eval("\"" + c.getType() + "\"" + tag.getType()) && eval(c.getCost() + tag.getCost())
-						&& eval(c.getAttack() + tag.getAttack()) && eval(c.getHealth() + tag.getHp())
-						&& (c.getRace().contains(tag.getName())
-								|| Pattern.compile(tag.getRegex()).matcher(c.getText()).find())) {
-					c.getTags().add(tag);
+		try {
+			for (Card c : CardBuilder.cards) {
+				for (Tag tag : tags.values()) {
+					String expr = c.replaceVars(tag.getExpr());
+					if ((expr.equals("") || (boolean) engine.eval(expr) == true) && (c.getRace().contains(tag.getName())
+							|| Pattern.compile(tag.getRegex()).matcher(c.getText()).find())) {
+						c.getTags().add(tag);
+					}
 				}
 			}
+		} catch (ScriptException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
 	ScriptEngineManager mgr = new ScriptEngineManager();
 	ScriptEngine engine = mgr.getEngineByName("JavaScript");
-
-	private boolean eval(String foo) {
-		// System.out.println(foo);
-		if (foo.contains("=") || foo.contains("<") || foo.contains(">")) {
-			try {
-				// System.out.println(engine.eval(foo));
-				return (boolean) engine.eval(foo);
-			} catch (ScriptException e) {
-				// TODO Auto-generated catch block
-				// e.printStackTrace();
-				// System.exit(0);
-			}
-		}
-		return true;
-	}
+//return (boolean) engine.eval(foo);
 
 	@Deprecated
 	private void printQntMAffinities() {
