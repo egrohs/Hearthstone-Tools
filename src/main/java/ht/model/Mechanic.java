@@ -1,4 +1,4 @@
-package hcs.model;
+package ht.model;
 
 import lombok.Data;
 
@@ -14,8 +14,8 @@ public class Mechanic extends Entity {
     private String regex, cathegory;
     // Map<Mechanic, Float> aff = new LinkedHashMap<Mechanic, Float>();
 
-    public Mechanic(String id, String regex) {
-	this.id = id;
+    public Mechanic(String cod, String regex) {
+	this.cod = cod;
 	this.regex = regex;
     }
 

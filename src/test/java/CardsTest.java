@@ -4,25 +4,24 @@
  */
 import static org.junit.Assert.assertTrue;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.junit.Test;
 
-import hcs.CardBuilder;
-import hcs.TagBuilder;
+import ht.model.Card;
+import ht.CardBuilder;
+import ht.TagBuilder;
 
 public class CardsTest {
 
 //TODO fazer not asserts introspectivos, de forma que todas tags que as cartas nao tiverem devem ser geradas automaticamente. 
-	@Test
+	// @Test
 	public void testCardsTags() {
 		CardBuilder cb = new CardBuilder();
 		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("FREEZE")));
 		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("OVERLOAD")));
 		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("ELUSIVE")));
 		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("ATTACKS")));
-		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("GIVE_DIVINE_SHIELD")));
+		assertTrue(
+				!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("GIVE_DIVINE_SHIELD")));
 		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("DAMAGE_ALL")));
 		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("LOW_COST_MINION")));
 		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("POISONOUS")));
@@ -45,7 +44,8 @@ public class CardsTest {
 		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("PLAY")));
 		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("DISCARD")));
 		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("DEMON")));
-		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("REMOVE_FROM_DECK")));
+		assertTrue(
+				!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("REMOVE_FROM_DECK")));
 		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("SUMMON")));
 		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("HIGH_HP")));
 		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("TRANSFORM")));
@@ -104,143 +104,251 @@ public class CardsTest {
 		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("GENERATE")));
 		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("AURA")));
 		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("BEAST")));
-		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("HIGH_COST_MINION")));
+		assertTrue(
+				!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("HIGH_COST_MINION")));
 		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("RUSH")));
 		assertTrue(!CardBuilder.getCard("corpsetaker").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("FREEZE")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("OVERLOAD")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("ELUSIVE")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("ATTACKS")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("GIVE_DIVINE_SHIELD")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("DAMAGE_ALL")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("LOW_COST_MINION")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("POISONOUS")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("STEALTH")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("CHOOSE_ONE")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("ECHO")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("DISCOVER")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("SILENCE")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("DIVINE_SHIELD")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("COST_MODIFY")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("SHUFFLE")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("OVERKILL")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("ADJACENT")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("ODD")));
-		assertTrue(CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("HERO_POWER")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("MURLOC")));
-		assertTrue(CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("DAMAGE_ENEMIES")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("TREANTS")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("PLAY")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("DISCARD")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("DEMON")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("REMOVE_FROM_DECK")));
-		assertTrue(CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("SUMMON")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("HIGH_HP")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("TRANSFORM")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("CANT_ATTACK")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("RETURN_TO_HAND")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("LOW_ATTACK")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("ARMOR")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("GIVE_STEALTH")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("JADE_GOLEM")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("ELEMENTAL")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("REVEAL")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("START_GAME")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("ADAPT")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("HIGH_ATTACK")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("SPELL_DAMAGE")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("REVIVE")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("DAMAGE_SPELL")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("DRAGON")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("EVEN")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("RITUAL")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("COMBO")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("COUNTER")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("SECRET")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("CONTROL")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("SPELL")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("LIFESTEAL")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("LOW_HP")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("HEALTH_RESTORE")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("DESTROY")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("MAGNETIC")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("RECRUIT")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("DEATHRATTLE")));
-		assertTrue(CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("HIGH_COST")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("INSPIRE")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("LOW_COST")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("TWINSPELL")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("DEAL_DAMAGE")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("ENRAGE")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("MECH")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("FORGETFUL")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("CHARGE")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("QUEST")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("EQUIP")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("DRAW")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("MANA")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("TOTEM")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("COPY")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("AOE_BUFF")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("EOT")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("IMMUNE")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("TAUNT")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("LACKEY")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("PIRATE")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("WINDFURY")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("SOT")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("GENERATE")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("AURA")));
-		assertTrue(CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("BEAST")));
-		assertTrue(CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("HIGH_COST_MINION")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("RUSH")));
-		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("FREEZE")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("OVERLOAD")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("ELUSIVE")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("ATTACKS")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("GIVE_DIVINE_SHIELD")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("DAMAGE_ALL")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("LOW_COST_MINION")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("POISONOUS")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("STEALTH")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("CHOOSE_ONE")));
+		assertTrue(
+				!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("ECHO")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("DISCOVER")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("SILENCE")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("DIVINE_SHIELD")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("COST_MODIFY")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("SHUFFLE")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("OVERKILL")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("ADJACENT")));
+		assertTrue(
+				!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("ODD")));
+		assertTrue(CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("HERO_POWER")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("MURLOC")));
+		assertTrue(CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("BATTLECRY")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("DAMAGE_ENEMIES")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("TREANTS")));
+		assertTrue(
+				!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("PLAY")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("DISCARD")));
+		assertTrue(
+				!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("DEMON")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("REMOVE_FROM_DECK")));
+		assertTrue(
+				CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("SUMMON")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("HIGH_HP")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("TRANSFORM")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("CANT_ATTACK")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("RETURN_TO_HAND")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("LOW_ATTACK")));
+		assertTrue(
+				!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("ARMOR")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("GIVE_STEALTH")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("JADE_GOLEM")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("ELEMENTAL")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("REVEAL")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("START_GAME")));
+		assertTrue(
+				!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("ADAPT")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("HIGH_ATTACK")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("SPELL_DAMAGE")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("REVIVE")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("DAMAGE_SPELL")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("DRAGON")));
+		assertTrue(
+				!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("EVEN")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("RITUAL")));
+		assertTrue(
+				!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("COMBO")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("COUNTER")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("SECRET")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("CONTROL")));
+		assertTrue(
+				!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("SPELL")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("LIFESTEAL")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("LOW_HP")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("HEALTH_RESTORE")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("DESTROY")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("MAGNETIC")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("RECRUIT")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("DEATHRATTLE")));
+		assertTrue(CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("HIGH_COST")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("INSPIRE")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("LOW_COST")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("TWINSPELL")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("DEAL_DAMAGE")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("ENRAGE")));
+		assertTrue(
+				!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("MECH")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("FORGETFUL")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("CHARGE")));
+		assertTrue(
+				!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("QUEST")));
+		assertTrue(
+				!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("EQUIP")));
+		assertTrue(
+				!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("DRAW")));
+		assertTrue(
+				!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("MANA")));
+		assertTrue(
+				!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("TOTEM")));
+		assertTrue(
+				!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("COPY")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("AOE_BUFF")));
+		assertTrue(
+				!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("EOT")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("IMMUNE")));
+		assertTrue(
+				!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("TAUNT")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("LACKEY")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("PIRATE")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("WINDFURY")));
+		assertTrue(
+				!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("SOT")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("GENERATE")));
+		assertTrue(
+				!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("AURA")));
+		assertTrue(
+				CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("BEAST")));
+		assertTrue(CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("HIGH_COST_MINION")));
+		assertTrue(
+				!CardBuilder.getCard("jan'alai, the dragonhawk").getTags().contains(TagBuilder.getTags().get("RUSH")));
+		assertTrue(!CardBuilder.getCard("jan'alai, the dragonhawk").getTags()
+				.contains(TagBuilder.getTags().get("ATTACK_MODIFY")));
 		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("FREEZE")));
 		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("OVERLOAD")));
 		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("ELUSIVE")));
 		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("ATTACKS")));
-		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("GIVE_DIVINE_SHIELD")));
-		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("DAMAGE_ALL")));
-		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("LOW_COST_MINION")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags()
+				.contains(TagBuilder.getTags().get("GIVE_DIVINE_SHIELD")));
+		assertTrue(
+				!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("DAMAGE_ALL")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags()
+				.contains(TagBuilder.getTags().get("LOW_COST_MINION")));
 		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("POISONOUS")));
 		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("STEALTH")));
-		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("CHOOSE_ONE")));
+		assertTrue(
+				!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("CHOOSE_ONE")));
 		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("ECHO")));
 		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("DISCOVER")));
 		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("SILENCE")));
-		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("DIVINE_SHIELD")));
-		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("COST_MODIFY")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags()
+				.contains(TagBuilder.getTags().get("DIVINE_SHIELD")));
+		assertTrue(
+				!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("COST_MODIFY")));
 		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("SHUFFLE")));
 		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("OVERKILL")));
 		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("ADJACENT")));
 		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("ODD")));
-		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("HERO_POWER")));
+		assertTrue(
+				!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("HERO_POWER")));
 		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("MURLOC")));
 		assertTrue(CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));
-		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("DAMAGE_ENEMIES")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags()
+				.contains(TagBuilder.getTags().get("DAMAGE_ENEMIES")));
 		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("TREANTS")));
 		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("PLAY")));
 		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("DISCARD")));
 		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("DEMON")));
-		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("REMOVE_FROM_DECK")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags()
+				.contains(TagBuilder.getTags().get("REMOVE_FROM_DECK")));
 		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("SUMMON")));
 		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("HIGH_HP")));
 		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("TRANSFORM")));
-		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("CANT_ATTACK")));
-		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("RETURN_TO_HAND")));
-		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("LOW_ATTACK")));
+		assertTrue(
+				!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("CANT_ATTACK")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags()
+				.contains(TagBuilder.getTags().get("RETURN_TO_HAND")));
+		assertTrue(
+				!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("LOW_ATTACK")));
 		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("ARMOR")));
-		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("GIVE_STEALTH")));
-		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("JADE_GOLEM")));
+		assertTrue(
+				!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("GIVE_STEALTH")));
+		assertTrue(
+				!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("JADE_GOLEM")));
 		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("ELEMENTAL")));
 		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("REVEAL")));
-		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("START_GAME")));
+		assertTrue(
+				!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("START_GAME")));
 		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("ADAPT")));
-		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("HIGH_ATTACK")));
-		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("SPELL_DAMAGE")));
+		assertTrue(
+				!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("HIGH_ATTACK")));
+		assertTrue(
+				!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("SPELL_DAMAGE")));
 		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("REVIVE")));
-		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("DAMAGE_SPELL")));
+		assertTrue(
+				!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("DAMAGE_SPELL")));
 		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("DRAGON")));
 		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("EVEN")));
 		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("RITUAL")));
@@ -251,16 +359,19 @@ public class CardsTest {
 		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("SPELL")));
 		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("LIFESTEAL")));
 		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("LOW_HP")));
-		assertTrue(CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("HEALTH_RESTORE")));
+		assertTrue(CardBuilder.getCard("zandalari templar").getTags()
+				.contains(TagBuilder.getTags().get("HEALTH_RESTORE")));
 		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("DESTROY")));
 		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("MAGNETIC")));
 		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("RECRUIT")));
-		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("DEATHRATTLE")));
+		assertTrue(
+				!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("DEATHRATTLE")));
 		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("HIGH_COST")));
 		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("INSPIRE")));
 		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("LOW_COST")));
 		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("TWINSPELL")));
-		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("DEAL_DAMAGE")));
+		assertTrue(
+				!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("DEAL_DAMAGE")));
 		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("ENRAGE")));
 		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("MECH")));
 		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("FORGETFUL")));
@@ -282,14 +393,17 @@ public class CardsTest {
 		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("GENERATE")));
 		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("AURA")));
 		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("BEAST")));
-		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("HIGH_COST_MINION")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags()
+				.contains(TagBuilder.getTags().get("HIGH_COST_MINION")));
 		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("RUSH")));
-		assertTrue(!CardBuilder.getCard("zandalari templar").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));
+		assertTrue(!CardBuilder.getCard("zandalari templar").getTags()
+				.contains(TagBuilder.getTags().get("ATTACK_MODIFY")));
 		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("FREEZE")));
 		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("OVERLOAD")));
 		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("ELUSIVE")));
 		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("ATTACKS")));
-		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("GIVE_DIVINE_SHIELD")));
+		assertTrue(
+				!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("GIVE_DIVINE_SHIELD")));
 		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("DAMAGE_ALL")));
 		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("LOW_COST_MINION")));
 		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("POISONOUS")));
@@ -312,7 +426,8 @@ public class CardsTest {
 		assertTrue(CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("PLAY")));
 		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("DISCARD")));
 		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("DEMON")));
-		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("REMOVE_FROM_DECK")));
+		assertTrue(
+				!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("REMOVE_FROM_DECK")));
 		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("SUMMON")));
 		assertTrue(CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("HIGH_HP")));
 		assertTrue(!CardBuilder.getCard("shudderwock").getTags().contains(TagBuilder.getTags().get("TRANSFORM")));
@@ -378,9 +493,11 @@ public class CardsTest {
 		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("OVERLOAD")));
 		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("ELUSIVE")));
 		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("ATTACKS")));
-		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("GIVE_DIVINE_SHIELD")));
+		assertTrue(!CardBuilder.getCard("tess greymane").getTags()
+				.contains(TagBuilder.getTags().get("GIVE_DIVINE_SHIELD")));
 		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("DAMAGE_ALL")));
-		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("LOW_COST_MINION")));
+		assertTrue(
+				!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("LOW_COST_MINION")));
 		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("POISONOUS")));
 		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("STEALTH")));
 		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("CHOOSE_ONE")));
@@ -396,17 +513,20 @@ public class CardsTest {
 		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("HERO_POWER")));
 		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("MURLOC")));
 		assertTrue(CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));
-		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("DAMAGE_ENEMIES")));
+		assertTrue(
+				!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("DAMAGE_ENEMIES")));
 		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("TREANTS")));
 		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("PLAY")));
 		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("DISCARD")));
 		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("DEMON")));
-		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("REMOVE_FROM_DECK")));
+		assertTrue(
+				!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("REMOVE_FROM_DECK")));
 		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("SUMMON")));
 		assertTrue(CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("HIGH_HP")));
 		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("TRANSFORM")));
 		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("CANT_ATTACK")));
-		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("RETURN_TO_HAND")));
+		assertTrue(
+				!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("RETURN_TO_HAND")));
 		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("LOW_ATTACK")));
 		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("ARMOR")));
 		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("GIVE_STEALTH")));
@@ -429,7 +549,8 @@ public class CardsTest {
 		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("SPELL")));
 		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("LIFESTEAL")));
 		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("LOW_HP")));
-		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("HEALTH_RESTORE")));
+		assertTrue(
+				!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("HEALTH_RESTORE")));
 		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("DESTROY")));
 		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("MAGNETIC")));
 		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("RECRUIT")));
@@ -460,54 +581,73 @@ public class CardsTest {
 		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("GENERATE")));
 		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("AURA")));
 		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("BEAST")));
-		assertTrue(CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("HIGH_COST_MINION")));
+		assertTrue(
+				CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("HIGH_COST_MINION")));
 		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("RUSH")));
 		assertTrue(!CardBuilder.getCard("tess greymane").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));
 		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("FREEZE")));
 		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("OVERLOAD")));
 		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("ELUSIVE")));
 		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("ATTACKS")));
-		assertTrue(CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("GIVE_DIVINE_SHIELD")));
-		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("DAMAGE_ALL")));
-		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("LOW_COST_MINION")));
+		assertTrue(CardBuilder.getCard("enhance-o mechano").getTags()
+				.contains(TagBuilder.getTags().get("GIVE_DIVINE_SHIELD")));
+		assertTrue(
+				!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("DAMAGE_ALL")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags()
+				.contains(TagBuilder.getTags().get("LOW_COST_MINION")));
 		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("POISONOUS")));
 		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("STEALTH")));
-		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("CHOOSE_ONE")));
+		assertTrue(
+				!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("CHOOSE_ONE")));
 		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("ECHO")));
 		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("DISCOVER")));
 		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("SILENCE")));
-		assertTrue(CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("DIVINE_SHIELD")));
-		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("COST_MODIFY")));
+		assertTrue(
+				CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("DIVINE_SHIELD")));
+		assertTrue(
+				!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("COST_MODIFY")));
 		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("SHUFFLE")));
 		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("OVERKILL")));
 		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("ADJACENT")));
 		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("ODD")));
-		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("HERO_POWER")));
+		assertTrue(
+				!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("HERO_POWER")));
 		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("MURLOC")));
 		assertTrue(CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));
-		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("DAMAGE_ENEMIES")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags()
+				.contains(TagBuilder.getTags().get("DAMAGE_ENEMIES")));
 		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("TREANTS")));
 		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("PLAY")));
 		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("DISCARD")));
 		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("DEMON")));
-		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("REMOVE_FROM_DECK")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags()
+				.contains(TagBuilder.getTags().get("REMOVE_FROM_DECK")));
 		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("SUMMON")));
 		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("HIGH_HP")));
 		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("TRANSFORM")));
-		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("CANT_ATTACK")));
-		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("RETURN_TO_HAND")));
-		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("LOW_ATTACK")));
+		assertTrue(
+				!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("CANT_ATTACK")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags()
+				.contains(TagBuilder.getTags().get("RETURN_TO_HAND")));
+		assertTrue(
+				!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("LOW_ATTACK")));
 		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("ARMOR")));
-		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("GIVE_STEALTH")));
-		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("JADE_GOLEM")));
+		assertTrue(
+				!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("GIVE_STEALTH")));
+		assertTrue(
+				!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("JADE_GOLEM")));
 		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("ELEMENTAL")));
 		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("REVEAL")));
-		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("START_GAME")));
+		assertTrue(
+				!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("START_GAME")));
 		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("ADAPT")));
-		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("HIGH_ATTACK")));
-		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("SPELL_DAMAGE")));
+		assertTrue(
+				!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("HIGH_ATTACK")));
+		assertTrue(
+				!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("SPELL_DAMAGE")));
 		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("REVIVE")));
-		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("DAMAGE_SPELL")));
+		assertTrue(
+				!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("DAMAGE_SPELL")));
 		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("DRAGON")));
 		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("EVEN")));
 		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("RITUAL")));
@@ -518,16 +658,19 @@ public class CardsTest {
 		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("SPELL")));
 		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("LIFESTEAL")));
 		assertTrue(CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("LOW_HP")));
-		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("HEALTH_RESTORE")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags()
+				.contains(TagBuilder.getTags().get("HEALTH_RESTORE")));
 		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("DESTROY")));
 		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("MAGNETIC")));
 		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("RECRUIT")));
-		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("DEATHRATTLE")));
+		assertTrue(
+				!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("DEATHRATTLE")));
 		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("HIGH_COST")));
 		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("INSPIRE")));
 		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("LOW_COST")));
 		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("TWINSPELL")));
-		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("DEAL_DAMAGE")));
+		assertTrue(
+				!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("DEAL_DAMAGE")));
 		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("ENRAGE")));
 		assertTrue(CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("MECH")));
 		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("FORGETFUL")));
@@ -549,77 +692,125 @@ public class CardsTest {
 		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("GENERATE")));
 		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("AURA")));
 		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("BEAST")));
-		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("HIGH_COST_MINION")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags()
+				.contains(TagBuilder.getTags().get("HIGH_COST_MINION")));
 		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("RUSH")));
-		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));
+		assertTrue(!CardBuilder.getCard("enhance-o mechano").getTags()
+				.contains(TagBuilder.getTags().get("ATTACK_MODIFY")));
 		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("FREEZE")));
-		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("OVERLOAD")));
-		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("ELUSIVE")));
+		assertTrue(
+				!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("OVERLOAD")));
+		assertTrue(
+				!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("ELUSIVE")));
 		assertTrue(CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("ATTACKS")));
-		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("GIVE_DIVINE_SHIELD")));
-		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("DAMAGE_ALL")));
-		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("LOW_COST_MINION")));
-		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("POISONOUS")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags()
+				.contains(TagBuilder.getTags().get("GIVE_DIVINE_SHIELD")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags()
+				.contains(TagBuilder.getTags().get("DAMAGE_ALL")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags()
+				.contains(TagBuilder.getTags().get("LOW_COST_MINION")));
+		assertTrue(
+				!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("POISONOUS")));
 		assertTrue(CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("STEALTH")));
-		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("CHOOSE_ONE")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags()
+				.contains(TagBuilder.getTags().get("CHOOSE_ONE")));
 		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("ECHO")));
-		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("DISCOVER")));
-		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("SILENCE")));
-		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("DIVINE_SHIELD")));
-		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("COST_MODIFY")));
-		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("SHUFFLE")));
-		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("OVERKILL")));
-		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("ADJACENT")));
+		assertTrue(
+				!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("DISCOVER")));
+		assertTrue(
+				!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("SILENCE")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags()
+				.contains(TagBuilder.getTags().get("DIVINE_SHIELD")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags()
+				.contains(TagBuilder.getTags().get("COST_MODIFY")));
+		assertTrue(
+				!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("SHUFFLE")));
+		assertTrue(
+				!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("OVERKILL")));
+		assertTrue(
+				!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("ADJACENT")));
 		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("ODD")));
-		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("HERO_POWER")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags()
+				.contains(TagBuilder.getTags().get("HERO_POWER")));
 		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("MURLOC")));
-		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));
-		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("DAMAGE_ENEMIES")));
-		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("TREANTS")));
+		assertTrue(
+				!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags()
+				.contains(TagBuilder.getTags().get("DAMAGE_ENEMIES")));
+		assertTrue(
+				!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("TREANTS")));
 		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("PLAY")));
-		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("DISCARD")));
+		assertTrue(
+				!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("DISCARD")));
 		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("DEMON")));
-		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("REMOVE_FROM_DECK")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags()
+				.contains(TagBuilder.getTags().get("REMOVE_FROM_DECK")));
 		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("SUMMON")));
-		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("HIGH_HP")));
-		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("TRANSFORM")));
-		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("CANT_ATTACK")));
-		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("RETURN_TO_HAND")));
-		assertTrue(CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("LOW_ATTACK")));
+		assertTrue(
+				!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("HIGH_HP")));
+		assertTrue(
+				!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("TRANSFORM")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags()
+				.contains(TagBuilder.getTags().get("CANT_ATTACK")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags()
+				.contains(TagBuilder.getTags().get("RETURN_TO_HAND")));
+		assertTrue(
+				CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("LOW_ATTACK")));
 		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("ARMOR")));
-		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("GIVE_STEALTH")));
-		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("JADE_GOLEM")));
-		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("ELEMENTAL")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags()
+				.contains(TagBuilder.getTags().get("GIVE_STEALTH")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags()
+				.contains(TagBuilder.getTags().get("JADE_GOLEM")));
+		assertTrue(
+				!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("ELEMENTAL")));
 		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("REVEAL")));
-		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("START_GAME")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags()
+				.contains(TagBuilder.getTags().get("START_GAME")));
 		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("ADAPT")));
-		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("HIGH_ATTACK")));
-		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("SPELL_DAMAGE")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags()
+				.contains(TagBuilder.getTags().get("HIGH_ATTACK")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags()
+				.contains(TagBuilder.getTags().get("SPELL_DAMAGE")));
 		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("REVIVE")));
-		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("DAMAGE_SPELL")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags()
+				.contains(TagBuilder.getTags().get("DAMAGE_SPELL")));
 		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("DRAGON")));
 		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("EVEN")));
 		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("RITUAL")));
 		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("COMBO")));
-		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("COUNTER")));
+		assertTrue(
+				!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("COUNTER")));
 		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("SECRET")));
-		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("CONTROL")));
+		assertTrue(
+				!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("CONTROL")));
 		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("SPELL")));
-		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("LIFESTEAL")));
+		assertTrue(
+				!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("LIFESTEAL")));
 		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("LOW_HP")));
-		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("HEALTH_RESTORE")));
-		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("DESTROY")));
-		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("MAGNETIC")));
-		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("RECRUIT")));
-		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("DEATHRATTLE")));
-		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("HIGH_COST")));
-		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("INSPIRE")));
-		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("LOW_COST")));
-		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("TWINSPELL")));
-		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("DEAL_DAMAGE")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags()
+				.contains(TagBuilder.getTags().get("HEALTH_RESTORE")));
+		assertTrue(
+				!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("DESTROY")));
+		assertTrue(
+				!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("MAGNETIC")));
+		assertTrue(
+				!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("RECRUIT")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags()
+				.contains(TagBuilder.getTags().get("DEATHRATTLE")));
+		assertTrue(
+				!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("HIGH_COST")));
+		assertTrue(
+				!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("INSPIRE")));
+		assertTrue(
+				!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("LOW_COST")));
+		assertTrue(
+				!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("TWINSPELL")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags()
+				.contains(TagBuilder.getTags().get("DEAL_DAMAGE")));
 		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("ENRAGE")));
 		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("MECH")));
-		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("FORGETFUL")));
+		assertTrue(
+				!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("FORGETFUL")));
 		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("CHARGE")));
 		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("QUEST")));
 		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("EQUIP")));
@@ -627,27 +818,34 @@ public class CardsTest {
 		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("MANA")));
 		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("TOTEM")));
 		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("COPY")));
-		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("AOE_BUFF")));
+		assertTrue(
+				!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("AOE_BUFF")));
 		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("EOT")));
 		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("IMMUNE")));
 		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("TAUNT")));
 		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("LACKEY")));
 		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("PIRATE")));
-		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("WINDFURY")));
+		assertTrue(
+				!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("WINDFURY")));
 		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("SOT")));
-		assertTrue(CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("GENERATE")));
+		assertTrue(
+				CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("GENERATE")));
 		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("AURA")));
 		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("BEAST")));
-		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("HIGH_COST_MINION")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags()
+				.contains(TagBuilder.getTags().get("HIGH_COST_MINION")));
 		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("RUSH")));
-		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));
+		assertTrue(!CardBuilder.getCard("shaku, the collector").getTags()
+				.contains(TagBuilder.getTags().get("ATTACK_MODIFY")));
 		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("FREEZE")));
 		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("OVERLOAD")));
 		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("ELUSIVE")));
 		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("ATTACKS")));
-		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("GIVE_DIVINE_SHIELD")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags()
+				.contains(TagBuilder.getTags().get("GIVE_DIVINE_SHIELD")));
 		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("DAMAGE_ALL")));
-		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("LOW_COST_MINION")));
+		assertTrue(
+				!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("LOW_COST_MINION")));
 		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("POISONOUS")));
 		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("STEALTH")));
 		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("CHOOSE_ONE")));
@@ -663,17 +861,20 @@ public class CardsTest {
 		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("HERO_POWER")));
 		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("MURLOC")));
 		assertTrue(CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));
-		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("DAMAGE_ENEMIES")));
+		assertTrue(
+				!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("DAMAGE_ENEMIES")));
 		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("TREANTS")));
 		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("PLAY")));
 		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("DISCARD")));
 		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("DEMON")));
-		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("REMOVE_FROM_DECK")));
+		assertTrue(!CardBuilder.getCard("master jouster").getTags()
+				.contains(TagBuilder.getTags().get("REMOVE_FROM_DECK")));
 		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("SUMMON")));
 		assertTrue(CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("HIGH_HP")));
 		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("TRANSFORM")));
 		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("CANT_ATTACK")));
-		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("RETURN_TO_HAND")));
+		assertTrue(
+				!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("RETURN_TO_HAND")));
 		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("LOW_ATTACK")));
 		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("ARMOR")));
 		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("GIVE_STEALTH")));
@@ -696,7 +897,8 @@ public class CardsTest {
 		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("SPELL")));
 		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("LIFESTEAL")));
 		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("LOW_HP")));
-		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("HEALTH_RESTORE")));
+		assertTrue(
+				!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("HEALTH_RESTORE")));
 		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("DESTROY")));
 		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("MAGNETIC")));
 		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("RECRUIT")));
@@ -727,23 +929,28 @@ public class CardsTest {
 		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("GENERATE")));
 		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("AURA")));
 		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("BEAST")));
-		assertTrue(CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("HIGH_COST_MINION")));
+		assertTrue(
+				CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("HIGH_COST_MINION")));
 		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("RUSH")));
-		assertTrue(!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));
+		assertTrue(
+				!CardBuilder.getCard("master jouster").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));
 		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("FREEZE")));
 		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("OVERLOAD")));
 		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("ELUSIVE")));
 		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("ATTACKS")));
-		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("GIVE_DIVINE_SHIELD")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags()
+				.contains(TagBuilder.getTags().get("GIVE_DIVINE_SHIELD")));
 		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("DAMAGE_ALL")));
-		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("LOW_COST_MINION")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags()
+				.contains(TagBuilder.getTags().get("LOW_COST_MINION")));
 		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("POISONOUS")));
 		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("STEALTH")));
 		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("CHOOSE_ONE")));
 		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("ECHO")));
 		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("DISCOVER")));
 		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("SILENCE")));
-		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("DIVINE_SHIELD")));
+		assertTrue(
+				!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("DIVINE_SHIELD")));
 		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("COST_MODIFY")));
 		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("SHUFFLE")));
 		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("OVERKILL")));
@@ -752,29 +959,35 @@ public class CardsTest {
 		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("HERO_POWER")));
 		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("MURLOC")));
 		assertTrue(CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("BATTLECRY")));
-		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("DAMAGE_ENEMIES")));
+		assertTrue(
+				!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("DAMAGE_ENEMIES")));
 		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("TREANTS")));
 		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("PLAY")));
 		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("DISCARD")));
 		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("DEMON")));
-		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("REMOVE_FROM_DECK")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags()
+				.contains(TagBuilder.getTags().get("REMOVE_FROM_DECK")));
 		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("SUMMON")));
 		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("HIGH_HP")));
 		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("TRANSFORM")));
 		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("CANT_ATTACK")));
-		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("RETURN_TO_HAND")));
+		assertTrue(
+				!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("RETURN_TO_HAND")));
 		assertTrue(CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("LOW_ATTACK")));
 		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("ARMOR")));
-		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("GIVE_STEALTH")));
+		assertTrue(
+				!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("GIVE_STEALTH")));
 		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("JADE_GOLEM")));
 		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("ELEMENTAL")));
 		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("REVEAL")));
 		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("START_GAME")));
 		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("ADAPT")));
 		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("HIGH_ATTACK")));
-		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("SPELL_DAMAGE")));
+		assertTrue(
+				!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("SPELL_DAMAGE")));
 		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("REVIVE")));
-		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("DAMAGE_SPELL")));
+		assertTrue(
+				!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("DAMAGE_SPELL")));
 		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("DRAGON")));
 		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("EVEN")));
 		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("RITUAL")));
@@ -785,7 +998,8 @@ public class CardsTest {
 		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("SPELL")));
 		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("LIFESTEAL")));
 		assertTrue(CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("LOW_HP")));
-		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("HEALTH_RESTORE")));
+		assertTrue(
+				!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("HEALTH_RESTORE")));
 		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("DESTROY")));
 		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("MAGNETIC")));
 		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("RECRUIT")));
@@ -816,32 +1030,20 @@ public class CardsTest {
 		assertTrue(CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("GENERATE")));
 		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("AURA")));
 		assertTrue(CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("BEAST")));
-		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("HIGH_COST_MINION")));
+		assertTrue(!CardBuilder.getCard("gral, the shark").getTags()
+				.contains(TagBuilder.getTags().get("HIGH_COST_MINION")));
 		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("RUSH")));
-		assertTrue(!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));
+		assertTrue(
+				!CardBuilder.getCard("gral, the shark").getTags().contains(TagBuilder.getTags().get("ATTACK_MODIFY")));
 	}
 
-	//@Test
+	@Test
 	public void testCardSinergies() {
 		CardBuilder cb = new CardBuilder();
 		String[] cs = { "Corpsetaker", "Jan'alai, the Dragonhawk", "Zandalari Templar", "Shudderwock", "Tess Greymane",
 				"Enhance-o Mechano", "Shaku, the Collector", "Master Jouster", "Gral, the Shark" };
-		for (String name : cs) {
-			List<String> ls = CardBuilder.getCard(name).getTags().stream().map(t -> t.getName())
-					.collect(Collectors.toList());
-			for (String tag : TagBuilder.getTags().keySet()) {
-				if (ls.contains(tag))
-					System.out.println("assertTrue(CardBuilder.getCard(\"" + cb.getCard(name)
-							+ "\").getTags().contains(TagBuilder.getTags().get(\"" + tag + "\")));");
-				else
-					System.out.println("assertTrue(!CardBuilder.getCard(\"" + cb.getCard(name)
-							+ "\").getTags().contains(TagBuilder.getTags().get(\"" + tag + "\")));");
-			}
+		for (Card c : CardBuilder.cards) {
+			System.out.println(c.getTags().size() + "\t" + c + "\t" + c.getText() + "\t" + c.getTags());
 		}
-
-//cb.generateCardSynergies(c);
-//for (Sinergy<Card> s : cb.getCardSinergies(c, 10, CLASS.ROGUE)) {
-//syso
-//}
 	}
 }

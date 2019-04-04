@@ -1,4 +1,4 @@
-package hcs;
+package ht;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -18,17 +18,17 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
-import hcs.model.Card;
-import hcs.model.Card.CLASS;
-import hcs.model.Mechanic;
-import hcs.model.Sinergy;
-import hcs.model.Tag;
+import ht.model.Card;
+import ht.model.Card.CLASS;
+import ht.model.Mechanic;
+import ht.model.Sinergy;
+import ht.model.Tag;
 
 public class TagBuilder {
 	Map<String, Mechanic> mechanics = new HashMap<String, Mechanic>();
 	List<Sinergy<Mechanic>> mechanicsSynergies = new ArrayList<Sinergy<Mechanic>>();
 	static Map<String, Tag> tags = new HashMap<String, Tag>();
-	List<Sinergy<Tag>> tagsSynergies = new ArrayList<Sinergy<Tag>>();
+	Set<Sinergy<Tag>> tagsSynergies = new HashSet<Sinergy<Tag>>();
 	private ClassLoader cl = this.getClass().getClassLoader();
 
 	public TagBuilder() {
@@ -43,7 +43,7 @@ public class TagBuilder {
 		return tags;
 	}
 
-	public List<Sinergy<Tag>> getTagsSynergies() {
+	public Set<Sinergy<Tag>> getTagsSynergies() {
 		return tagsSynergies;
 	}
 
@@ -205,6 +205,8 @@ public class TagBuilder {
 			if (t2 != null) {
 				tagsSynergies.add(new Sinergy<Tag>(t1, t2, label, weight));
 			}
+			// Every tag sinergies with itself.
+			tagsSynergies.add(new Sinergy<Tag>(t1, t1, label, weight));
 		}
 	}
 
@@ -223,8 +225,8 @@ public class TagBuilder {
 			for (Card c : CardBuilder.cards) {
 				for (Tag tag : tags.values()) {
 					String expr = c.replaceVars(tag.getExpr());
-					if ((expr.equals("") || (boolean) engine.eval(expr) == true) && (c.getRace().contains(tag.getName())
-							|| Pattern.compile(tag.getRegex()).matcher(c.getText()).find())) {
+					if ((expr.equals("") || (boolean) engine.eval(expr) == true)
+							&& Pattern.compile(tag.getRegex()).matcher(c.getText()).find()) {
 						c.getTags().add(tag);
 					}
 				}

@@ -1,4 +1,4 @@
-package hcs.model;
+package ht.model;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

@@ -1,4 +1,4 @@
-package hcs;
+package ht;
 
 import java.io.File;
 import java.io.FileReader;
@@ -22,11 +22,11 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import hcs.model.Card;
-import hcs.model.Card.CLASS;
-import hcs.model.Mechanic;
-import hcs.model.Player;
-import hcs.model.Sinergy;
+import ht.model.Card;
+import ht.model.Card.CLASS;
+import ht.model.Mechanic;
+import ht.model.Player;
+import ht.model.Sinergy;
 
 /**
  * Base de dados de jogos em json HS, para analise estatistica.

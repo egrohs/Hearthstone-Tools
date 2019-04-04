@@ -1,6 +1,6 @@
-package hcs.model;
+package ht.model;
 
-import hcs.model.Card.CLASS;
+import ht.model.Card.CLASS;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

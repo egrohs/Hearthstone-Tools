@@ -1,4 +1,8 @@
-package hcs.model;
+package ht.model;
+
+import org.neo4j.ogm.annotation.EndNode;
+import org.neo4j.ogm.annotation.RelationshipEntity;
+import org.neo4j.ogm.annotation.StartNode;
 
 import lombok.Data;
 
@@ -11,9 +15,13 @@ import lombok.Data;
  * @param <T>
  */
 @Data
+@RelationshipEntity(type = "SINERGY")
 //@EqualsAndHashCode(callSuper=true)
 public class Sinergy<T extends Entity> implements Comparable<Sinergy<T>> {
-	private Entity e1, e2;
+	@StartNode
+	private Entity e1;
+	@EndNode
+	private Entity e2;
 	private int freq;
 	private Float weight = 0f;
 	private String label, mechs;
@@ -29,8 +37,8 @@ public class Sinergy<T extends Entity> implements Comparable<Sinergy<T>> {
 	public Sinergy(Entity e1, Entity e2, String label, Float v) {
 		this.e1 = e1;
 		this.e2 = e2;
-		this.weight = v;
 		this.label = label;
+		this.weight = v;
 	}
 
 	public Sinergy(Entity e1, Entity e2, float v, String mm) {
@@ -74,5 +82,10 @@ public class Sinergy<T extends Entity> implements Comparable<Sinergy<T>> {
 			return 1;
 		}
 		return 0;
+	}
+
+	@Override
+	public String toString() {
+		return e1 + "\t" + e2 + "\t" + label;
 	}
 }

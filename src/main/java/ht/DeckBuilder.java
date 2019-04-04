@@ -1,4 +1,4 @@
-package hcs;
+package ht;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -20,11 +20,11 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import hcs.model.Card;
-import hcs.model.Card.CLASS;
-import hcs.model.Deck;
-import hcs.model.Player;
-import hcs.model.Sinergy;
+import ht.model.Card;
+import ht.model.Card.CLASS;
+import ht.model.Deck;
+import ht.model.Player;
+import ht.model.Sinergy;
 
 /**
  * Partindo duma lista de cartas, tenta encontrar o metadeck as quais pertencem.

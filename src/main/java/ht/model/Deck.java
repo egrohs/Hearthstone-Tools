@@ -1,12 +1,12 @@
-package hcs.model;
+package ht.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import hcs.CardBuilder;
-import hcs.model.Card.CLASS;
+import ht.model.Card.CLASS;
+import ht.CardBuilder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

@@ -1,4 +1,4 @@
-package hcs;
+package ht;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,7 +9,7 @@ import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import hcs.model.Card;
+import ht.model.Card;
 
 /**
  * Leitor de logs do hearthstone durante o jogo.

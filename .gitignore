@@ -1,5 +1,9 @@
 /target/
 /bin/
 /output/
+/databases/
+/dbms/
+/logs/
 .*
 !/.gitignore
+store_lock

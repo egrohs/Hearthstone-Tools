@@ -1,4 +1,4 @@
-package hcs;
+package ht;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -24,14 +24,14 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import hcs.model.Card;
-import hcs.model.Card.CLASS;
-import hcs.model.Mechanic;
-import hcs.model.Sinergy;
-import hcs.model.Tag;
+import ht.model.Card;
+import ht.model.Card.CLASS;
+import ht.model.Mechanic;
+import ht.model.Sinergy;
+import ht.model.Tag;
 
 public class CardBuilder {
-	static List<Card> cards = new ArrayList<Card>();
+	public static List<Card> cards = new ArrayList<Card>();
 	Set<Sinergy<Card>> cardsSynergies = new HashSet<Sinergy<Card>>();
 	private ClassLoader cl = this.getClass().getClassLoader();
 	private TagBuilder tb;
@@ -149,7 +149,7 @@ public class CardBuilder {
 				if (c.getName().equalsIgnoreCase(idORname.trim().replaceAll("’", "'"))) {
 					return c;
 				}
-				if (c.getId().equalsIgnoreCase(idORname)) {
+				if (c.getCod().equalsIgnoreCase(idORname)) {
 					return c;
 				}
 				if (idORname.equalsIgnoreCase(c.getNumid())) {
@@ -212,18 +212,22 @@ public class CardBuilder {
 				+ (System.currentTimeMillis() - ini) / 60000 + " minutes.");
 	}
 
-	private void generateCardSynergies(Card c) {
-		if (!c.isCalculada()) {
+	public void generateCardSynergies(Card c1, boolean everyCard) {
+		if (c1 != null && !c1.isCalculada()) {
 			for (Sinergy<Tag> ts : tb.getTagsSynergies()) {
 				Tag tag1 = (Tag) ts.getE1();
 				Tag tag2 = (Tag) ts.getE2();
-				if (c.getTags().contains(tag1)) {
+				if (c1.getTags().contains(tag1)) {
 					for (Card c2 : cards) {
-						if (c2.getTags().contains(tag2)) {
-							Sinergy<Card> cs = getCardSinergy(c, c2);
+						if (!everyCard && (c2.getClasse() == CLASS.NEUTRAL || c1.getClasse() == c2.getClasse())
+								&& c2.getTags().contains(tag2)) {
+							Sinergy<Card> cs = getCardSinergy(c1, c2);
 							if (cs == null) {
-								cs = new Sinergy<Card>(c, c2, ts.getWeight(), tag1.getRegex() + "+" + tag2.getRegex());
+								cs = new Sinergy<Card>(c1, c2,
+										c2.getText() + "\t" + tag1.getRegex() + " + " + tag2.getRegex(),
+										ts.getWeight());
 								cardsSynergies.add(cs);
+								System.out.println(cs);
 							} else {
 								cs.setWeight(cs.getWeight() + ts.getWeight());
 							}
@@ -232,7 +236,7 @@ public class CardBuilder {
 				}
 			}
 			// Collections.sort(Sinergias.cardsSynergies);
-			c.setCalculada(true);
+			c1.setCalculada(true);
 		}
 	}
 
@@ -337,7 +341,8 @@ public class CardBuilder {
 		// Collections.sort((List<Sinergy<Card>>) cardsSynergies);
 		StringBuilder sb = new StringBuilder();
 		for (Sinergy<Card> s : cardsSynergies) {
-			String line = s.getE1() + "\t" + s.getE2() + "\t" + s.getFreq() + "\t" + s.getWeight() + "\t" + s.getMechs();
+			String line = s.getE1() + "\t" + s.getE2() + "\t" + s.getFreq() + "\t" + s.getWeight() + "\t"
+					+ s.getMechs();
 			sb.append(line + "\r\n");
 			System.out.println(line);
 		}
@@ -461,10 +466,8 @@ public class CardBuilder {
 
 	public static void main(String[] args) {
 		CardBuilder cb = new CardBuilder();
-		for (Card c : cards) {
-			for (Tag t : c.getTags()) {
-				System.out.println(c + " TAG: " + t);
-			}
-		}
+		Card c = cb.getCard("Mana Wyrm");
+		System.out.println(c.getText());
+		cb.generateCardSynergies(c, false);
 	}
 }

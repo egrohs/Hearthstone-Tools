@@ -29,7 +29,14 @@ dependencies {
 	compile 'com.google.api-client:google-api-client:1.23.0'
     compile 'com.google.oauth-client:google-oauth-client-jetty:1.23.0'
     compile 'com.google.apis:google-api-services-sheets:v4-rev516-1.23.0'
-    
+	
+	compile group: 'org.neo4j', name: 'neo4j', version: '3.5.3'
+	compile 'org.neo4j:neo4j-ogm-core:3.1.6'
+    //runtime 'org.neo4j:neo4j-ogm-bolt-driver:3.1.6' // Only add if you're using the Bolt driver
+    //runtime 'org.neo4j:neo4j-ogm-http-driver:3.1.6' // Only add if you're using the HTTP driver
+    runtime 'org.neo4j:neo4j-ogm-embedded-driver:3.1.6' //  Only add if you're using the Embedded driver
+    runtime 'org.neo4j:neo4j:3.5.3' //  Only add if you're using the Embedded driver
+	
     compileOnly 'org.projectlombok:lombok:1.18.6'
 	annotationProcessor 'org.projectlombok:lombok:1.18.6'
 }

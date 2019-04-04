@@ -1,9 +1,13 @@
-package hcs.model;
+package ht.model;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import org.jsoup.Jsoup;
+import org.neo4j.ogm.annotation.GeneratedValue;
+import org.neo4j.ogm.annotation.Id;
+import org.neo4j.ogm.annotation.NodeEntity;
+import org.neo4j.ogm.annotation.Relationship;
 
 import lombok.Data;
 
@@ -15,8 +19,12 @@ import lombok.Data;
  */
 // TODO UNG_116t barnabus the stomper
 @Data
+@NodeEntity
 //@EqualsAndHashCode(callSuper=true)
 public class Card extends Entity {
+	@Id
+	@GeneratedValue
+	private Long id;
 	private boolean calculada;
 	private CLASS classe;
 	private StringBuilder text = new StringBuilder();
@@ -25,6 +33,7 @@ public class Card extends Entity {
 	private boolean aggro/* , visited */;
 	private Set<Mechanic> mechanics = new HashSet<Mechanic>();
 	// Map<Card, Float> synergies = new LinkedHashMap<Card, Float>();
+	//@Relationship(type = "TAG")
 	private Set<Tag> tags = new HashSet<Tag>();
 	private float rank;
 
@@ -63,10 +72,14 @@ public class Card extends Entity {
 		// }
 	}
 
-	public Card(String id, String name, String set, String faction, CLASS classe, String type, String text, Long cos,
+	public Card(String name) {
+		this.name = name;
+	}
+
+	public Card(String cod, String name, String set, String faction, CLASS classe, String type, String text, Long cos,
 			Long atta, Long health, Long dur, String rarity, String refTags, String mechs) {
 		super();
-		this.id = id.toLowerCase();
+		this.cod = cod.toLowerCase();
 //		this.getChildren().add(new ImageView(new Image("file:res/cards/" + this.id + ".png")));
 //		StackPane.setAlignment(this, Pos.CENTER_LEFT);
 		this.name = name.toLowerCase();
@@ -146,7 +159,7 @@ public class Card extends Entity {
 	}
 
 	/** Modify the expression replacing variables. */
-	// TODO 
+	// TODO
 	public String replaceVars(String expr) {
 		String[] tokens = expr.split(" ");
 		for (int i = 0; i < tokens.length; i++) {
