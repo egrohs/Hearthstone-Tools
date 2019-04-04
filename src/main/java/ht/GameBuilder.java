@@ -7,15 +7,12 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -23,8 +20,6 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import ht.model.Card;
-import ht.model.Card.CLASS;
-import ht.model.Mechanic;
 import ht.model.Player;
 import ht.model.Sinergy;
 
@@ -38,7 +33,6 @@ public class GameBuilder extends Thread {
 	Player player1, opponent = new Player();
 	// CardBuilder cb;
 	int lastSize;
-	Map<Mechanic, Integer> mechs = new LinkedHashMap<Mechanic, Integer>();
 	private DeckBuilder db;
 
 	public GameBuilder() {
@@ -55,7 +49,7 @@ public class GameBuilder extends Thread {
 			if (ZoneLogReader.done && PowerLogReader.done && lastSize != ZoneLogReader.playMap.size()) {
 				trim();
 				for (Card card : ZoneLogReader.playMap.values()) {
-					cmechs(card);
+					//TODO calculate best plays... 
 				}
 				// TODO
 				// StringBuilder sbb = simi();
@@ -98,23 +92,6 @@ public class GameBuilder extends Thread {
 			result.put(entry.getKey(), entry.getValue());
 		}
 		return result;
-	}
-
-	private void cmechs(Card c) {
-		for (Mechanic mecanica : c.getMechanics()) {
-			if (mechs.containsKey(mecanica)) {
-				Integer v = mechs.get(mecanica);
-				mechs.put(mecanica, (v + 1));
-			} else {
-				mechs.put(mecanica, 1);
-			}
-		}
-		mechs = sortByValue(mechs);
-		System.out.println("//////////////");
-		for (Mechanic m : mechs.keySet()) {
-			System.out.println(m + ": " + mechs.get(m));
-		}
-		System.out.println("//////////////");
 	}
 
 	/**
@@ -234,22 +211,5 @@ public class GameBuilder extends Thread {
 //	geraSinergias();
 //	System.out.println(CardBuilder.cardsSynergies.size() + " sinergias");
 		// imprimSins();
-	}
-
-	private Map<Pattern, Integer> calc(int manaRestante, CLASS opo) {
-		Map<Pattern, Integer> res = new HashMap<Pattern, Integer>();
-		for (Card card : CardBuilder.cards) {
-			// System.out.println(card.getText());
-			if (CLASS.contem(opo, card.getClasse()) && card.getCost() <= manaRestante) {
-				for (Pattern p : TagBuilder.pts) {
-					Matcher matcher = p.matcher(card.getText());
-					Integer i = res.get(p);
-					if (matcher.find()) {
-						res.put(p, i == null ? 1 : (i + 1));
-					}
-				}
-			}
-		}
-		return res;
 	}
 }

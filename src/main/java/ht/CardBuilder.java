@@ -26,7 +26,6 @@ import org.json.simple.parser.ParseException;
 
 import ht.model.Card;
 import ht.model.Card.CLASS;
-import ht.model.Mechanic;
 import ht.model.Sinergy;
 import ht.model.Tag;
 
@@ -304,13 +303,6 @@ public class CardBuilder {
 		}
 	}
 
-	private void printCard(String n) {
-		Card card = getCard(n);
-		for (Mechanic m : card.getMechanics()) {
-			System.out.println(m.getRegex());
-		}
-	}
-
 	/**
 	 * Read sinergies from cache file.
 	 */
@@ -465,9 +457,16 @@ public class CardBuilder {
 	}
 
 	public static void main(String[] args) {
-		CardBuilder cb = new CardBuilder();
-		Card c = cb.getCard("Mana Wyrm");
-		System.out.println(c.getText());
-		cb.generateCardSynergies(c, false);
+		Card c = new Card("Teste");
+//		CardBuilder cb = new CardBuilder();
+//		Card c = CardBuilder.getCard("Mana Wyrm");
+//		System.out.println(c.getText());
+//		cb.generateCardSynergies(c, false);
+//
+		EntityService es = new EntityService();
+		es.createOrUpdate(c);
+//		for (Sinergy<Card> cs : cb.cardsSynergies) {
+//			es.session.save(cs, 2);
+//		}
 	}
 }

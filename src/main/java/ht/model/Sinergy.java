@@ -18,6 +18,7 @@ import lombok.Data;
 @RelationshipEntity(type = "SINERGY")
 //@EqualsAndHashCode(callSuper=true)
 public class Sinergy<T extends Entity> implements Comparable<Sinergy<T>> {
+	private Long id;
 	@StartNode
 	private Entity e1;
 	@EndNode

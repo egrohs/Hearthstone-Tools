@@ -1,10 +1,10 @@
 package ht;
 
-import ht.model.Nodo;
+import ht.model.Entity;
 
-public class EntityService extends GenericService<Nodo> {
+public class EntityService extends GenericService<Entity> {
 	@Override
-	Class<Nodo> getEntityType() {
-		return Nodo.class;
+	Class<Entity> getEntityType() {
+		return Entity.class;
 	}
 }

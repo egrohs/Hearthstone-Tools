@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import ht.model.Card.CLASS;
 import ht.CardBuilder;
+import ht.model.Card.CLASS;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

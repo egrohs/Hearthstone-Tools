@@ -4,34 +4,23 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.jsoup.Jsoup;
-import org.neo4j.ogm.annotation.GeneratedValue;
-import org.neo4j.ogm.annotation.Id;
 import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Relationship;
 
 import lombok.Data;
 
 /**
  * Objeto carta.
- * 
- * @author 99689650068
- *
  */
-// TODO UNG_116t barnabus the stomper
 @Data
 @NodeEntity
 //@EqualsAndHashCode(callSuper=true)
 public class Card extends Entity {
-	@Id
-	@GeneratedValue
-	private Long id;
 	private boolean calculada;
 	private CLASS classe;
 	private StringBuilder text = new StringBuilder();
 	private String numid, set, race, function, type, rarity, mechs, refTags;
 	private Integer cost, attack, health, dur, popularity, combats, wins, draws, loses;
 	private boolean aggro/* , visited */;
-	private Set<Mechanic> mechanics = new HashSet<Mechanic>();
 	// Map<Card, Float> synergies = new LinkedHashMap<Card, Float>();
 	//@Relationship(type = "TAG")
 	private Set<Tag> tags = new HashSet<Tag>();

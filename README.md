@@ -1,3 +1,8 @@
+0) Run jar file, the output calculations are generated at databases/graph.db folder and can be visualized using Neo4j.
+1) Install Neo4j at https://neo4j.com/download/ 
+2) Edit /etc/neo4j/neo4j.conf file and configure dbms.directories.data=<PATH>/Hearthsotne-Tools
+3) Run neo4j start
+
 TODOS
 - Which type, location and file format should contains tags sinergies? (must be graph readable, and easy to modify)
 - This file should contain card race, cost and type condition formulas.
