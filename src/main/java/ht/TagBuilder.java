@@ -17,12 +17,12 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
 import ht.model.Card;
-import ht.model.Sinergy;
+import ht.model.SynergyEdge;
 import ht.model.Tag;
 
 public class TagBuilder {
 	static Map<String, Tag> tags = new HashMap<String, Tag>();
-	Set<Sinergy<Tag>> tagsSynergies = new HashSet<Sinergy<Tag>>();
+	Set<SynergyEdge<Tag>> tagsSynergies = new HashSet<SynergyEdge<Tag>>();
 	private ClassLoader cl = this.getClass().getClassLoader();
 	ScriptEngineManager mgr = new ScriptEngineManager();
 	ScriptEngine engine = mgr.getEngineByName("JavaScript");
@@ -39,7 +39,7 @@ public class TagBuilder {
 		return tags;
 	}
 
-	public Set<Sinergy<Tag>> getTagsSynergies() {
+	public Set<SynergyEdge<Tag>> getTagsSynergies() {
 		return tagsSynergies;
 	}
 
@@ -111,10 +111,10 @@ public class TagBuilder {
 			Tag t1 = tags.get(source);
 			Tag t2 = tags.get(taget);
 			if (t2 != null) {
-				tagsSynergies.add(new Sinergy<Tag>(t1, t2, label, weight));
+				tagsSynergies.add(new SynergyEdge<Tag>(t1, t2, label, weight));
 			}
 			// Every tag sinergies with itself.
-			tagsSynergies.add(new Sinergy<Tag>(t1, t1, label, weight));
+			tagsSynergies.add(new SynergyEdge<Tag>(t1, t1, label, weight));
 		}
 	}
 

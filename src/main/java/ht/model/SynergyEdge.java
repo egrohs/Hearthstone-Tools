@@ -15,19 +15,19 @@ import lombok.Data;
  * @param <T>
  */
 @Data
-@RelationshipEntity(type = "SINERGY")
+@RelationshipEntity(type = "SYNERGY")
 //@EqualsAndHashCode(callSuper=true)
-public class Sinergy<T extends Entity> implements Comparable<Sinergy<T>> {
+public class SynergyEdge<T extends Node> implements Comparable<SynergyEdge<T>> {
 	private Long id;
 	@StartNode
-	private Entity e1;
+	private Node e1;
 	@EndNode
-	private Entity e2;
+	private Node e2;
 	private int freq;
 	private Float weight = 0f;
 	private String label, mechs;
 
-	public Sinergy(Entity e1, Entity e2, int freq, Float v, String mm) {
+	public SynergyEdge(Node e1, Node e2, int freq, Float v, String mm) {
 		this.e1 = e1;
 		this.e2 = e2;
 		this.freq = freq;
@@ -35,21 +35,21 @@ public class Sinergy<T extends Entity> implements Comparable<Sinergy<T>> {
 		this.mechs = mm;
 	}
 
-	public Sinergy(Entity e1, Entity e2, String label, Float v) {
+	public SynergyEdge(Node e1, Node e2, String label, Float v) {
 		this.e1 = e1;
 		this.e2 = e2;
 		this.label = label;
 		this.weight = v;
 	}
 
-	public Sinergy(Entity e1, Entity e2, float v, String mm) {
+	public SynergyEdge(Node e1, Node e2, float v, String mm) {
 		this.e1 = e1;
 		this.e2 = e2;
 		this.weight = v;
 		this.mechs = mm;
 	}
 
-	public Sinergy(Entity e1, Entity e2, int freq) {
+	public SynergyEdge(Node e1, Node e2, int freq) {
 		this.e1 = e1;
 		this.e2 = e2;
 		this.freq = freq;
@@ -59,9 +59,9 @@ public class Sinergy<T extends Entity> implements Comparable<Sinergy<T>> {
 	// deixando mais lento.
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null || !(obj instanceof Sinergy))
+		if (obj == null || !(obj instanceof SynergyEdge))
 			return false;
-		Sinergy<T> s2 = (Sinergy<T>) obj;
+		SynergyEdge<T> s2 = (SynergyEdge<T>) obj;
 		// from here, must not test for nulls.
 		if (weight != s2.getWeight())
 			return false;
@@ -71,7 +71,7 @@ public class Sinergy<T extends Entity> implements Comparable<Sinergy<T>> {
 	}
 
 	@Override
-	public int compareTo(Sinergy<T> o) {
+	public int compareTo(SynergyEdge<T> o) {
 		if (freq > o.freq) {
 			return -1;
 		} else if (freq < o.freq) {

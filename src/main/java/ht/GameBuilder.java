@@ -21,7 +21,7 @@ import org.json.simple.parser.ParseException;
 
 import ht.model.Card;
 import ht.model.Player;
-import ht.model.Sinergy;
+import ht.model.SynergyEdge;
 
 /**
  * Base de dados de jogos em json HS, para analise estatistica.
@@ -123,11 +123,11 @@ public class GameBuilder extends Thread {
 		// TODO deve considerar todas cartas ja jogadas
 		// CardBuilder.generateCardSynergies(card);
 		// TODO tem que ser o mana que ele terminou o turno
-		Set<Sinergy<Card>> sub = db.getCardSinergies(card, PowerLogReader.lastMana + 1, opponent.getClasse());
-		List<Sinergy<Card>> exibe = new ArrayList<Sinergy<Card>>(sub);
+		Set<SynergyEdge<Card>> sub = db.getCardSinergies(card, PowerLogReader.lastMana + 1, opponent.getClasse());
+		List<SynergyEdge<Card>> exibe = new ArrayList<SynergyEdge<Card>>(sub);
 		Collections.sort(exibe);
 		Map<Card, String> temp = new LinkedHashMap<Card, String>();
-		for (Sinergy<Card> sinergia : exibe) {
+		for (SynergyEdge<Card> sinergia : exibe) {
 			Card c = (Card) sinergia.getE2();
 			if (card == c) {
 				c = (Card) sinergia.getE1();

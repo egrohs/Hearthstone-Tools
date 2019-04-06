@@ -5,6 +5,6 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper=true)
-public class Archtype extends Entity {
+public class Archtype extends Node {
 
 }

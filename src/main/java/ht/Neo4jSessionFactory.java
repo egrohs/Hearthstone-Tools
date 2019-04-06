@@ -9,7 +9,7 @@ import org.neo4j.ogm.session.SessionFactory;
 /** Singleton */
 public class Neo4jSessionFactory {
 	private final static Configuration configuration = new Configuration.Builder()
-			.uri("file://" + new File("databases").getAbsolutePath() + "/graph.db").build();
+			.uri(new File("databases/graph.db").toURI().toString()).build();
 	private final static SessionFactory sessionFactory = new SessionFactory(configuration, "ht.model");
 	private static Neo4jSessionFactory factory = new Neo4jSessionFactory();
 

@@ -26,12 +26,12 @@ import org.json.simple.parser.ParseException;
 
 import ht.model.Card;
 import ht.model.Card.CLASS;
-import ht.model.Sinergy;
+import ht.model.SynergyEdge;
 import ht.model.Tag;
 
 public class CardBuilder {
 	public static List<Card> cards = new ArrayList<Card>();
-	Set<Sinergy<Card>> cardsSynergies = new HashSet<Sinergy<Card>>();
+	Set<SynergyEdge<Card>> cardsSynergies = new HashSet<SynergyEdge<Card>>();
 	private ClassLoader cl = this.getClass().getClassLoader();
 	private TagBuilder tb;
 	final String api = "https://api.hearthstonejson.com/v1/latest/enUS/cards.collectible.json";
@@ -171,16 +171,16 @@ public class CardBuilder {
 		FileWriter fw = null;
 		try {
 			fw = new FileWriter("cardSinergies.csv");
-			for (Sinergy<Tag> tagSin : tb.getTagsSynergies()) {
+			for (SynergyEdge<Tag> tagSin : tb.getTagsSynergies()) {
 				Tag tag1 = (Tag) tagSin.getE1();
 				Tag tag2 = (Tag) tagSin.getE2();
 				for (Card c1 : cards) {
 					if (c1.getTags().contains(tag1)) {
 						for (Card c2 : cards) {
 							if (c2.getTags().contains(tag2)) {
-								Sinergy<Card> cardSin = getCardSinergy(c1, c2);
+								SynergyEdge<Card> cardSin = getCardSynergy(c1, c2);
 								if (cardSin == null) {
-									cardSin = new Sinergy<Card>(c1, c2, tagSin.getWeight(),
+									cardSin = new SynergyEdge<Card>(c1, c2, tagSin.getWeight(),
 											tag1.getRegex() + "+" + tag2.getRegex());
 									cardsSynergies.add(cardSin);
 									fw.write(c1.getName() + "\t" + tag1.getName() + "\t" + c2.getName() + "\t"
@@ -213,16 +213,16 @@ public class CardBuilder {
 
 	public void generateCardSynergies(Card c1, boolean everyCard) {
 		if (c1 != null && !c1.isCalculada()) {
-			for (Sinergy<Tag> ts : tb.getTagsSynergies()) {
+			for (SynergyEdge<Tag> ts : tb.getTagsSynergies()) {
 				Tag tag1 = (Tag) ts.getE1();
 				Tag tag2 = (Tag) ts.getE2();
 				if (c1.getTags().contains(tag1)) {
 					for (Card c2 : cards) {
 						if (!everyCard && (c2.getClasse() == CLASS.NEUTRAL || c1.getClasse() == c2.getClasse())
 								&& c2.getTags().contains(tag2)) {
-							Sinergy<Card> cs = getCardSinergy(c1, c2);
+							SynergyEdge<Card> cs = getCardSynergy(c1, c2);
 							if (cs == null) {
-								cs = new Sinergy<Card>(c1, c2,
+								cs = new SynergyEdge<Card>(c1, c2,
 										c2.getText() + "\t" + tag1.getRegex() + " + " + tag2.getRegex(),
 										ts.getWeight());
 								cardsSynergies.add(cs);
@@ -240,15 +240,15 @@ public class CardBuilder {
 	}
 
 	/**
-	 * Find sinergy between 2 Cards.
+	 * Find synergy between 2 Cards.
 	 * 
 	 * @param e1 Card 1
 	 * @param e2 Card 2
-	 * @return Return the sinergy with those Cards.
+	 * @return Return the synergy with those Cards.
 	 */
 	// TODO retornar lista de sinergias, não apenas uma.
-	private Sinergy<Card> getCardSinergy(Card e1, Card e2) {
-		for (Sinergy<Card> s : cardsSynergies) {
+	private SynergyEdge<Card> getCardSynergy(Card e1, Card e2) {
+		for (SynergyEdge<Card> s : cardsSynergies) {
 			if ((e1 == s.getE1() && e2 == s.getE2()) || (e1 == s.getE2() && e2 == s.getE1())) {
 				return s;
 			}
@@ -257,13 +257,13 @@ public class CardBuilder {
 	}
 
 	/**
-	 * Read sinergy cached file.
+	 * Read synergy cached file.
 	 */
 	private void readSynergies() {
 		JSONParser parser = new JSONParser();
 		try {
 			JSONArray sets = (JSONArray) parser
-					.parse(new FileReader(new File(cl.getResource("sinergy/synergy.json").getFile())));
+					.parse(new FileReader(new File(cl.getResource("synergy/synergy.json").getFile())));
 			System.out.println(sets.size() + " synergies imported");
 			generateNumIds(sets);
 		} catch (ParseException e1) {
@@ -296,7 +296,7 @@ public class CardBuilder {
 					Float value = Float.parseFloat(o2.get(1).toString());
 					// TODO remover esse if
 					if (value > 4.0) {
-						cardsSynergies.add(new Sinergy<Card>(c, c2, value, ""));
+						cardsSynergies.add(new SynergyEdge<Card>(c, c2, value, ""));
 					}
 				}
 			}
@@ -322,7 +322,7 @@ public class CardBuilder {
 			float val = Float.parseFloat(line[3]);
 			String mech = line[4];
 			if (c1 != null && c2 != null) {
-				cardsSynergies.add(new Sinergy<Card>(c1, c2, freq, val, mech));
+				cardsSynergies.add(new SynergyEdge<Card>(c1, c2, freq, val, mech));
 			}
 		}
 		sc.close();
@@ -330,9 +330,9 @@ public class CardBuilder {
 	}
 
 	private void imprimSins() {
-		// Collections.sort((List<Sinergy<Card>>) cardsSynergies);
+		// Collections.sort((List<SynergyEdge<Card>>) cardsSynergies);
 		StringBuilder sb = new StringBuilder();
-		for (Sinergy<Card> s : cardsSynergies) {
+		for (SynergyEdge<Card> s : cardsSynergies) {
 			String line = s.getE1() + "\t" + s.getE2() + "\t" + s.getFreq() + "\t" + s.getWeight() + "\t"
 					+ s.getMechs();
 			sb.append(line + "\r\n");
@@ -373,9 +373,9 @@ public class CardBuilder {
 					}
 					myatual = getCard(id);
 					if (myatual != null) {
-						Sinergy<Card> s = getCardSinergy(myprev, myatual);
+						SynergyEdge<Card> s = getCardSynergy(myprev, myatual);
 						if (s == null) {
-							s = new Sinergy<Card>(myprev, myatual, 1);
+							s = new SynergyEdge<Card>(myprev, myatual, 1);
 							cardsSynergies.add(s);
 						}
 						s.setWeight(s.getWeight() + 1);
@@ -387,9 +387,9 @@ public class CardBuilder {
 					}
 					opoatual = getCard(id);
 					if (opoatual != null) {
-						Sinergy<Card> s = getCardSinergy(opoprev, opoatual);
+						SynergyEdge<Card> s = getCardSynergy(opoprev, opoatual);
 						if (s == null) {
-							s = new Sinergy<Card>(opoprev, opoatual, 1);
+							s = new SynergyEdge<Card>(opoprev, opoatual, 1);
 							cardsSynergies.add(s);
 						}
 						s.setWeight(s.getWeight() + 1);
@@ -400,18 +400,18 @@ public class CardBuilder {
 	}
 
 	/**
-	 * Calculate possible cards sinergy.
+	 * Calculate possible cards synergy.
 	 * 
 	 * @param c
-	 * @param currentMana Mana restante no turno atual.
-	 * @return Set of Cards with sinergy.
+	 * @param currentMana Available Mana.
+	 * @return Set of Cards with synergy.
 	 */
 	// TODO here or in DeckBuilder?
 	public Set<Card> provaveis(Card c, int currentMana, CLASS hsClass) {
 		// Set<Sinergia> sub = new LinkedHashSet<Sinergia>();
 		Set<Card> sub = new LinkedHashSet<Card>();
 		if (c != null) {
-			for (Sinergy<Card> s : cardsSynergies) {
+			for (SynergyEdge<Card> s : cardsSynergies) {
 				if (s.getE1() == c || s.getE2() == c) {
 					Card c2 = (Card) s.getE2();
 					if (c == c2) {
@@ -435,11 +435,11 @@ public class CardBuilder {
 	 * @param manaRestante Mana restante no turno atual.
 	 * @return
 	 */
-	public Set<Sinergy<Card>> getCardSinergies(Card c, int manaRestante, CLASS opo) {
-		Set<Sinergy<Card>> sub = new LinkedHashSet<Sinergy<Card>>();
+	public Set<SynergyEdge<Card>> getCardSinergies(Card c, int manaRestante, CLASS opo) {
+		Set<SynergyEdge<Card>> sub = new LinkedHashSet<SynergyEdge<Card>>();
 		// Set<Carta> sub = new LinkedHashSet<Carta>();
 		if (c != null) {
-			for (Sinergy<Card> s : cardsSynergies) {
+			for (SynergyEdge<Card> s : cardsSynergies) {
 				if (s.getE1() == c || s.getE2() == c) {
 					Card c2 = (Card) s.getE2();
 					if (c == c2) {
@@ -457,16 +457,15 @@ public class CardBuilder {
 	}
 
 	public static void main(String[] args) {
-		Card c = new Card("Teste");
-//		CardBuilder cb = new CardBuilder();
-//		Card c = CardBuilder.getCard("Mana Wyrm");
-//		System.out.println(c.getText());
-//		cb.generateCardSynergies(c, false);
-//
+		//Card c = new Card("Teste");
+		CardBuilder cb = new CardBuilder();
+		Card c = CardBuilder.getCard("Mana Wyrm");
+		System.out.println(c.getText());
+		cb.generateCardSynergies(c, false);
 		EntityService es = new EntityService();
 		es.createOrUpdate(c);
-//		for (Sinergy<Card> cs : cb.cardsSynergies) {
-//			es.session.save(cs, 2);
-//		}
+		for (SynergyEdge<Card> cs : cb.cardsSynergies) {
+			es.session.save(cs, 2);
+		}
 	}
 }

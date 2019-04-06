@@ -13,7 +13,7 @@ import lombok.Data;
  */
 @Data
 //@NodeEntity
-public abstract class Entity implements Comparable<Entity> {
+public abstract class Node implements Comparable<Node> {
 	@Id
 	@GeneratedValue
 	protected Long id;
@@ -25,7 +25,7 @@ public abstract class Entity implements Comparable<Entity> {
 //	}
 
 	@Override
-	public int compareTo(Entity o) {
-		return this.name.compareTo(((Entity) o).name);
+	public int compareTo(Node o) {
+		return this.name.compareTo(((Node) o).name);
 	}
 }

@@ -2,7 +2,7 @@ package ht;
 
 import org.neo4j.ogm.session.Session;
 
-import ht.model.Entity;
+import ht.model.Node;
 
 interface Service<T> {
 	public Iterable<T> findAll();
@@ -14,7 +14,7 @@ interface Service<T> {
 	public T createOrUpdate(T object);
 }
 
-abstract class GenericService<T extends Entity> implements Service<T> {
+abstract class GenericService<T extends Node> implements Service<T> {
 	private static final int DEPTH_LIST = 0;
 	private static final int DEPTH_ENTITY = 1;
 	protected Session session = Neo4jSessionFactory.getInstance().getNeo4jSession();

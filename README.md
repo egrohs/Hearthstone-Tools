@@ -1,3 +1,17 @@
+THEORY
+From economics utility ou positive synergy occurs when the product of all parts is greater then the sum of all parts.
+S = U(A|B) > U(A+B) sell value of a pair of shoes is greater then each one sold separately.
+ex. Knife Juggle(3 mana points) + Muster for Battle(3 mana points) = 6 mana points + 3 daggers (about 1 mana points, similar to an arcane missels) = 7 mana points
+
+Negativa Sinergia also occurs when S = U(A|B) < U(A+B)
+As diminishing returns (when you own 2 carros, but uses only 1 to go work)
+ex. Sludge Belcher(5) + Wailing Soul(4) = 9 - 1 silence = 8
+	Moten Giant + Gain Health or Armor (but can be easily avoided)
+
+There is also, mana curve synergy
+ex. Ancient Lore + Big Game Hunter (more draw chances for BGH at same 10 turn).
+
+INSTALATION
 0) Run jar file, the output calculations are generated at databases/graph.db folder and can be visualized using Neo4j.
 1) Install Neo4j at https://neo4j.com/download/ 
 2) Edit /etc/neo4j/neo4j.conf file and configure dbms.directories.data=<PATH>/Hearthsotne-Tools

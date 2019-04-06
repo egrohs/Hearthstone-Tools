@@ -6,6 +6,6 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper=true)
-public class Player extends Entity {
+public class Player extends Node {
     private CLASS classe;
 }

@@ -14,7 +14,7 @@ import lombok.Data;
 @Data
 @NodeEntity
 //@EqualsAndHashCode(callSuper=true)
-public class Card extends Entity {
+public class Card extends Node {
 	private boolean calculada;
 	private CLASS classe;
 	private StringBuilder text = new StringBuilder();

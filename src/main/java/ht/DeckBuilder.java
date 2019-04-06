@@ -24,7 +24,7 @@ import ht.model.Card;
 import ht.model.Card.CLASS;
 import ht.model.Deck;
 import ht.model.Player;
-import ht.model.Sinergy;
+import ht.model.SynergyEdge;
 
 /**
  * Partindo duma lista de cartas, tenta encontrar o metadeck as quais pertencem.
@@ -241,7 +241,7 @@ public class DeckBuilder {
 //			Float acum = 0f;
 //			for (Card c2 : deck.getCartas().keySet()) {
 //				if (!c1.equals(c2)) {
-//					Sinergy<Card> s = cb.getCardSinergy(c1, c2);
+//					SynergyEdge<Card> s = cb.getCardSynergy(c1, c2);
 //					acum += s != null ? s.getValor() : 0f;
 //					cont++;
 //				}
@@ -268,7 +268,7 @@ public class DeckBuilder {
 		return sbb;
 	}
 
-	public Set<Sinergy<Card>> getCardSinergies(Card card, int manaRestante, CLASS classe) {
+	public Set<SynergyEdge<Card>> getCardSinergies(Card card, int manaRestante, CLASS classe) {
 		return cb.getCardSinergies(card, manaRestante, classe);
 	}
 
@@ -285,7 +285,7 @@ public class DeckBuilder {
 		System.out.println("Sinergias para " + initialCards[0]);
 		for (String cardname : initialCards) {
 			Card c = CardBuilder.getCard(cardname);
-			for (Sinergy<Card> s : cb.cardsSynergies) {
+			for (SynergyEdge<Card> s : cb.cardsSynergies) {
 				Card c1 = (Card) s.getE1();
 				Card c2 = (Card) s.getE2();
 				if (c == c1 || c == c2) {

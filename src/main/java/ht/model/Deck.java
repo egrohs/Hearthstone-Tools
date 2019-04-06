@@ -12,7 +12,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper=true)
-public class Deck extends Entity {
+public class Deck extends Node {
 	private Card.CLASS classe = CLASS.NEUTRAL;
 	private Map<Card, Integer> cartas = new HashMap<Card, Integer>();
 

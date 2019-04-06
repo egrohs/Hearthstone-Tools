@@ -1,6 +1,6 @@
 package ht.model;
 
-public class Event extends Entity {
-	Entity e;
+public class Event extends Node {
+	Node e;
 	Integer valor;
 }
