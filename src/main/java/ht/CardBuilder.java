@@ -12,7 +12,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -31,7 +30,7 @@ import ht.model.Tag;
 
 public class CardBuilder {
 	public static List<Card> cards = new ArrayList<Card>();
-	Set<SynergyEdge<Card>> cardsSynergies = new HashSet<SynergyEdge<Card>>();
+	List<SynergyEdge<Card>> cardsSynergies = new ArrayList<SynergyEdge<Card>>();
 	private ClassLoader cl = this.getClass().getClassLoader();
 	private TagBuilder tb;
 	final String api = "https://api.hearthstonejson.com/v1/latest/enUS/cards.collectible.json";
@@ -61,7 +60,6 @@ public class CardBuilder {
 	 */
 	private List<Card> buildCards() {
 		if (cards.size() == 0) {
-			long ini = System.currentTimeMillis();
 			try {
 				File file = new File("cards.collectible.json");
 				if (!file.exists()) {
@@ -76,8 +74,7 @@ public class CardBuilder {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			System.out.println(
-					cards.size() + " cards imported in " + (System.currentTimeMillis() - ini) / 1000 + " seconds.");
+			System.out.println(cards.size() + " cards imported.");
 		}
 		return cards;
 	}
@@ -157,41 +154,22 @@ public class CardBuilder {
 			}
 		}
 		// TODO CS2_013t excess mana not found..
-		throw new RuntimeException("Carta não encontrada: " + idORname);
+		throw new RuntimeException("Card not found: " + idORname);
 		// return null;
 	}
 
 	/**
-	 * Generate all cards sinergies.
+	 * Write synergies on csv edges file gephi format.
 	 */
-	private void generateCardsSynergies() {
-		System.out.println("generateCardsSynergies...");
-		long ini = System.currentTimeMillis();
-
+	private void writeCardSynergies() {
 		FileWriter fw = null;
 		try {
 			fw = new FileWriter("cardSinergies.csv");
-			for (SynergyEdge<Tag> tagSin : tb.getTagsSynergies()) {
-				Tag tag1 = (Tag) tagSin.getE1();
-				Tag tag2 = (Tag) tagSin.getE2();
-				for (Card c1 : cards) {
-					if (c1.getTags().contains(tag1)) {
-						for (Card c2 : cards) {
-							if (c2.getTags().contains(tag2)) {
-								SynergyEdge<Card> cardSin = getCardSynergy(c1, c2);
-								if (cardSin == null) {
-									cardSin = new SynergyEdge<Card>(c1, c2, tagSin.getWeight(),
-											tag1.getRegex() + "+" + tag2.getRegex());
-									cardsSynergies.add(cardSin);
-									fw.write(c1.getName() + "\t" + tag1.getName() + "\t" + c2.getName() + "\t"
-											+ tag2.getName() + "\r\n");
-								} else {
-									cardSin.setWeight(cardSin.getWeight() + tagSin.getWeight());
-								}
-							}
-						}
-					}
-				}
+			fw.write("Source\tTarget\tm1\tm2\r\n");
+			for (SynergyEdge<Card> s : cardsSynergies) {
+				Card c1 = (Card) s.getE1();
+				Card c2 = (Card) s.getE2();
+				fw.write(c1.getName() + "\t" + c2.getName() + "\r\n");
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -203,33 +181,49 @@ public class CardBuilder {
 				e.printStackTrace();
 			}
 		}
+	}
 
-		imprimSins();
+	/**
+	 * Generate all cards synergies.
+	 */
+	private void generateCardsSynergies() {
+		System.out.println("generateCardsSynergies...");
+		long ini = System.currentTimeMillis();
+		for (Card c1 : cards) {
+			generateCardSynergies(c1, false);
+		}
+		// imprimSins();
 
 		// Collections.sort(Sinergias.cardsSynergies);
 		System.out.println(cardsSynergies.size() + " sinergies calculated from parsed card texts in "
 				+ (System.currentTimeMillis() - ini) / 60000 + " minutes.");
 	}
 
+	/**
+	 * Generate all synergies for card c1
+	 * 
+	 * @param everyCard if true, generate all synergies, class independ.
+	 */
 	public void generateCardSynergies(Card c1, boolean everyCard) {
 		if (c1 != null && !c1.isCalculada()) {
 			for (SynergyEdge<Tag> ts : tb.getTagsSynergies()) {
+				Tag tag = null;
 				Tag tag1 = (Tag) ts.getE1();
 				Tag tag2 = (Tag) ts.getE2();
 				if (c1.getTags().contains(tag1)) {
+					tag = tag2;
+				} else if (c1.getTags().contains(tag2)) {
+					tag = tag1;
+				}
+				if (tag != null) {
 					for (Card c2 : cards) {
-						if (!everyCard && (c2.getClasse() == CLASS.NEUTRAL || c1.getClasse() == c2.getClasse())
-								&& c2.getTags().contains(tag2)) {
-							SynergyEdge<Card> cs = getCardSynergy(c1, c2);
-							if (cs == null) {
-								cs = new SynergyEdge<Card>(c1, c2,
-										c2.getText() + "\t" + tag1.getRegex() + " + " + tag2.getRegex(),
-										ts.getWeight());
-								cardsSynergies.add(cs);
-								System.out.println(cs);
-							} else {
-								cs.setWeight(cs.getWeight() + ts.getWeight());
-							}
+						if ((everyCard || c2.getClasse() == CLASS.NEUTRAL || c1.getClasse() == c2.getClasse())
+								&& c2.getTags().contains(tag)) {
+							SynergyEdge<Card> cs = new SynergyEdge<Card>(c1, c2,
+									c2.getText() + "\t" + tag1.getRegex() + " + " + tag2.getRegex(), ts.getWeight());
+							cardsSynergies.add(cs);
+
+							System.out.println(cs);
 						}
 					}
 				}
@@ -457,15 +451,10 @@ public class CardBuilder {
 	}
 
 	public static void main(String[] args) {
-		//Card c = new Card("Teste");
+		// Card c = new Card("Teste");
 		CardBuilder cb = new CardBuilder();
-		Card c = CardBuilder.getCard("Mana Wyrm");
-		System.out.println(c.getText());
-		cb.generateCardSynergies(c, false);
-		EntityService es = new EntityService();
-		es.createOrUpdate(c);
-		for (SynergyEdge<Card> cs : cb.cardsSynergies) {
-			es.session.save(cs, 2);
-		}
+		Card c1 = CardBuilder.getCard("Zilliax");
+		cb.generateCardSynergies(c1, false);
+		cb.writeCardSynergies();
 	}
 }

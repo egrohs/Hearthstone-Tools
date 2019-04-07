@@ -4,12 +4,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.Set;
 import java.util.regex.Pattern;
 
 import javax.script.ScriptEngine;
@@ -22,11 +21,11 @@ import ht.model.Tag;
 
 public class TagBuilder {
 	static Map<String, Tag> tags = new HashMap<String, Tag>();
-	Set<SynergyEdge<Tag>> tagsSynergies = new HashSet<SynergyEdge<Tag>>();
+	List<SynergyEdge<Tag>> tagsSynergies = new ArrayList<SynergyEdge<Tag>>();
 	private ClassLoader cl = this.getClass().getClassLoader();
 	ScriptEngineManager mgr = new ScriptEngineManager();
 	ScriptEngine engine = mgr.getEngineByName("JavaScript");
-	
+
 	public TagBuilder() {
 		// loadTags();
 		importTags();
@@ -39,10 +38,11 @@ public class TagBuilder {
 		return tags;
 	}
 
-	public Set<SynergyEdge<Tag>> getTagsSynergies() {
+	public List<SynergyEdge<Tag>> getTagsSynergies() {
 		return tagsSynergies;
 	}
 
+	@Deprecated
 	private void loadTags() {
 		Scanner sc = null;
 		try {
@@ -95,6 +95,9 @@ public class TagBuilder {
 		System.out.println(tags.size() + " tags imported.");
 	}
 
+	/**
+	 * Import all card tags form google sheet
+	 */
 	private void importTagSinergies() {
 		List<List<Object>> values = null;
 		try {
@@ -113,9 +116,14 @@ public class TagBuilder {
 			if (t2 != null) {
 				tagsSynergies.add(new SynergyEdge<Tag>(t1, t2, label, weight));
 			}
-			// Every tag sinergies with itself.
-			tagsSynergies.add(new SynergyEdge<Tag>(t1, t1, label, weight));
 		}
+		for (Tag t1 : tags.values()) {
+			if (t1.getRegex() != null && !"".equals(t1.getRegex())) {
+				// Almost every tag synergies with itself.
+				tagsSynergies.add(new SynergyEdge<Tag>(t1, t1, t1.getName(), 0.0f));
+			}
+		}
+		System.out.println(tagsSynergies.size() + " tags synergies imported.");
 	}
 
 	/**
