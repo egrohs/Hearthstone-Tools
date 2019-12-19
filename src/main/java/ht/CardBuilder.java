@@ -36,9 +36,9 @@ public class CardBuilder {
 	final String api = "https://api.hearthstonejson.com/v1/latest/enUS/cards.collectible.json";
 
 	public CardBuilder() {
-		tb = new TagBuilder();
+//		tb = new TagBuilder();
 		buildCards();
-		tb.buildCardTags();
+//		tb.buildCardTags();
 		// TODO
 		// generateCardsSynergies(tb.tagsSynergies);
 	}
