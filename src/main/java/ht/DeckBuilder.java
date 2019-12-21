@@ -32,10 +32,11 @@ import ht.model.SynergyEdge;
  * @author egrohs
  *
  */
+
 public class DeckBuilder {
 	Set<Deck> decks = new HashSet<Deck>();
 	private ClassLoader cl = this.getClass().getClassLoader();
-	private CardBuilder cb;
+	//private CardBuilder cb;
 
 	public static void main(String[] args) {
 		CardBuilder cb = new CardBuilder();
@@ -48,7 +49,7 @@ public class DeckBuilder {
 	}
 
 	public DeckBuilder() {
-		cb = new CardBuilder();
+		//cb = new CardBuilder();
 		loadDecks(new File(cl.getResource("decks").getFile()));
 		System.out.println(decks.size() + " decks loaded.");
 	}
@@ -285,7 +286,7 @@ public class DeckBuilder {
 		System.out.println("Sinergias para " + initialCards[0]);
 		for (String cardname : initialCards) {
 			Card c = CardBuilder.getCard(cardname);
-			for (SynergyEdge<Card> s : cb.cardsSynergies) {
+			for (SynergyEdge<Card> s : cb.getCardSinergies()) {
 				Card c1 = (Card) s.getE1();
 				Card c2 = (Card) s.getE2();
 				if (c == c1 || c == c2) {

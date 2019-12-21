@@ -16,6 +16,7 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
 import ht.model.Card;
+import ht.model.Deck;
 import ht.model.SynergyEdge;
 import ht.model.Tag;
 
@@ -29,8 +30,9 @@ public class TagBuilder {
 	public TagBuilder() {
 		// loadTags();
 		importTags();
-		importTagSinergies();
+		// importTagSinergies();
 		// calcSinergies();
+		buildCardTags();
 		// printTags();
 	}
 
@@ -69,6 +71,8 @@ public class TagBuilder {
 		System.out.println(tags.size() + " tags loaded.");
 	}
 
+	// TODO armazenar localmente as tags evitando buscar se mesma versao ou sem
+	// internet.
 	/** Import tags from google spreadsheet. */
 	private void importTags() {
 		List<List<Object>> values = null;
@@ -147,6 +151,19 @@ public class TagBuilder {
 	}
 
 	public static void main(String[] args) {
+	//	new CardBuilder();
+		//TagBuilder.class.ins
+		TagBuilder t1 = new TagBuilder();
 		new TagBuilder();
+//		for (Card c : CardBuilder.cards) {
+//			System.out.println(c.getName() + " " + c.getTags());
+//		}
+		DeckBuilder d = new DeckBuilder();
+		for (Deck dk : d.decks) {
+			dk.calcTags();
+			for (Tag t : dk.getFreq().keySet()) {
+				System.out.println(t + ": " + dk.getFreq().get(t));
+			}
+		}
 	}
 }

@@ -11,10 +11,11 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
-@EqualsAndHashCode(callSuper=true)
+@EqualsAndHashCode(callSuper = true)
 public class Deck extends Node {
 	private Card.CLASS classe = CLASS.NEUTRAL;
 	private Map<Card, Integer> cartas = new HashMap<Card, Integer>();
+	Map<Tag, Integer> freq = new HashMap<>();
 
 	public Deck(String nome, Map<Card, Integer> cartas) {
 		this.name = nome;
@@ -41,7 +42,14 @@ public class Deck extends Node {
 		}
 		return sb.toString();
 	}
-	
+
+	public void calcTags() {
+		for (Card c : cartas.keySet()) {
+			for (Tag t : c.getTags()) {
+				freq.compute(t, (tokenKey, oldValue) -> oldValue == null ? cartas.get(c) : oldValue + cartas.get(c));
+			}
+		}
+	}
 
 	private CLASS whichClass(List<Card> cartas) {
 		Map<CLASS, Integer> qnts = new HashMap<CLASS, Integer>();
