@@ -18,6 +18,15 @@ public class Tag extends Node {
 		this.description = description;
 	}
 
+	public Tag geyByName(String name) {
+		for (Tag tag : tags) {
+			if (name.equals(tag.getName())) {
+				return tag;
+			}
+		}
+		return null;
+	}
+
 	@Override
 	public String toString() {
 		return name;

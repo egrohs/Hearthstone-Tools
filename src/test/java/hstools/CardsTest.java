@@ -1048,7 +1048,7 @@ public class CardsTest {
 		CardBuilder cb = new CardBuilder();
 		String[] cs = { "Corpsetaker", "Jan'alai, the Dragonhawk", "Zandalari Templar", "Shudderwock", "Tess Greymane",
 				"Enhance-o Mechano", "Shaku, the Collector", "Master Jouster", "Gral, the Shark" };
-		for (Card c : cb.cards) {
+		for (Card c : cb.getCards()) {
 			System.out.println(c.getTags().size() + "\t" + c + "\t" + c.getText() + "\t" + c.getTags());
 		}
 	}
