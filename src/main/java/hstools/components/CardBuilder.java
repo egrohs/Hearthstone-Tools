@@ -32,8 +32,12 @@ import hstools.model.SynergyEdge;
 import hstools.model.Tag;
 import lombok.Data;
 
+//TODO buscar rankings das cartas online e salvar em arquivo?
 @Service
 @Data
+//TODO https://develop.battle.net/documentation/hearthstone/game-data-apis
+//https://hearthstoneapi.com/
+//https://hearthstonejson.com/
 public class CardBuilder {
 	private List<Card> cards = new ArrayList<Card>();
 	private List<SynergyEdge<Card>> cardsSynergies = new ArrayList<SynergyEdge<Card>>();

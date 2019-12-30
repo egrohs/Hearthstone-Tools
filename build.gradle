@@ -59,6 +59,9 @@ dependencies {
     //annotationProcessor "com.google.dagger:dagger-compiler:2.4"
 	// https://mvnrepository.com/artifact/com.github.peichhorn/lombok-pg
 	//compile group: 'com.github.peichhorn', name: 'lombok-pg', version: '0.11.3'
+	
+	// https://mvnrepository.com/artifact/nz.ac.waikato.cms.weka/weka-stable
+	compile group: 'nz.ac.waikato.cms.weka', name: 'weka-stable', version: '3.8.4'
 }
 
 test {

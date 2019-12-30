@@ -52,7 +52,7 @@ public class HearthstoneToolsApplication implements CommandLineRunner {
 		System.out.println();
 		for (Tag t : tb.getTags().values()) {// dk.getFreq().keySet()) {
 			for (Deck dk : db.getDecks()) {
-				System.out.print(dk.getFreq().get(t) + "\t");
+				System.out.print(dk.getTags().get(t) + "\t");
 			}
 			System.out.println(t);
 		}

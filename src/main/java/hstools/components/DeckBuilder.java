@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -45,7 +45,7 @@ import lombok.Data;
 public class DeckBuilder {
 	@Autowired
 	private CardBuilder cb;
-	private Set<Deck> decks = new HashSet<Deck>();
+	private Set<Deck> decks = new LinkedHashSet<Deck>();
 	private ClassLoader cl = this.getClass().getClassLoader();
 
 	private Map<Deck, Double> similaridade(Collection<Card> searched) {
@@ -81,8 +81,13 @@ public class DeckBuilder {
 	 * Load meta decks.
 	 */
 	public void loadDecks(File dir) {
-		// FileUtils.listFiles(dir, true, true);
 		File listOfFiles[] = dir.listFiles();
+//		Arrays.sort(listOfFiles, new Comparator<File>() {
+//			@Override
+//			public int compare(File o1, File o2) {
+//				return o1.getName().compareTo(o2.getName());
+//			}
+//		});
 		for (File file : listOfFiles) {
 			if (file.isDirectory()) {
 				loadDecks(file);
@@ -90,26 +95,32 @@ public class DeckBuilder {
 				Map<Card, Integer> cartas = new HashMap<Card, Integer>();
 				try {
 					Scanner sc = new Scanner(file);
+					String obs = null;
 					while (sc.hasNextLine()) {
 						// Apenas para ceitar ctrl-c-v do
 						// http://www.hearthstonetopdecks.com
-						String line = sc.nextLine().replaceAll("�", "'").replaceFirst("^(\\d+)(\\w)", "$1\t$2")
+						String line = sc.nextLine().replaceAll("﻿","").replaceAll("�", "'").replaceFirst("^(\\d+)(\\w)", "$1\t$2")
 								.replaceFirst("(\\w)(\\d+)$", "$1\t$2");// .toLowerCase();
-						String[] vals = line.split("\t");
-						int i = 0;
-						if (vals.length == 1)
-							vals = line.split(";");
-						if (vals.length > 2)
-							i = 1;
-						if (vals.length > 1 && !"".equals(vals[i]) && !"".equals(vals[i + 1])) {
-							try {
-								cartas.put(cb.getCard(vals[i]), Integer.parseInt(vals[i + 1]));
-							} catch (Exception rt) {
-								cartas.put(cb.getCard(vals[i + 1]), Integer.parseInt(vals[i]));
+						if (line.startsWith("#")) {
+							obs = line.substring(1, line.length());
+						} else {
+							String[] vals = line.split("\t");
+							int i = 0;
+							if (vals.length == 1)
+								vals = line.split(";");
+							if (vals.length > 2)
+								i = 1;
+							if (vals.length > 1 && !"".equals(vals[i]) && !"".equals(vals[i + 1])) {
+								try {
+									cartas.put(cb.getCard(vals[i]), Integer.parseInt(vals[i + 1]));
+								} catch (Exception rt) {
+									cartas.put(cb.getCard(vals[i + 1]), Integer.parseInt(vals[i]));
+								}
 							}
 						}
 					}
 					Deck deck = new Deck(file.getName(), cartas);
+					deck.setArchtype(obs);
 					decks.add(deck);
 					sc.close();
 				} catch (FileNotFoundException e) {
