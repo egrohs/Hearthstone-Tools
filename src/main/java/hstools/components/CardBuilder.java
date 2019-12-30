@@ -10,6 +10,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -24,6 +25,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.stereotype.Service;
 
+import hstools.GoogleSheets;
 import hstools.model.Card;
 import hstools.model.Card.CLASS;
 import hstools.model.SynergyEdge;
@@ -444,5 +446,29 @@ public class CardBuilder {
 			}
 		}
 		return sub;
+	}
+
+	/**
+	 * Import all card ranks form google sheet
+	 */
+	public void importCardRanks() {
+		List<List<Object>> values = null;
+		try {
+			values = GoogleSheets.getDados("1WNcRrDzxyoy_TRm9v15VSGwEiRPqJhUhReq0Wh8Jp14", "CARDS!A2:E");
+		} catch (GeneralSecurityException | IOException e) {
+			e.printStackTrace();
+		}
+		int count = 0;
+		//TODO buscar pelo nome do header da coluna
+		for (List<Object> row : values) {
+			String cardName = (String) row.get(0);
+			Float rank = (Float) row.get(3);
+			Card c1 = this.getCard(cardName);
+			if (c1 != null) {
+				c1.setRank(rank);
+				count++;
+			}
+		}
+		System.out.println(count + " card ranks imported.");
 	}
 }

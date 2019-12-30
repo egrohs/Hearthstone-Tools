@@ -3,6 +3,7 @@ package hstools.components;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -22,12 +23,14 @@ import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import hstools.GoogleSheets;
 import hstools.ZoneLogReader;
 import hstools.model.Card;
 import hstools.model.Card.CLASS;
 import hstools.model.Deck;
 import hstools.model.Player;
 import hstools.model.SynergyEdge;
+import hstools.model.Tag;
 import lombok.Data;
 
 /**
@@ -177,13 +180,34 @@ public class DeckBuilder {
 	// - pro.eslgaming.com
 	// - teamarchon.com
 	// - tempostorm.com
+	public void tempostormMeta() {
+		String url = "https://tempostorm.com/hearthstone/meta-snapshot/wild/2019-12-17";
+		Document docMeta = getDocument(url);
+		Elements tempostormDecks = docMeta.select("hs-snapshot-body div div div div div div div div a");
+	}
+	
+	public void hearthstonetopdecksCardRank() {
+		try {
+			String url = "https://www.hearthstonetopdecks.com/cards";// for .../page/2
+			Document docDecks = getDocument(url);
+			Elements name = docDecks.select("div.card-item");
+			name.select("a").attr("href");
+			Elements htdCards = docDecks.select("strong");
+			for (Element deck : htdCards) {
+				String deckLink = deck.text();
+				System.out.println(deckLink);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	public void hearthstonetopdecks() {
 		try {
 			String page = "1";
 			String url = "http://www.hearthstonetopdecks.com/deck-category/type/page/" + page;
 			// login(loginUrl, url);
-			Document docDecks = Jsoup.connect(url).data("query", "Java").userAgent("Mozilla").cookie("auth", "token")
-					.timeout(3000).post();
+			Document docDecks = getDocument(url);
 			Elements decks = docDecks.select("tbody tr a");
 			for (Element deck : decks) {
 				String deckLink = deck.attr("href");
@@ -210,6 +234,17 @@ public class DeckBuilder {
 		}
 	}
 
+	private Document getDocument(String url) {
+		Document doc = null;
+		try {
+			doc = Jsoup.connect(url).data("query", "Java").userAgent("Mozilla").cookie("auth", "token").timeout(3000)
+					.post();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return doc;
+	}
+
 	private void login(String loginUrl, String url) throws IOException {
 		// First login. Take the cookies
 		Connection.Response res = Jsoup.connect(loginUrl).data("eid", "i110013").data("pw", "001")
@@ -227,21 +262,6 @@ public class DeckBuilder {
 
 		System.out.println("Title : " + doc.title());
 	}
-
-//	private void printDeck(Deck deck) {
-//		for (Card c1 : deck.getCartas().keySet()) {
-//			int cont = 0;
-//			Float acum = 0f;
-//			for (Card c2 : deck.getCartas().keySet()) {
-//				if (!c1.equals(c2)) {
-//					SynergyEdge<Card> s = cb.getCardSynergy(c1, c2);
-//					acum += s != null ? s.getValor() : 0f;
-//					cont++;
-//				}
-//			}
-//			System.out.println(acum / cont + "\t" + c1.getName() + "\t" + c1.getClasse() + "\t" + c1.getText());
-//		}
-//	}
 
 	/**
 	 * Calcula a similariade de deck partindo de todas cartas jogadas ate agora.
