@@ -1,8 +1,5 @@
 package hstools.model;
 
-import org.neo4j.ogm.annotation.GeneratedValue;
-import org.neo4j.ogm.annotation.Id;
-
 import lombok.Data;
 
 /**
@@ -14,10 +11,10 @@ import lombok.Data;
 @Data
 //@NodeEntity
 public abstract class Node implements Comparable<Node> {
-	@Id
-	@GeneratedValue
-	protected Long id;
-	protected String cod, name;
+//	@Id
+//	@GeneratedValue
+	protected Long id;//dbfId na carta
+	protected String name;
 
 //	@Override
 //	public String toString() {

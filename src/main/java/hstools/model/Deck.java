@@ -16,8 +16,28 @@ public class Deck extends Node {
 
 	}
 
+	public enum Formato {
+		STANDARD(1), WILD(2);
+
+		private Formato(int i) {
+			this.valor = i;
+		}
+
+		private int valor;
+
+		public static Formato getByValor(int v) {
+			for (Formato f : Formato.values()) {
+				if (f.valor == v) {
+					return f;
+				}
+			}
+			return null;
+		}
+	}
+
 	// TODO enum above
-	private String archtype;
+	private String archtype, deckstring;
+	private Formato formato;
 	private Card.CLASS classe = CLASS.NEUTRAL;
 	private Map<Card, Integer> cartas = new HashMap<>();
 	private Map<Tag, Integer> tags = new HashMap<>();

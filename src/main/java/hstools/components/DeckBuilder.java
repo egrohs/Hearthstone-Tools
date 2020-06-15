@@ -3,11 +3,13 @@ package hstools.components;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.security.GeneralSecurityException;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -23,14 +25,14 @@ import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import hstools.GoogleSheets;
 import hstools.ZoneLogReader;
+import hstools.deckstrings.VarInt;
 import hstools.model.Card;
 import hstools.model.Card.CLASS;
 import hstools.model.Deck;
+import hstools.model.Deck.Formato;
 import hstools.model.Player;
 import hstools.model.SynergyEdge;
-import hstools.model.Tag;
 import lombok.Data;
 
 /**
@@ -39,10 +41,12 @@ import lombok.Data;
  * @author egrohs
  *
  */
-
 @Service
 @Data
 public class DeckBuilder {
+	@Autowired
+	private Web web;
+
 	@Autowired
 	private CardBuilder cb;
 	private Set<Deck> decks = new LinkedHashSet<Deck>();
@@ -92,15 +96,15 @@ public class DeckBuilder {
 			if (file.isDirectory()) {
 				loadDecks(file);
 			} else {
-				Map<Card, Integer> cartas = new HashMap<Card, Integer>();
+				Map<Card, Integer> cartas = new LinkedHashMap<Card, Integer>();
 				try {
 					Scanner sc = new Scanner(file);
 					String obs = null;
 					while (sc.hasNextLine()) {
 						// Apenas para ceitar ctrl-c-v do
 						// http://www.hearthstonetopdecks.com
-						String line = sc.nextLine().replaceAll("﻿","").replaceAll("�", "'").replaceFirst("^(\\d+)(\\w)", "$1\t$2")
-								.replaceFirst("(\\w)(\\d+)$", "$1\t$2");// .toLowerCase();
+						String line = sc.nextLine().replaceAll("﻿", "").replaceAll("�", "'")
+								.replaceFirst("^(\\d+)(\\w)", "$1\t$2").replaceFirst("(\\w)(\\d+)$", "$1\t$2");// .toLowerCase();
 						if (line.startsWith("#")) {
 							obs = line.substring(1, line.length());
 						} else {
@@ -193,32 +197,16 @@ public class DeckBuilder {
 	// - tempostorm.com
 	public void tempostormMeta() {
 		String url = "https://tempostorm.com/hearthstone/meta-snapshot/wild/2019-12-17";
-		Document docMeta = getDocument(url);
+		Document docMeta = web.getDocument(url);
 		Elements tempostormDecks = docMeta.select("hs-snapshot-body div div div div div div div div a");
 	}
-	
-	public void hearthstonetopdecksCardRank() {
-		try {
-			String url = "https://www.hearthstonetopdecks.com/cards";// for .../page/2
-			Document docDecks = getDocument(url);
-			Elements name = docDecks.select("div.card-item");
-			name.select("a").attr("href");
-			Elements htdCards = docDecks.select("strong");
-			for (Element deck : htdCards) {
-				String deckLink = deck.text();
-				System.out.println(deckLink);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 
-	public void hearthstonetopdecks() {
+	public void hearthstonetopdecksDecks() {
 		try {
 			String page = "1";
 			String url = "http://www.hearthstonetopdecks.com/deck-category/type/page/" + page;
 			// login(loginUrl, url);
-			Document docDecks = getDocument(url);
+			Document docDecks = web.getDocument(url);
 			Elements decks = docDecks.select("tbody tr a");
 			for (Element deck : decks) {
 				String deckLink = deck.attr("href");
@@ -243,17 +231,6 @@ public class DeckBuilder {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
-
-	private Document getDocument(String url) {
-		Document doc = null;
-		try {
-			doc = Jsoup.connect(url).data("query", "Java").userAgent("Mozilla").cookie("auth", "token").timeout(3000)
-					.post();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return doc;
 	}
 
 	private void login(String loginUrl, String url) throws IOException {
@@ -320,6 +297,57 @@ public class DeckBuilder {
 				}
 			}
 		}
+		return deck;
+	}
+
+	/**
+	 *
+	 * @param data the base64 decoded data. This method intentionnaly does not
+	 *             decode Base64 as implementation differ greatly between android
+	 *             and other JVM. See https://github.com/auth0/java-jwt/issues/131
+	 *             for more details
+	 * @return
+	 * @throws Exception
+	 */
+	public Deck decode(String encodedString) throws Exception {
+		byte[] data = Base64.getDecoder().decode(encodedString);
+		// String decodedString = new String(data);
+		ByteBuffer byteBuffer = ByteBuffer.wrap(data);
+		byteBuffer.get(); // reserverd
+		int version = byteBuffer.get();
+		if (version != 1) {
+			// throw new ParseException("bad version: " + version);
+		}
+
+		Formato formato = Formato.getByValor(VarInt.getVarInt(byteBuffer));
+		Map<Card, Integer> cartas = new HashMap<>();
+//		if (result.format != FT_STANDARD && result.format != FT_WILD) {
+//           throw new ParseException("bad format: " + result.format);
+//		}
+
+		int heroCount = VarInt.getVarInt(byteBuffer);
+		// result.heroes = new ArrayList<>();
+		for (int i = 0; i < heroCount; i++) {
+			// result.heroes.add(VarInt.getVarInt(byteBuffer));
+			// TODO pegar instancia do cardbuilder
+			cartas.put(cb.getCard(String.valueOf(VarInt.getVarInt(byteBuffer))), 1);
+		}
+
+		for (int i = 1; i <= 3; i++) {
+			int c = VarInt.getVarInt(byteBuffer);
+			for (int j = 0; j < c; j++) {
+				int dbfId = VarInt.getVarInt(byteBuffer);
+				int count;
+				if (i == 3) {
+					count = VarInt.getVarInt(byteBuffer);
+				} else {
+					count = i;
+				}
+				cartas.put(cb.getCard(String.valueOf(dbfId)), count);
+			}
+		}
+		Deck deck = new Deck("", cartas);
+		deck.setFormato(formato);
 		return deck;
 	}
 }

@@ -23,6 +23,10 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import hstools.GoogleSheets;
@@ -39,6 +43,8 @@ import lombok.Data;
 //https://hearthstoneapi.com/
 //https://hearthstonejson.com/
 public class CardBuilder {
+	@Autowired
+	private Web web;
 	private List<Card> cards = new ArrayList<Card>();
 	private List<SynergyEdge<Card>> cardsSynergies = new ArrayList<SynergyEdge<Card>>();
 	private ClassLoader cl = this.getClass().getClassLoader();
@@ -119,7 +125,7 @@ public class CardBuilder {
 				JSONArray reftags = (JSONArray) o.get("referencedTags");
 				JSONArray mechanics = (JSONArray) o.get("mechanics");
 
-				cards.add(new Card((String) o.get("id"), (String) o.get("name"), (String) o.get("set"),
+				cards.add(new Card((Long) o.get("dbfId"), (String) o.get("id"), (String) o.get("name"), (String) o.get("set"),
 						(String) o.get("race"), classe, (String) o.get("type"), text, (Long) o.get("cost"),
 						(Long) o.get("attack"), (Long) o.get("health"), (Long) o.get("durability"),
 						(String) o.get("rarity"), reftags == null ? "" : reftags.toString(),
@@ -129,8 +135,8 @@ public class CardBuilder {
 		// if (getCard("The Coin") == null)
 		{
 			// TODO adiciona a moeda
-			cards.add(new Card("game_005", "the coin", "CORE", "ALLIANCE", CLASS.NEUTRAL, "SPELL",
-					"Add 1 mana this turn...", 0L, null, null, null, "COMMON", "", ""));
+			cards.add(new Card(1746L, "GAME_005", "the coin", "CORE", "ALLIANCE", CLASS.NEUTRAL, "SPELL", "Add 1 mana this turn...",
+					0L, null, null, null, "COMMON", "", ""));
 		}
 		Collections.sort(cards);
 	}
@@ -147,17 +153,17 @@ public class CardBuilder {
 				if (c.getName().equalsIgnoreCase(idORname.trim().replaceAll("’", "'"))) {
 					return c;
 				}
-				if (c.getCod().equalsIgnoreCase(idORname)) {
+				if (c.getId().toString().equalsIgnoreCase(idORname)) {
 					return c;
 				}
-				if (idORname.equalsIgnoreCase(c.getNumid())) {
+				if (c.getIdCarta().equalsIgnoreCase(idORname)) {
 					return c;
 				}
 			}
 		}
 		// TODO CS2_013t excess mana not found..
-		throw new RuntimeException("Card not found: " + idORname);
-		// return null;
+		// throw new RuntimeException("Card not found: " + idORname);
+		return null;
 	}
 
 	/**
@@ -276,7 +282,7 @@ public class CardBuilder {
 			String id = (String) o.get("id");
 			String numid = (String) o.get("numid");
 			Card c = getCard(id);
-			c.setNumid(numid);
+			c.setId(Long.parseLong(numid));
 		}
 		iterator = sets.iterator();
 		while (iterator.hasNext()) {
@@ -463,7 +469,7 @@ public class CardBuilder {
 			e.printStackTrace();
 		}
 		int count = 0;
-		//TODO buscar pelo nome do header da coluna
+		// TODO buscar pelo nome do header da coluna
 		for (List<Object> row : values) {
 			String cardName = (String) row.get(0);
 			Float rank = (Float) row.get(3);
@@ -474,5 +480,29 @@ public class CardBuilder {
 			}
 		}
 		System.out.println(count + " card ranks imported.");
+	}
+
+	public void hearthstonetopdecksCardRank() {
+		try {
+			String url = "https://www.hearthstonetopdecks.com/cards/page/";
+			int page = 1;
+			int pages = 50;
+			do {
+				Document docRanks = web.getDocument(url + page);
+				// pages =
+				// Integer.parseInt(docDecks.select("span.page-link.pages").text().split("
+				// ")[2]);
+				if (docRanks != null) {
+					Elements cards = docRanks.select("div.card-item");
+					for (Element c : cards) {
+						System.out.print(c.select("a").attr("href") + "\t");
+						System.out.println(c.select("strong").text());
+					}
+				}
+				page++;
+			} while (page <= pages);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

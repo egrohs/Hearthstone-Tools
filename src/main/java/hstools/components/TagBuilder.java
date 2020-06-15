@@ -121,6 +121,29 @@ public class TagBuilder {
 		System.out.println(tagsSynergies.size() + " tags synergies imported.");
 	}
 
+	public void importTags2() {
+		List<List<Object>> values = null;
+		try {
+			values = GoogleSheets.getDados("1WNcRrDzxyoy_TRm9v15VSGwEiRPqJhUhReq0Wh8Jp14", "CARD_FUNC!A2:B");
+		} catch (GeneralSecurityException | IOException e) {
+			e.printStackTrace();
+		}
+
+		if (values == null || values.isEmpty()) {
+			System.out.println("No data found.");
+		} else {
+			for (List<Object> row : values) {
+				String name = (String) row.get(0);
+				String regex = row.size() > 1 ? (String) row.get(1) : "";
+				Tag t = tags.get(name);
+				if (t == null)
+					tags.put(name, new Tag(name, regex));
+
+			}
+		}
+		System.out.println(tags.size() + " tags2 imported.");
+	}
+
 	/**
 	 * Generate all cards Tags.
 	 */
@@ -129,7 +152,7 @@ public class TagBuilder {
 			for (Card c : cb.getCards()) {
 				for (Tag tag : tags.values()) {
 					String expr = c.replaceVars(tag.getExpr());
-					if ((expr.equals("") || (boolean) engine.eval(expr) == true)
+					if ((expr == null || expr.equals("") || (boolean) engine.eval(expr) == true)
 							&& Pattern.compile(tag.getRegex()).matcher(c.getText()).find()) {
 						c.getTags().add(tag);
 					}

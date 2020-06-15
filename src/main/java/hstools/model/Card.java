@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.jsoup.Jsoup;
-import org.neo4j.ogm.annotation.NodeEntity;
 
 import lombok.Data;
 
@@ -12,22 +11,24 @@ import lombok.Data;
  * Objeto carta.
  */
 @Data
-@NodeEntity
+//@NodeEntity
 //@EqualsAndHashCode(callSuper=true)
 public class Card extends Node {
 	private boolean calculada;
 	private CLASS classe;
 	private StringBuilder text = new StringBuilder();
-	private String numid, set, race, function, type, rarity, mechs, refTags;
+	private String idCarta, set, race, function, type, rarity, mechs, refTags;
 	private Integer cost, attack, health, dur, popularity, combats, wins, draws, loses;
 	private boolean aggro/* , visited */;
 	// Map<Card, Float> synergies = new LinkedHashMap<Card, Float>();
-	//@Relationship(type = "TAG")
+	// @Relationship(type = "TAG")
 	private Set<Tag> tags = new HashSet<Tag>();
 	private float rank;
 
 	public enum CLASS {
-		WARRIOR, DRUID, HUNTER, PRIEST, MAGE, SHAMAN, ROGUE, PALADIN, WARLOCK, JADE_LOTUS, KABAL, GRIMY_GOONS, NEUTRAL;
+		WARRIOR, DRUID, HUNTER, PRIEST, MAGE, SHAMAN, ROGUE, PALADIN, WARLOCK, DEMONHUNTER, JADE_LOTUS, KABAL,
+		GRIMY_GOONS, NEUTRAL;
+
 		public static boolean contem(CLASS c1, CLASS c2) {
 			switch (c1) {
 			case NEUTRAL:
@@ -61,16 +62,13 @@ public class Card extends Node {
 		// }
 	}
 
-	public Card(String name) {
-		this.name = name;
-	}
-
-	public Card(String cod, String name, String set, String faction, CLASS classe, String type, String text, Long cos,
-			Long atta, Long health, Long dur, String rarity, String refTags, String mechs) {
+	public Card(Long dbfId, String idCarta, String name, String set, String faction, CLASS classe, String type,
+			String text, Long cos, Long atta, Long health, Long dur, String rarity, String refTags, String mechs) {
 		super();
-		this.cod = cod.toLowerCase();
+		this.id = dbfId;
 //		this.getChildren().add(new ImageView(new Image("file:res/cards/" + this.id + ".png")));
 //		StackPane.setAlignment(this, Pos.CENTER_LEFT);
+		this.idCarta = idCarta;
 		this.name = name.toLowerCase();
 		this.set = set;
 		this.race = faction == null ? "" : faction;
@@ -112,10 +110,6 @@ public class Card extends Node {
 		}
 	}
 
-	public void setNumid(String numid) {
-		this.numid = numid;
-	}
-
 	@Override
 	public boolean equals(Object obj) {
 		// boolean r = super.equals(obj);
@@ -150,28 +144,25 @@ public class Card extends Node {
 	/** Modify the expression replacing variables. */
 	// TODO
 	public String replaceVars(String expr) {
-		String[] tokens = expr.split(" ");
-		for (int i = 0; i < tokens.length; i++) {
-			String t = tokens[i];
-			try {
-				Object r = this.getClass().getDeclaredField(t).get(this);
-				String o = r == null ? "1000" : r.toString();
-				if (o.matches("\\d+")) {
-					expr = expr.replaceFirst(t, o);
-				} else {
-					expr = expr.replaceFirst(t, "\"" + o + "\"");
+		if (expr != null) {
+			String[] tokens = expr.split(" ");
+			for (int i = 0; i < tokens.length; i++) {
+				String t = tokens[i];
+				try {
+					Object r = this.getClass().getDeclaredField(t).get(this);
+					String o = r == null ? "1000" : r.toString();
+					if (o.matches("\\d+")) {
+						expr = expr.replaceFirst(t, o);
+					} else {
+						expr = expr.replaceFirst(t, "\"" + o + "\"");
+					}
+				} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException
+						| SecurityException e) {
+					// TODO Auto-generated catch block
+					// e.printStackTrace();
 				}
-			} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
-				// TODO Auto-generated catch block
-				// e.printStackTrace();
 			}
 		}
 		return expr;
-	}
-
-	public static void main(String[] args) {
-		Card c = new Card("My card", "My card", null, null, null, "spell", null, null, null, null, null, null, null,
-				null);
-		System.out.println(c.replaceVars("type == \"spell\""));
 	}
 }

@@ -18,6 +18,11 @@ public class Tag extends Node {
 		this.description = description;
 	}
 
+	public Tag(String name, String regex) {
+		this.name = name;
+		this.regex = regex;
+	}
+
 	public Tag geyByName(String name) {
 		for (Tag tag : tags) {
 			if (name.equals(tag.getName())) {
