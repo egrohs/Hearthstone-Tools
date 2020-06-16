@@ -6,19 +6,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import hstools.components.CardBuilder;
-import hstools.components.DeckBuilder;
+import hstools.components.CardService;
+import hstools.components.DeckService;
 import hstools.model.Card;
 import hstools.model.Deck;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class DeckBuilderTest {
+public class DeckServiceTest {
 	@Autowired
-	private CardBuilder cb;
+	private CardService cb;
 
 	@Autowired
-	private DeckBuilder db;
+	private DeckService db;
 
 	@Test
 	public void testDecode() {

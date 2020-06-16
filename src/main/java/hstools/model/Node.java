@@ -13,7 +13,7 @@ import lombok.Data;
 public abstract class Node implements Comparable<Node> {
 //	@Id
 //	@GeneratedValue
-	protected Long id;//dbfId na carta
+	protected Long id;
 	protected String name;
 
 //	@Override

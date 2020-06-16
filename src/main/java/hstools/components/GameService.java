@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
@@ -18,12 +17,13 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import hstools.PowerLogReader;
 import hstools.ZoneLogReader;
 import hstools.model.Card;
 import hstools.model.Player;
-import hstools.model.SynergyEdge;
 
 /**
  * Base de dados de jogos em json HS, para analise estatistica.
@@ -31,15 +31,19 @@ import hstools.model.SynergyEdge;
  * @author egrohs
  *
  */
-public class GameBuilder extends Thread {
+@Service
+public class GameService extends Thread {
+	@Autowired
+	private DataScienceService dss;
+	
 	Player player1, opponent = new Player();
 	// CardBuilder cb;
 	int lastSize;
-	private DeckBuilder db;
+	private DeckService db;
 
-	public GameBuilder() {
+	public GameService() {
 		// cb = new CardBuilder();
-		db = new DeckBuilder();
+		db = new DeckService();
 	}
 
 	@Override
@@ -73,7 +77,7 @@ public class GameBuilder extends Thread {
 						acerto(card);
 						// TODO usar todas mecanicas mais jogadas? s� as com
 						// mais ocorrencias?
-						Set<Card> temp = possiveis();
+						Set<Card> temp = dss.possiveis();
 						// TODO
 						// App.provaveis(temp);
 					}
@@ -115,40 +119,6 @@ public class GameBuilder extends Thread {
 	}
 
 	/**
-	 * Calcula as futuras possiveis jogadas pela sinergia da carta jogada...
-	 * 
-	 * @param card
-	 * @return
-	 */
-	private Map<Card, String> possiveis2(Card card) {
-		// calcula possiveis jogadas.
-		// TODO deve considerar todas cartas ja jogadas
-		// CardBuilder.generateCardSynergies(card);
-		// TODO tem que ser o mana que ele terminou o turno
-		Set<SynergyEdge<Card>> sub = db.getCardSinergies(card, PowerLogReader.lastMana + 1, opponent.getClasse());
-		List<SynergyEdge<Card>> exibe = new ArrayList<SynergyEdge<Card>>(sub);
-		Collections.sort(exibe);
-		Map<Card, String> temp = new LinkedHashMap<Card, String>();
-		for (SynergyEdge<Card> sinergia : exibe) {
-			Card c = (Card) sinergia.getE2();
-			if (card == c) {
-				c = (Card) sinergia.getE1();
-			}
-			if (!temp.containsKey(c)) {
-				String t = c.getName() + " f:" + sinergia.getFreq() + " v:" + sinergia.getWeight();
-				temp.put(c, t);
-			}
-		}
-		return temp;
-	}
-
-	private Set<Card> possiveis() {
-		// TODO return TagBuilder.getMechsCards(mechs, PowerLogReader.lastMana + 1,
-		// opponent.getClasse());
-		return null;
-	}
-
-	/**
 	 * remove cartas de partidas antigas.
 	 * 
 	 */
@@ -169,8 +139,8 @@ public class GameBuilder extends Thread {
 	private ClassLoader cl = this.getClass().getClassLoader();
 
 	public static void main(String[] args) {
-		CardBuilder cb = new CardBuilder();
-		GameBuilder gb = new GameBuilder();
+		CardService cb = new CardService();
+		GameService gb = new GameService();
 		gb.leJogos();
 		// leSinergias();
 		// cb.provaveis(CardBuilder.getCard("entomb"), 1, CLASS.PRIEST);

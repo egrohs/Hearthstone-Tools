@@ -17,8 +17,9 @@ public class Card extends Node {
 	private boolean calculada;
 	private CLASS classe;
 	private StringBuilder text = new StringBuilder();
-	private String idCarta, set, race, function, type, rarity, mechs, refTags;
-	private Integer cost, attack, health, dur, popularity, combats, wins, draws, loses;
+	private String idCarta, race, function, type, rarity, mechs, refTags;
+	private Expansion set;
+	private Integer dbfId, cost, attack, health, dur, popularity, combats, wins, draws, loses;
 	private boolean aggro/* , visited */;
 	// Map<Card, Float> synergies = new LinkedHashMap<Card, Float>();
 	// @Relationship(type = "TAG")
@@ -62,15 +63,17 @@ public class Card extends Node {
 		// }
 	}
 
-	public Card(Long dbfId, String idCarta, String name, String set, String faction, CLASS classe, String type,
-			String text, Long cos, Long atta, Long health, Long dur, String rarity, String refTags, String mechs) {
+	public Card(Long id, Integer dbfId, String idCarta, String name, String set, String faction, CLASS classe,
+			String type, String text, Long cos, Long atta, Long health, Long dur, String rarity, String refTags,
+			String mechs) {
 		super();
-		this.id = dbfId;
+		this.id = id;
+		this.dbfId = dbfId;
 //		this.getChildren().add(new ImageView(new Image("file:res/cards/" + this.id + ".png")));
 //		StackPane.setAlignment(this, Pos.CENTER_LEFT);
 		this.idCarta = idCarta;
 		this.name = name.toLowerCase();
-		this.set = set;
+		this.set = null;
 		this.race = faction == null ? "" : faction;
 		this.classe = classe;
 		this.type = type.toLowerCase();

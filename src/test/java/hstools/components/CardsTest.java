@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import hstools.components.CardBuilder;
+import hstools.components.CardService;
 import hstools.components.TagBuilder;
 import hstools.model.Card;
 
@@ -19,7 +19,7 @@ import hstools.model.Card;
 @SpringBootTest
 public class CardsTest {
 	@Autowired
-	private CardBuilder cb;
+	private CardService cb;
 
 	@Autowired
 	private TagBuilder tb;

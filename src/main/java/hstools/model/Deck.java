@@ -41,6 +41,7 @@ public class Deck extends Node {
 	private Card.CLASS classe = CLASS.NEUTRAL;
 	private Map<Card, Integer> cartas = new HashMap<>();
 	private Map<Tag, Integer> tags = new HashMap<>();
+	private Expansion set;
 
 	private int hard_remove;// hard 1 e 2 control|destroy|shuffle|transform
 	private int soft_remove;// soft 4 e 8 deal \d+ damage|silence|return to
@@ -155,6 +156,13 @@ public class Deck extends Node {
 		this.name = nome;
 		this.cartas = cartas;
 		this.classe = whichClass(new ArrayList<>(cartas.keySet()));
+		calcSet();
+	}
+
+	private void calcSet() {
+		for (Card c : cartas.keySet()) {
+
+		}
 	}
 
 	public Integer getQnt(String nome) {

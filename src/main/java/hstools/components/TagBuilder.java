@@ -22,13 +22,14 @@ import hstools.GoogleSheets;
 import hstools.model.Card;
 import hstools.model.SynergyEdge;
 import hstools.model.Tag;
-import lombok.Data;
+import hstools.model.Card.CLASS;
+import lombok.Getter;
 
 @Component
-@Data
 public class TagBuilder {
 	@Autowired
-	private CardBuilder cb;
+	private CardService cb;
+	@Getter
 	private Map<String, Tag> tags = new HashMap<String, Tag>();
 	private List<SynergyEdge<Tag>> tagsSynergies = new ArrayList<SynergyEdge<Tag>>();
 	private ClassLoader cl = this.getClass().getClassLoader();
@@ -162,5 +163,64 @@ public class TagBuilder {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public List<SynergyEdge<Card>> sinergias(Card c1, boolean everyCard) {
+		List<SynergyEdge<Card>> cardsSynergies = new ArrayList<SynergyEdge<Card>>();
+		for (SynergyEdge<Tag> ts : tagsSynergies) {
+			Tag tag = null;
+			Tag tag1 = (Tag) ts.getE1();
+			Tag tag2 = (Tag) ts.getE2();
+			if (c1.getTags().contains(tag1)) {
+				tag = tag2;
+			} else if (c1.getTags().contains(tag2)) {
+				tag = tag1;
+			}
+			if (tag != null) {
+				for (Card c2 : cb.getCards()) {
+					if ((everyCard || c2.getClasse() == CLASS.NEUTRAL || c1.getClasse() == c2.getClasse())
+							&& c2.getTags().contains(tag)) {
+						SynergyEdge<Card> cs = new SynergyEdge<Card>(c1, c2,
+								c2.getText() + "\t" + tag1.getRegex() + " + " + tag2.getRegex(), ts.getWeight());
+						cardsSynergies.add(cs);
+
+						System.out.println(cs);
+					}
+				}
+			}
+		}
+		return cardsSynergies;
+	}
+	
+	/**
+	 * Generate all synergies for card c1
+	 * 
+	 * @param everyCard if true, generate all synergies, class independ.
+	 */
+	public List<SynergyEdge<Card>> generateCardSynergies(Card c1, boolean everyCard) {
+		List<SynergyEdge<Card>> cardsSynergies = new ArrayList<SynergyEdge<Card>>();
+		if (c1 != null && !c1.isCalculada()) {
+			cardsSynergies.addAll(sinergias(c1, everyCard));
+			// Collections.sort(Sinergias.cardsSynergies);
+			c1.setCalculada(true);
+		}
+		return cardsSynergies;
+	}
+	
+	/**
+	 * Generate all cards synergies.
+	 */
+	private void generateCardsSynergies() {
+		List<SynergyEdge<Card>> cardsSynergies = new ArrayList<SynergyEdge<Card>>();
+		System.out.println("generateCardsSynergies...");
+		long ini = System.currentTimeMillis();
+		for (Card c1 : cb.getCards()) {
+			cardsSynergies.addAll(generateCardSynergies(c1, false));
+		}
+		// imprimSins();
+
+		// Collections.sort(Sinergias.cardsSynergies);
+		System.out.println(cardsSynergies.size() + " sinergies calculated from parsed card texts in "
+				+ (System.currentTimeMillis() - ini) / 60000 + " minutes.");
 	}
 }

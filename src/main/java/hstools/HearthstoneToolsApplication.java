@@ -6,29 +6,34 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
-import hstools.components.CardBuilder;
-import hstools.components.DeckBuilder;
+import hstools.components.CardService;
+import hstools.components.DataScienceService;
+import hstools.components.DeckService;
+import hstools.components.ScrapService;
 import hstools.components.TagBuilder;
-import hstools.model.Card;
-import hstools.model.Deck;
-import hstools.model.Tag;
 
 @SpringBootApplication // (scanBasePackages = { "hstools.components" })
 @ComponentScan("hstools.components")
 public class HearthstoneToolsApplication implements CommandLineRunner {
-	//@Autowired
-	//private EntityService neo4j;
-	//private Session neo4j;
-	//private SessionFactory neo4j;
+	// @Autowired
+	// private EntityService neo4j;
+	// private Session neo4j;
+	// private SessionFactory neo4j;
 
 	@Autowired
-	private CardBuilder cb;
+	private CardService cb;
 
 	@Autowired
-	private DeckBuilder db;
+	private DeckService db;
 
 	@Autowired
 	private TagBuilder tb;
+	
+	@Autowired
+	private DataScienceService ss;
+	
+	@Autowired
+	private ScrapService scrap;
 
 	public static void main(String[] args) {
 		SpringApplication.run(HearthstoneToolsApplication.class, args);
@@ -36,9 +41,10 @@ public class HearthstoneToolsApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-//		cb.hearthstonetopdecksCardRank();
-
+		
 		cb.buildCards();
+//		cb.hearthstonetopdecksCardRank();
+//scrap.wikipediaExpansions();
 //
 //		ClassLoader cl = this.getClass().getClassLoader();
 //		db.loadDecks(new File(cl.getResource("decks").getFile()));
@@ -52,26 +58,8 @@ public class HearthstoneToolsApplication implements CommandLineRunner {
 //		}
 
 //		neo4j.createOrUpdate(new Card("carta teste"));
-		
-		Deck d = null;
-		try {
-			d = db.decode("AAEBAR8CjQGiAg7yAagCtQPSA8kEkgWxCNsJ/gz1DfcN2w/UEboTAA==");
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		for (Card c : d.getCartas().keySet()) {
-			System.out.print("(" + c.getName() + ", " + d.getCartas().get(c) + ") ");
-		}
-	}
 
-	private void matrixFreq() {
-		System.out.println();
-		for (Tag t : tb.getTags().values()) {// dk.getFreq().keySet()) {
-			for (Deck dk : db.getDecks()) {
-				System.out.print(dk.getTags().get(t) + "\t");
-			}
-			System.out.println(t);
-		}
+//		db.loadProDecks();
+//		ss.matrix();
 	}
 }

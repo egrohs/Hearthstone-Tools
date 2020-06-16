@@ -23,33 +23,34 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import hstools.GoogleSheets;
 import hstools.model.Card;
+import hstools.model.Expansion;
 import hstools.model.Card.CLASS;
 import hstools.model.SynergyEdge;
 import hstools.model.Tag;
-import lombok.Data;
+import lombok.Getter;
 
 //TODO buscar rankings das cartas online e salvar em arquivo?
 @Service
-@Data
 //TODO https://develop.battle.net/documentation/hearthstone/game-data-apis
 //https://hearthstoneapi.com/
 //https://hearthstonejson.com/
-public class CardBuilder {
+public class CardService {
+	private final String api = "https://api.hearthstonejson.com/v1/latest/enUS/cards.collectible.json";
+
+	private Long qnt = 0L;
 	@Autowired
-	private Web web;
+	private ScrapService web;
+	@Getter
+	private List<Expansion> expansions = new ArrayList<Expansion>();
+	@Getter
 	private List<Card> cards = new ArrayList<Card>();
 	private List<SynergyEdge<Card>> cardsSynergies = new ArrayList<SynergyEdge<Card>>();
 	private ClassLoader cl = this.getClass().getClassLoader();
-	private TagBuilder tb;
-	private final String api = "https://api.hearthstonejson.com/v1/latest/enUS/cards.collectible.json";
 
 	private int containsTag(Tag tag) {
 		int i = 0;
@@ -94,6 +95,7 @@ public class CardBuilder {
 	 */
 	private void generateCards(JSONArray array) {
 		Iterator<JSONObject> iterator = array.iterator();
+
 		while (iterator.hasNext()) {
 			JSONObject o = iterator.next();
 			Boolean col = (Boolean) o.get("collectible");
@@ -125,18 +127,19 @@ public class CardBuilder {
 				JSONArray reftags = (JSONArray) o.get("referencedTags");
 				JSONArray mechanics = (JSONArray) o.get("mechanics");
 
-				cards.add(new Card((Long) o.get("dbfId"), (String) o.get("id"), (String) o.get("name"), (String) o.get("set"),
-						(String) o.get("race"), classe, (String) o.get("type"), text, (Long) o.get("cost"),
-						(Long) o.get("attack"), (Long) o.get("health"), (Long) o.get("durability"),
-						(String) o.get("rarity"), reftags == null ? "" : reftags.toString(),
-						mechanics == null ? "" : mechanics.toString()));
+				cards.add(new Card(qnt, ((Long) o.get("dbfId")).intValue(), (String) o.get("id"),
+						(String) o.get("name"), (String) o.get("set"), (String) o.get("race"), classe,
+						(String) o.get("type"), text, (Long) o.get("cost"), (Long) o.get("attack"),
+						(Long) o.get("health"), (Long) o.get("durability"), (String) o.get("rarity"),
+						reftags == null ? "" : reftags.toString(), mechanics == null ? "" : mechanics.toString()));
+				qnt++;
 			}
 		}
 		// if (getCard("The Coin") == null)
 		{
 			// TODO adiciona a moeda
-			cards.add(new Card(1746L, "GAME_005", "the coin", "CORE", "ALLIANCE", CLASS.NEUTRAL, "SPELL", "Add 1 mana this turn...",
-					0L, null, null, null, "COMMON", "", ""));
+			cards.add(new Card(qnt, 1746, "GAME_005", "the coin", "CORE", "ALLIANCE", CLASS.NEUTRAL, "SPELL",
+					"Add 1 mana this turn...", 0L, null, null, null, "COMMON", "", ""));
 		}
 		Collections.sort(cards);
 	}
@@ -144,19 +147,22 @@ public class CardBuilder {
 	/**
 	 * Find a card by name or id.
 	 * 
-	 * @param idORname
+	 * @param idsORname
 	 * @return Card.
 	 */
-	public Card getCard(String idORname) {
-		if (idORname != null && !"".equals(idORname)) {
+	public Card getCard(String idsORname) {
+		if (idsORname != null && !"".equals(idsORname)) {
 			for (Card c : cards) {
-				if (c.getName().equalsIgnoreCase(idORname.trim().replaceAll("’", "'"))) {
+				if (c.getName().equalsIgnoreCase(idsORname.trim().replaceAll("’", "'"))) {
 					return c;
 				}
-				if (c.getId().toString().equalsIgnoreCase(idORname)) {
+				if (c.getDbfId().toString().equalsIgnoreCase(idsORname)) {
 					return c;
 				}
-				if (c.getIdCarta().equalsIgnoreCase(idORname)) {
+				if (c.getIdCarta().equalsIgnoreCase(idsORname)) {
+					return c;
+				}
+				if (c.getId().toString().equalsIgnoreCase(idsORname)) {
 					return c;
 				}
 			}
@@ -188,56 +194,6 @@ public class CardBuilder {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		}
-	}
-
-	/**
-	 * Generate all cards synergies.
-	 */
-	private void generateCardsSynergies() {
-		System.out.println("generateCardsSynergies...");
-		long ini = System.currentTimeMillis();
-		for (Card c1 : cards) {
-			generateCardSynergies(c1, false);
-		}
-		// imprimSins();
-
-		// Collections.sort(Sinergias.cardsSynergies);
-		System.out.println(cardsSynergies.size() + " sinergies calculated from parsed card texts in "
-				+ (System.currentTimeMillis() - ini) / 60000 + " minutes.");
-	}
-
-	/**
-	 * Generate all synergies for card c1
-	 * 
-	 * @param everyCard if true, generate all synergies, class independ.
-	 */
-	public void generateCardSynergies(Card c1, boolean everyCard) {
-		if (c1 != null && !c1.isCalculada()) {
-			for (SynergyEdge<Tag> ts : tb.getTagsSynergies()) {
-				Tag tag = null;
-				Tag tag1 = (Tag) ts.getE1();
-				Tag tag2 = (Tag) ts.getE2();
-				if (c1.getTags().contains(tag1)) {
-					tag = tag2;
-				} else if (c1.getTags().contains(tag2)) {
-					tag = tag1;
-				}
-				if (tag != null) {
-					for (Card c2 : cards) {
-						if ((everyCard || c2.getClasse() == CLASS.NEUTRAL || c1.getClasse() == c2.getClasse())
-								&& c2.getTags().contains(tag)) {
-							SynergyEdge<Card> cs = new SynergyEdge<Card>(c1, c2,
-									c2.getText() + "\t" + tag1.getRegex() + " + " + tag2.getRegex(), ts.getWeight());
-							cardsSynergies.add(cs);
-
-							System.out.println(cs);
-						}
-					}
-				}
-			}
-			// Collections.sort(Sinergias.cardsSynergies);
-			c1.setCalculada(true);
 		}
 	}
 
@@ -456,53 +412,5 @@ public class CardBuilder {
 			}
 		}
 		return sub;
-	}
-
-	/**
-	 * Import all card ranks form google sheet
-	 */
-	public void importCardRanks() {
-		List<List<Object>> values = null;
-		try {
-			values = GoogleSheets.getDados("1WNcRrDzxyoy_TRm9v15VSGwEiRPqJhUhReq0Wh8Jp14", "CARDS!A2:E");
-		} catch (GeneralSecurityException | IOException e) {
-			e.printStackTrace();
-		}
-		int count = 0;
-		// TODO buscar pelo nome do header da coluna
-		for (List<Object> row : values) {
-			String cardName = (String) row.get(0);
-			Float rank = (Float) row.get(3);
-			Card c1 = this.getCard(cardName);
-			if (c1 != null) {
-				c1.setRank(rank);
-				count++;
-			}
-		}
-		System.out.println(count + " card ranks imported.");
-	}
-
-	public void hearthstonetopdecksCardRank() {
-		try {
-			String url = "https://www.hearthstonetopdecks.com/cards/page/";
-			int page = 1;
-			int pages = 50;
-			do {
-				Document docRanks = web.getDocument(url + page);
-				// pages =
-				// Integer.parseInt(docDecks.select("span.page-link.pages").text().split("
-				// ")[2]);
-				if (docRanks != null) {
-					Elements cards = docRanks.select("div.card-item");
-					for (Element c : cards) {
-						System.out.print(c.select("a").attr("href") + "\t");
-						System.out.println(c.select("strong").text());
-					}
-				}
-				page++;
-			} while (page <= pages);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 }

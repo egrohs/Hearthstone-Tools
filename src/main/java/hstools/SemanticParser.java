@@ -5,13 +5,13 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import hstools.components.CardBuilder;
+import hstools.components.CardService;
 import hstools.model.Card;
 import hstools.model.Token;
 
 public class SemanticParser {
 	@Autowired
-	private static CardBuilder cb;
+	private static CardService cb;
 	
 	public static void main(String[] args) {
 		Token state = null;
