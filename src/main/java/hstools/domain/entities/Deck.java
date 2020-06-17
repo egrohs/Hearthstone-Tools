@@ -1,11 +1,11 @@
-package hstools.model;
+package hstools.domain.entities;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import hstools.model.Card.CLASS;
+import hstools.domain.entities.Card.CLASS;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

@@ -1,18 +1,23 @@
-package hstools;
+package hstools.ai.future;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import hstools.components.CardService;
-import hstools.model.Card;
-import hstools.model.Token;
+import hstools.domain.components.CardService;
+import hstools.domain.entities.Card;
 
+/**
+ * Cards text semantic parser experimentation.
+ * 
+ * @author EGrohs
+ *
+ */
 public class SemanticParser {
 	@Autowired
 	private static CardService cb;
-	
+
 	public static void main(String[] args) {
 		Token state = null;
 		for (Card c : cb.getCards()) {
@@ -78,8 +83,8 @@ public class SemanticParser {
 		m.put("two", "QNT");
 		m.put("your", "PRONOME");
 		m.put("this", "PRONOME");
-		//m.put("friendly", "PRONOME");
-		m.put("friendly", "TARGET");//??
+		// m.put("friendly", "PRONOME");
+		m.put("friendly", "TARGET");// ??
 		m.put("each", "PRONOME");
 		m.put("enemy", "PRONOME");
 		m.put("that", "PRONOME");
@@ -117,11 +122,11 @@ public class SemanticParser {
 		m.put("while", "TIME");
 		m.put("it", "QNT");
 		m.put("cost", "ATTRIB");
-		m.put("random", "PRONOME");//??
+		m.put("random", "PRONOME");// ??
 		m.put("beast", "TARGET");
 		m.put("damage", "ATTRIB");
-		m.put("to","TARGET");
-		m.put("other(s)?","TARGET");
-		m.put("character(s)?","TARGET");
+		m.put("to", "TARGET");
+		m.put("other(s)?", "TARGET");
+		m.put("character(s)?", "TARGET");
 	}
 }

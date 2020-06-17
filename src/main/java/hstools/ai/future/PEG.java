@@ -1,4 +1,4 @@
-package hstools.future;
+package hstools.ai.future;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -20,7 +20,7 @@ import org.supercsv.io.CsvBeanReader;
 import org.supercsv.io.ICsvBeanReader;
 import org.supercsv.prefs.CsvPreference;
 
-import hstools.model.Card;
+import hstools.domain.entities.Card;
 
 /**
  * Tentativa de parser heartstone usando gramaticas peg identificando os tokens

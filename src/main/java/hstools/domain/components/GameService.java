@@ -1,4 +1,4 @@
-package hstools.components;
+package hstools.domain.components;
 
 import java.io.File;
 import java.io.FileReader;
@@ -20,13 +20,13 @@ import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import hstools.PowerLogReader;
-import hstools.ZoneLogReader;
-import hstools.model.Card;
-import hstools.model.Player;
+import hstools.domain.entities.Card;
+import hstools.domain.entities.Player;
+import hstools.playaid.PowerLogReader;
+import hstools.playaid.ZoneLogReader;
 
 /**
- * Base de dados de jogos em json HS, para analise estatistica.
+ * Main service...
  * 
  * @author egrohs
  *
@@ -141,18 +141,18 @@ public class GameService extends Thread {
 	public static void main(String[] args) {
 		CardService cb = new CardService();
 		GameService gb = new GameService();
-		gb.leJogos();
+		gb.readMatches();
 		// leSinergias();
 		// cb.provaveis(CardBuilder.getCard("entomb"), 1, CLASS.PRIEST);
 	}
 
 	/**
-	 * Le jogos (usar -Xmx1300m).
+	 * read matches (use -Xmx1300m).
 	 */
-	private void leJogos() {
+	private void readMatches() {
 		// TODO ler do site http://www.hearthscry.com/CollectOBot
 		JSONParser parser = new JSONParser();
-		File folder = new File(cl.getResource("jogos").getFile());
+		File folder = new File(cl.getResource("matches").getFile());
 		// File folder = new File("res/jogos");
 		File[] listOfFiles = folder.listFiles();
 		FileReader fr = null;

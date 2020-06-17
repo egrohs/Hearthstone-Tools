@@ -1,4 +1,4 @@
-package hstools.components;
+package hstools.domain.components;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -18,13 +18,20 @@ import javax.script.ScriptException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import hstools.GoogleSheets;
-import hstools.model.Card;
-import hstools.model.SynergyEdge;
-import hstools.model.Tag;
-import hstools.model.Card.CLASS;
+import hstools.domain.entities.Card;
+import hstools.domain.entities.Card.CLASS;
+import hstools.domain.entities.SynergyEdge;
+import hstools.domain.entities.Tag;
+import hstools.net.GoogleSheets;
 import lombok.Getter;
 
+/**
+ * Load tags and synergies from google sheets. Should it be on scrap or
+ * datascience service?
+ * 
+ * @author EGrohs
+ *
+ */
 @Component
 public class TagBuilder {
 	@Autowired
@@ -164,7 +171,7 @@ public class TagBuilder {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public List<SynergyEdge<Card>> sinergias(Card c1, boolean everyCard) {
 		List<SynergyEdge<Card>> cardsSynergies = new ArrayList<SynergyEdge<Card>>();
 		for (SynergyEdge<Tag> ts : tagsSynergies) {
@@ -191,7 +198,7 @@ public class TagBuilder {
 		}
 		return cardsSynergies;
 	}
-	
+
 	/**
 	 * Generate all synergies for card c1
 	 * 
@@ -206,7 +213,7 @@ public class TagBuilder {
 		}
 		return cardsSynergies;
 	}
-	
+
 	/**
 	 * Generate all cards synergies.
 	 */

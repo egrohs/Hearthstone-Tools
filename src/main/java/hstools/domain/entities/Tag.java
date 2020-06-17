@@ -1,10 +1,15 @@
-package hstools.model;
+package hstools.domain.entities;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import lombok.Data;
 
+/**
+ * Graph Node Keyword derived from card text and specs.
+ * @author EGrohs
+ *
+ */
 @Data
 //@EqualsAndHashCode(callSuper=true)
 public class Tag extends Node {

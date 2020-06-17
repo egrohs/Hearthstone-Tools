@@ -1,4 +1,4 @@
-package hstools.model;
+package hstools.ai.future;
 
 import java.util.Arrays;
 import java.util.List;

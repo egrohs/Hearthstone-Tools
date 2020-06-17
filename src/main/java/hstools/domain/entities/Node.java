@@ -1,11 +1,11 @@
-package hstools.model;
+package hstools.domain.entities;
 
 import lombok.Data;
 
 /**
- * Entidade abstrada, pode ser carta, mecanica, etc.
+ * Abstract Entity for neo4j graph visualization.
  * 
- * @author 99689650068
+ * @author EGrohs
  *
  */
 @Data
@@ -13,7 +13,7 @@ import lombok.Data;
 public abstract class Node implements Comparable<Node> {
 //	@Id
 //	@GeneratedValue
-	protected Long id;
+	protected String id;// ex. card id = "GAME_005", deck id = deckstring...
 	protected String name;
 
 //	@Override

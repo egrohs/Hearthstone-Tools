@@ -1,4 +1,4 @@
-package hstools;
+package hstools.playaid;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,6 +7,12 @@ import java.time.LocalTime;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * PowerLog reader during a hearthstone match.
+ * 
+ * @author EGrohs
+ *
+ */
 public class PowerLogReader extends Thread {
 	private long pos;
 	// private long size;

@@ -1,4 +1,4 @@
-package hstools.model;
+package hstools.domain.entities;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

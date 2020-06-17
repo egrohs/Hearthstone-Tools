@@ -1,4 +1,4 @@
-package hstools;
+package hstools.ai;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -11,6 +11,11 @@ import weka.classifiers.Evaluation;
 import weka.classifiers.functions.MultilayerPerceptron;
 import weka.core.Instances;
 
+/**
+ * Neural Network deck archtype detector
+ * @author EGrohs
+ *
+ */
 public class Ann {
 	static ClassLoader cl = Ann.class.getClassLoader();
 	static Instances train = null;

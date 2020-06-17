@@ -1,12 +1,11 @@
-package hstools.model;
+package hstools.domain.entities;
 
 import lombok.Data;
 
 /**
- * Classe que mantem vinculo de sinergia entre duas entidades do jogo (cartas,
- * mecanicas, etc).
+ * Keeps a sinergy relationship between any two game entities.
  * 
- * @author 99689650068
+ * @author EGrohs
  *
  * @param <T>
  */

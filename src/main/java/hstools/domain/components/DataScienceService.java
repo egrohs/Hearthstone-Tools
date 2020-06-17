@@ -1,4 +1,4 @@
-package hstools.components;
+package hstools.domain.components;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,14 +14,19 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import hstools.PowerLogReader;
-import hstools.ZoneLogReader;
-import hstools.model.Card;
-import hstools.model.Card.CLASS;
-import hstools.model.Deck;
-import hstools.model.Player;
-import hstools.model.SynergyEdge;
+import hstools.domain.entities.Card;
+import hstools.domain.entities.Card.CLASS;
+import hstools.domain.entities.Deck;
+import hstools.domain.entities.Player;
+import hstools.domain.entities.SynergyEdge;
+import hstools.playaid.PowerLogReader;
+import hstools.playaid.ZoneLogReader;
 
+/**
+ * Does any calculations on hs data.
+ * @author EGrohs
+ *
+ */
 @Service
 public class DataScienceService {
 	@Autowired
@@ -36,7 +41,7 @@ public class DataScienceService {
 		for (Deck deck : ds.getDecks()) {
 			for (Card c1 : deck.getCartas().keySet()) {
 				for (Card c2 : deck.getCartas().keySet()) {
-					affinity[c1.getId().intValue()][c2.getId().intValue()]++;
+					affinity[c1.getDbfId().intValue()][c2.getDbfId().intValue()]++;
 				}
 			}
 		}

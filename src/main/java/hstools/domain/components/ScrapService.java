@@ -1,4 +1,4 @@
-package hstools.components;
+package hstools.domain.components;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -16,12 +16,17 @@ import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import hstools.GoogleSheets;
-import hstools.model.Card;
-import hstools.model.Deck;
-import hstools.model.Deck.Formato;
-import hstools.model.Expansion;
+import hstools.domain.entities.Card;
+import hstools.domain.entities.Deck;
+import hstools.domain.entities.Deck.Formato;
+import hstools.domain.entities.Expansion;
+import hstools.net.GoogleSheets;
 
+/**
+ * Scrap all online info about hs.
+ * @author EGrohs
+ *
+ */
 @Component
 public class ScrapService {
 	@Autowired

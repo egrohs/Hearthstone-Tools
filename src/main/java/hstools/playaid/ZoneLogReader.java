@@ -1,4 +1,4 @@
-package hstools;
+package hstools.playaid;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,13 +9,13 @@ import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import hstools.components.CardService;
-import hstools.model.Card;
+import hstools.domain.components.CardService;
+import hstools.domain.entities.Card;
 
 /**
- * Leitor de logs do hearthstone durante o jogo.
+ * ZoneLog reader during a hearthstone match.
  * 
- * @author 99689650068
+ * @author EGrohs
  *
  */
 public class ZoneLogReader extends Thread {

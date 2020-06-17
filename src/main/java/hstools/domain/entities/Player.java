@@ -1,6 +1,6 @@
-package hstools.model;
+package hstools.domain.entities;
 
-import hstools.model.Card.CLASS;
+import hstools.domain.entities.Card.CLASS;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

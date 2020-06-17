@@ -6,14 +6,14 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
-import hstools.components.CardService;
-import hstools.components.DataScienceService;
-import hstools.components.DeckService;
-import hstools.components.ScrapService;
-import hstools.components.TagBuilder;
+import hstools.domain.components.CardService;
+import hstools.domain.components.DataScienceService;
+import hstools.domain.components.DeckService;
+import hstools.domain.components.ScrapService;
+import hstools.domain.components.TagBuilder;
 
 @SpringBootApplication // (scanBasePackages = { "hstools.components" })
-@ComponentScan("hstools.components")
+@ComponentScan("hstools.domain.components")
 public class HearthstoneToolsApplication implements CommandLineRunner {
 	// @Autowired
 	// private EntityService neo4j;
@@ -41,8 +41,7 @@ public class HearthstoneToolsApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		
-		cb.buildCards();
+//		cb.buildCards();
 //		cb.hearthstonetopdecksCardRank();
 //scrap.wikipediaExpansions();
 //

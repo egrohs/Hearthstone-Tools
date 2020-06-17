@@ -1,4 +1,4 @@
-package hstools.components;
+package hstools.domain.components;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -10,7 +10,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -19,6 +18,8 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
+import javax.annotation.PostConstruct;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -26,23 +27,23 @@ import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import hstools.GoogleSheets;
-import hstools.model.Card;
-import hstools.model.Expansion;
-import hstools.model.Card.CLASS;
-import hstools.model.SynergyEdge;
-import hstools.model.Tag;
+import hstools.domain.entities.Card;
+import hstools.domain.entities.Card.CLASS;
+import hstools.domain.entities.Expansion;
+import hstools.domain.entities.SynergyEdge;
+import hstools.domain.entities.Tag;
 import lombok.Getter;
 
-//TODO buscar rankings das cartas online e salvar em arquivo?
+/**
+ * For load and build all hs cards, stores all synergies between two cards.
+ * Expansions, classes, etc... here??
+ * 
+ * @author EGrohs
+ */
 @Service
-//TODO https://develop.battle.net/documentation/hearthstone/game-data-apis
-//https://hearthstoneapi.com/
-//https://hearthstonejson.com/
+//TODO retrieve hearthstonetopdecksDecks cards rankings to salve in local file?
+//TODO https://hearthstoneapi.com/ retrieve GETInfo typse, classes, patch, sets, std, wild, factions, rarity, races...
 public class CardService {
-	private final String api = "https://api.hearthstonejson.com/v1/latest/enUS/cards.collectible.json";
-
-	private Long qnt = 0L;
 	@Autowired
 	private ScrapService web;
 	@Getter
@@ -51,6 +52,11 @@ public class CardService {
 	private List<Card> cards = new ArrayList<Card>();
 	private List<SynergyEdge<Card>> cardsSynergies = new ArrayList<SynergyEdge<Card>>();
 	private ClassLoader cl = this.getClass().getClassLoader();
+
+	@PostConstruct
+	public void init() {
+		buildCards();
+	}
 
 	private int containsTag(Tag tag) {
 		int i = 0;
@@ -65,9 +71,11 @@ public class CardService {
 	}
 
 	/**
-	 * Load json card db api in memory.
+	 * Load json card db api in memory. Using hearthstonejson cause it has a
+	 * separated db file of only colletionable cards.
 	 */
 	public List<Card> buildCards() {
+		final String api = "https://api.hearthstonejson.com/v1/latest/enUS/cards.collectible.json";
 		if (cards.size() == 0) {
 			try {
 				File file = new File("cards.collectible.json");
@@ -127,18 +135,17 @@ public class CardService {
 				JSONArray reftags = (JSONArray) o.get("referencedTags");
 				JSONArray mechanics = (JSONArray) o.get("mechanics");
 
-				cards.add(new Card(qnt, ((Long) o.get("dbfId")).intValue(), (String) o.get("id"),
-						(String) o.get("name"), (String) o.get("set"), (String) o.get("race"), classe,
-						(String) o.get("type"), text, (Long) o.get("cost"), (Long) o.get("attack"),
-						(Long) o.get("health"), (Long) o.get("durability"), (String) o.get("rarity"),
-						reftags == null ? "" : reftags.toString(), mechanics == null ? "" : mechanics.toString()));
-				qnt++;
+				cards.add(new Card((String) o.get("id"), ((Long) o.get("dbfId")).intValue(), (String) o.get("name"),
+						(String) o.get("set"), (String) o.get("race"), classe, (String) o.get("type"), text,
+						(Long) o.get("cost"), (Long) o.get("attack"), (Long) o.get("health"),
+						(Long) o.get("durability"), (String) o.get("rarity"), reftags == null ? "" : reftags.toString(),
+						mechanics == null ? "" : mechanics.toString()));
 			}
 		}
 		// if (getCard("The Coin") == null)
 		{
 			// TODO adiciona a moeda
-			cards.add(new Card(qnt, 1746, "GAME_005", "the coin", "CORE", "ALLIANCE", CLASS.NEUTRAL, "SPELL",
+			cards.add(new Card("GAME_005", 1746, "the coin", "CORE", "ALLIANCE", CLASS.NEUTRAL, "SPELL",
 					"Add 1 mana this turn...", 0L, null, null, null, "COMMON", "", ""));
 		}
 		Collections.sort(cards);
@@ -157,9 +164,6 @@ public class CardService {
 					return c;
 				}
 				if (c.getDbfId().toString().equalsIgnoreCase(idsORname)) {
-					return c;
-				}
-				if (c.getIdCarta().equalsIgnoreCase(idsORname)) {
 					return c;
 				}
 				if (c.getId().toString().equalsIgnoreCase(idsORname)) {
@@ -236,9 +240,9 @@ public class CardService {
 		while (iterator.hasNext()) {
 			JSONObject o = iterator.next();
 			String id = (String) o.get("id");
-			String numid = (String) o.get("numid");
+			String dbfId = (String) o.get("dbfId");
 			Card c = getCard(id);
-			c.setId(Long.parseLong(numid));
+			c.setId(dbfId);
 		}
 		iterator = sets.iterator();
 		while (iterator.hasNext()) {

@@ -11,9 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import hstools.components.CardService;
-import hstools.components.TagBuilder;
-import hstools.model.Card;
+import hstools.domain.components.CardService;
+import hstools.domain.components.TagBuilder;
+import hstools.domain.entities.Card;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest

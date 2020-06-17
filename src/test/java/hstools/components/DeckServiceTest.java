@@ -6,10 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import hstools.components.CardService;
-import hstools.components.DeckService;
-import hstools.model.Card;
-import hstools.model.Deck;
+import hstools.domain.components.CardService;
+import hstools.domain.components.DeckService;
+import hstools.domain.entities.Card;
+import hstools.domain.entities.Deck;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest

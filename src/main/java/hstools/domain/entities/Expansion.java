@@ -1,9 +1,8 @@
-package hstools.model;
+package hstools.domain.entities;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
-import hstools.model.Deck.Formato;
+import hstools.domain.entities.Deck.Formato;
 import lombok.Data;
 
 @Data

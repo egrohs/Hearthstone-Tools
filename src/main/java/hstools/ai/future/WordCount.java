@@ -1,4 +1,4 @@
-package hstools.future;
+package hstools.ai.future;
 
 import java.util.ArrayList;
 import java.util.Collections;
