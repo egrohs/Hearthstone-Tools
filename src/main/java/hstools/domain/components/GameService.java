@@ -2,7 +2,6 @@ package hstools.domain.components;
 
 import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
 import java.time.LocalTime;
 import java.util.Collections;
 import java.util.Comparator;
@@ -15,8 +14,6 @@ import java.util.TreeMap;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +21,7 @@ import hstools.domain.entities.Card;
 import hstools.domain.entities.Player;
 import hstools.playaid.PowerLogReader;
 import hstools.playaid.ZoneLogReader;
+import hstools.util.Util;
 
 /**
  * Main service...
@@ -35,8 +33,8 @@ import hstools.playaid.ZoneLogReader;
 public class GameService extends Thread {
 	@Autowired
 	private DataScienceService dss;
-	
-	Player player1, opponent = new Player();
+
+	Player player1 = new Player(0L), opponent = new Player(1L);
 	// CardBuilder cb;
 	int lastSize;
 	private DeckService db;
@@ -55,7 +53,7 @@ public class GameService extends Thread {
 			if (ZoneLogReader.done && PowerLogReader.done && lastSize != ZoneLogReader.playMap.size()) {
 				trim();
 				for (Card card : ZoneLogReader.playMap.values()) {
-					//TODO calculate best plays... 
+					// TODO calculate best plays...
 				}
 				// TODO
 				// StringBuilder sbb = simi();
@@ -151,7 +149,6 @@ public class GameService extends Thread {
 	 */
 	private void readMatches() {
 		// TODO ler do site http://www.hearthscry.com/CollectOBot
-		JSONParser parser = new JSONParser();
 		File folder = new File(cl.getResource("matches").getFile());
 		// File folder = new File("res/jogos");
 		File[] listOfFiles = folder.listFiles();
@@ -159,26 +156,25 @@ public class GameService extends Thread {
 		JSONObject jo = null;
 		for (File file : listOfFiles) {
 			System.out.println("Reading " + file.getName() + "...");
-			try {
-				fr = new FileReader(file);
-				jo = (JSONObject) parser.parse(fr);
-				games.addAll((JSONArray) jo.get("games"));
-				System.out.println(games.size() + " games caregados.");
-			} catch (ParseException e1) {
-				e1.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			} finally {
-				jo = null;
-				if (fr != null) {
-					try {
-						fr.close();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			}
+//			try {
+			jo = (JSONObject) Util.file2JSONObject(file.getName());
+			games.addAll((JSONArray) jo.get("games"));
+			System.out.println(games.size() + " games caregados.");
+//			} catch (ParseException e1) {
+//				e1.printStackTrace();
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			} finally {
+//				jo = null;
+//				if (fr != null) {
+//					try {
+//						fr.close();
+//					} catch (IOException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+//				}
+//			}
 		}
 //	geraSinergias();
 //	System.out.println(CardBuilder.cardsSynergies.size() + " sinergias");

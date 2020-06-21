@@ -3,9 +3,13 @@ package hstools.domain.components;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.annotation.PostConstruct;
 
 import org.jsoup.Connection;
 import org.jsoup.Connection.Method;
@@ -20,23 +24,33 @@ import hstools.domain.entities.Card;
 import hstools.domain.entities.Deck;
 import hstools.domain.entities.Deck.Formato;
 import hstools.domain.entities.Expansion;
+import hstools.domain.entities.SynergyEdge;
+import hstools.domain.entities.Tag;
 import hstools.net.GoogleSheets;
 
 /**
  * Scrap all online info about hs.
+ * 
  * @author EGrohs
  *
  */
-@Component
+@Component("Scrap")
 public class ScrapService {
 	@Autowired
 	private CardService cs;
+	@Autowired
+	private TagBuilder ts;
 	// TODO download do meta atual wild
 	// https://tempostorm.com/hearthstone/meta-snapshot/wild
 	// https://www.vicioussyndicate.com/wild-drr
 	private LocalDate date;
 	private Formato formato;
 	private Map<Integer, Deck> decks = new LinkedHashMap<>();
+
+	@PostConstruct
+	public void init() {
+
+	}
 
 	private Document getDocument(String url) {
 		Document doc = null;
@@ -177,7 +191,7 @@ public class ScrapService {
 
 		System.out.println("Title : " + doc.title());
 	}
-	
+
 	/**
 	 * Import all card ranks form google sheet
 	 */
@@ -200,5 +214,95 @@ public class ScrapService {
 			}
 		}
 		System.out.println(count + " card ranks imported.");
+	}
+
+	// TODO armazenar localmente as tags evitando buscar se mesma versao ou sem
+	// internet.
+	/** Import tags from google spreadsheet. */
+	public Map<String, Tag> importTags() {
+		Map<String, Tag> tags = new HashMap<String, Tag>();
+		List<List<Object>> values = null;
+		try {
+			values = GoogleSheets.getDados("1WNcRrDzxyoy_TRm9v15VSGwEiRPqJhUhReq0Wh8Jp14", "TAGS!A2:C");
+		} catch (GeneralSecurityException | IOException e) {
+			e.printStackTrace();
+		}
+
+		if (values == null || values.isEmpty()) {
+			System.out.println("No data found.");
+		} else {
+			Long id = 0L;
+			for (List<Object> row : values) {
+				String name = (String) row.get(0);
+				String regex = row.size() > 1 ? (String) row.get(1) : "";
+				String expr = row.size() > 2 ? (String) row.get(2) : "";
+				String desc = row.size() > 3 ? (String) row.get(3) : "";
+				Tag t = tags.get(name);
+				if (t == null) {
+					tags.put(name, new Tag(id, name, regex, expr, desc));
+					id++;
+				}
+			}
+		}
+		System.out.println(tags.size() + " tags imported.");
+		return tags;
+	}
+
+	/**
+	 * Import all card tags form google sheet
+	 */
+	public List<SynergyEdge<Tag>> importTagSinergies() {
+		List<SynergyEdge<Tag>> tagsSynergies = new ArrayList<SynergyEdge<Tag>>();
+		List<List<Object>> values = null;
+		try {
+			values = GoogleSheets.getDados("1WNcRrDzxyoy_TRm9v15VSGwEiRPqJhUhReq0Wh8Jp14", "TAG_EDGES!A2:D");
+		} catch (GeneralSecurityException | IOException e) {
+			e.printStackTrace();
+		}
+
+		for (List<Object> row : values) {
+			String source = (String) row.get(0);
+			String taget = row.size() > 1 ? (String) row.get(1) : "";
+			String label = row.size() > 2 ? (String) row.get(2) : "";
+			Float weight = row.size() > 3 ? (Float) row.get(3) : 0.0f;
+			Tag t1 = ts.getTags().get(source);
+			Tag t2 = ts.getTags().get(taget);
+			if (t2 != null) {
+				tagsSynergies.add(new SynergyEdge<Tag>(t1, t2, label, weight));
+			}
+		}
+		for (Tag t1 : ts.getTags().values()) {
+			if (t1.getRegex() != null && !"".equals(t1.getRegex())) {
+				// Almost every tag synergies with itself.
+				tagsSynergies.add(new SynergyEdge<Tag>(t1, t1, t1.getName(), 0.0f));
+			}
+		}
+		System.out.println(tagsSynergies.size() + " tags synergies imported.");
+		return tagsSynergies;
+	}
+
+	public void importTags2() {
+		List<List<Object>> values = null;
+		try {
+			values = GoogleSheets.getDados("1WNcRrDzxyoy_TRm9v15VSGwEiRPqJhUhReq0Wh8Jp14", "CARD_FUNC!A2:B");
+		} catch (GeneralSecurityException | IOException e) {
+			e.printStackTrace();
+		}
+
+		if (values == null || values.isEmpty()) {
+			System.out.println("No data found.");
+		} else {
+			Long id = 0L;
+			for (List<Object> row : values) {
+				String name = (String) row.get(0);
+				String regex = row.size() > 1 ? (String) row.get(1) : "";
+				Tag t = ts.getTags().get(name);
+				if (t == null) {
+					ts.getTags().put(name, new Tag(id, name, regex));
+					id++;
+				}
+			}
+		}
+		System.out.println(ts.getTags().size() + " tags2 imported.");
 	}
 }

@@ -2,7 +2,6 @@ package hstools.domain.components;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -22,8 +21,6 @@ import javax.annotation.PostConstruct;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +29,7 @@ import hstools.domain.entities.Card.CLASS;
 import hstools.domain.entities.Expansion;
 import hstools.domain.entities.SynergyEdge;
 import hstools.domain.entities.Tag;
+import hstools.util.Util;
 import lombok.Getter;
 
 /**
@@ -40,7 +38,7 @@ import lombok.Getter;
  * 
  * @author EGrohs
  */
-@Service
+@Service("Cards")
 //TODO retrieve hearthstonetopdecksDecks cards rankings to salve in local file?
 //TODO https://hearthstoneapi.com/ retrieve GETInfo typse, classes, patch, sets, std, wild, factions, rarity, races...
 public class CardService {
@@ -55,6 +53,7 @@ public class CardService {
 
 	@PostConstruct
 	public void init() {
+		// public CardService() {
 		buildCards();
 	}
 
@@ -83,15 +82,12 @@ public class CardService {
 					// file.delete();
 					Files.copy(new URL(api).openStream(), Paths.get("cards.collectible.json"));
 				}
-				JSONParser parser = new JSONParser();
-				JSONArray sets = (JSONArray) parser.parse(new FileReader(file));
+				JSONArray sets = (JSONArray) Util.file2JSONObject(file.getName());
 				generateCards(sets);
-			} catch (ParseException e1) {
-				e1.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			System.out.println(cards.size() + " cards imported.");
+			System.out.println(cards.size() + " cards created.");
 		}
 		return cards;
 	}
@@ -101,9 +97,9 @@ public class CardService {
 	 * 
 	 * @param array JSONObject with cards data.
 	 */
-	private void generateCards(JSONArray array) {
+	private final void generateCards(JSONArray array) {
 		Iterator<JSONObject> iterator = array.iterator();
-
+		Long id = 0L;
 		while (iterator.hasNext()) {
 			JSONObject o = iterator.next();
 			Boolean col = (Boolean) o.get("collectible");
@@ -135,17 +131,18 @@ public class CardService {
 				JSONArray reftags = (JSONArray) o.get("referencedTags");
 				JSONArray mechanics = (JSONArray) o.get("mechanics");
 
-				cards.add(new Card((String) o.get("id"), ((Long) o.get("dbfId")).intValue(), (String) o.get("name"),
+				cards.add(new Card(id, (String) o.get("id"), ((Long) o.get("dbfId")).intValue(), (String) o.get("name"),
 						(String) o.get("set"), (String) o.get("race"), classe, (String) o.get("type"), text,
 						(Long) o.get("cost"), (Long) o.get("attack"), (Long) o.get("health"),
 						(Long) o.get("durability"), (String) o.get("rarity"), reftags == null ? "" : reftags.toString(),
 						mechanics == null ? "" : mechanics.toString()));
+				id++;
 			}
 		}
 		// if (getCard("The Coin") == null)
 		{
 			// TODO adiciona a moeda
-			cards.add(new Card("GAME_005", 1746, "the coin", "CORE", "ALLIANCE", CLASS.NEUTRAL, "SPELL",
+			cards.add(new Card(id++, "GAME_005", 1746, "the coin", "CORE", "ALLIANCE", CLASS.NEUTRAL, "SPELL",
 					"Add 1 mana this turn...", 0L, null, null, null, "COMMON", "", ""));
 		}
 		Collections.sort(cards);
@@ -169,11 +166,14 @@ public class CardService {
 				if (c.getId().toString().equalsIgnoreCase(idsORname)) {
 					return c;
 				}
+				if (c.getCardId().equalsIgnoreCase(idsORname)) {
+					return c;
+				}
 			}
 		}
 		// TODO CS2_013t excess mana not found..
-		// throw new RuntimeException("Card not found: " + idORname);
-		return null;
+		throw new RuntimeException("Card not found: " + idsORname);
+		// return null;
 	}
 
 	/**
@@ -222,29 +222,13 @@ public class CardService {
 	 * Read synergy cached file.
 	 */
 	private void readSynergies() {
-		JSONParser parser = new JSONParser();
-		try {
-			JSONArray sets = (JSONArray) parser
-					.parse(new FileReader(new File(cl.getResource("synergy/synergy.json").getFile())));
-			System.out.println(sets.size() + " synergies imported");
-			generateNumIds(sets);
-		} catch (ParseException e1) {
-			e1.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		JSONArray sets = (JSONArray) Util.file2JSONObject("src/main/resources/synergy/synergy.json");
+		System.out.println(sets.size() + " synergies imported");
+		generateNumIds(sets);
 	}
 
 	private void generateNumIds(JSONArray sets) {
 		Iterator<JSONObject> iterator = sets.iterator();
-		while (iterator.hasNext()) {
-			JSONObject o = iterator.next();
-			String id = (String) o.get("id");
-			String dbfId = (String) o.get("dbfId");
-			Card c = getCard(id);
-			c.setId(dbfId);
-		}
-		iterator = sets.iterator();
 		while (iterator.hasNext()) {
 			JSONObject o = iterator.next();
 			String id = (String) o.get("id");
@@ -289,6 +273,32 @@ public class CardService {
 		}
 		sc.close();
 		System.out.println(cardsSynergies.size() + " pre calculated sinergies loaded.");
+	}
+
+	public List<SynergyEdge<Card>> generateMatchesCardsSim() {
+		JSONObject jo = (JSONObject) Util.file2JSONObject("src/main/resources/synergy/matchesCardHerthSim.json");
+		JSONArray nodes = (JSONArray) jo.get("nodes"), links = (JSONArray) jo.get("links");
+		List<SynergyEdge<Card>> cardSins = new ArrayList<SynergyEdge<Card>>();
+		Iterator<JSONObject> iterator = links.iterator();
+		while (iterator.hasNext()) {
+			JSONObject o = iterator.next();
+			try {
+				Card source = getCard((String) o.get("source"));
+				Card target = getCard((String) o.get("target"));
+				cardSins.add(new SynergyEdge<Card>(source, target, 1));
+			} catch (RuntimeException e) {
+				// TODO: handle exception
+			}
+		}
+
+//		iterator = nodes.iterator();
+//		while (iterator.hasNext()) {
+//			JSONObject o = iterator.next();
+//			Card c = getCard((String) o.get("id"));
+//			if (c != null)
+//				c.setSize((Double) o.get("radius"));
+//		}
+		return cardSins;
 	}
 
 	private void imprimSins() {
@@ -369,7 +379,7 @@ public class CardService {
 	 * @return Set of Cards with synergy.
 	 */
 	// TODO here or in DeckBuilder?
-	public Set<Card> provaveis(Card c, int currentMana, CLASS hsClass) {
+	public Set<Card> myPlays(Card c, int currentMana, CLASS hsClass) {
 		// Set<Sinergia> sub = new LinkedHashSet<Sinergia>();
 		Set<Card> sub = new LinkedHashSet<Card>();
 		if (c != null) {
@@ -397,7 +407,7 @@ public class CardService {
 	 * @param manaRestante Mana restante no turno atual.
 	 * @return
 	 */
-	public Set<SynergyEdge<Card>> getCardSinergies(Card c, int manaRestante, CLASS opo) {
+	public Set<SynergyEdge<Card>> opponentPlays(Card c, int manaRestante, CLASS opo) {
 		Set<SynergyEdge<Card>> sub = new LinkedHashSet<SynergyEdge<Card>>();
 		// Set<Carta> sub = new LinkedHashSet<Carta>();
 		if (c != null) {

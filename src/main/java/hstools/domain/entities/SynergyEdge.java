@@ -45,6 +45,8 @@ public class SynergyEdge<T extends Node> implements Comparable<SynergyEdge<T>> {
 	}
 
 	public SynergyEdge(Node e1, Node e2, int freq) {
+		if (e1 == null || e2 == null)
+			throw new RuntimeException("Null nodes");
 		this.e1 = e1;
 		this.e2 = e2;
 		this.freq = freq;

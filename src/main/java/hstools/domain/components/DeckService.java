@@ -35,6 +35,7 @@ public class DeckService {
 	private CardService cb;
 	@Getter
 	private Set<Deck> decks = new LinkedHashSet<Deck>();
+	Long id = 0L;
 
 	public void unloadDeck(String deckString) {
 		// TODO Auto-generated method stub
@@ -100,7 +101,8 @@ public class DeckService {
 							}
 						}
 					}
-					Deck deck = new Deck(file.getName(), cartas);
+					Deck deck = new Deck(id, file.getName(), cartas);
+					id++;
 					deck.setArchtype(obs);
 					decks.add(deck);
 					sc.close();
@@ -125,7 +127,7 @@ public class DeckService {
 		System.out.println("Sinergias para " + initialCards[0]);
 		for (String cardname : initialCards) {
 			Card c = cb.getCard(cardname);
-			for (SynergyEdge<Card> s : cb.getCardSinergies(c, 10, classe)) {
+			for (SynergyEdge<Card> s : cb.opponentPlays(c, 10, classe)) {
 				Card c1 = (Card) s.getE1();
 				Card c2 = (Card) s.getE2();
 				if (c == c1 || c == c2) {
@@ -186,7 +188,8 @@ public class DeckService {
 				cartas.put(cb.getCard(String.valueOf(dbfId)), count);
 			}
 		}
-		Deck deck = new Deck("", cartas);
+		Deck deck = new Deck(id, "", cartas);
+		id++;
 		deck.setFormato(formato);
 		return deck;
 	}

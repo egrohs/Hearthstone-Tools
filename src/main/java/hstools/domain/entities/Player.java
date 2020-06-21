@@ -5,7 +5,11 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
-@EqualsAndHashCode(callSuper=true)
+@EqualsAndHashCode(callSuper = true)
 public class Player extends Node {
-    private CLASS classe;
+	private CLASS classe;
+
+	public Player(Long id) {
+		super(id);
+	}
 }

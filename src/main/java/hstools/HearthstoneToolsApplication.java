@@ -41,7 +41,7 @@ public class HearthstoneToolsApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-//		cb.buildCards();
+//		ss.tagsAffin();
 //		cb.hearthstonetopdecksCardRank();
 //scrap.wikipediaExpansions();
 //

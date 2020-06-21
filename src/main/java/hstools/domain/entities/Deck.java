@@ -152,7 +152,8 @@ public class Deck extends Node {
 //		}
 	}
 
-	public Deck(String nome, Map<Card, Integer> cartas) {
+	public Deck(Long id, String nome, Map<Card, Integer> cartas) {
+		super(id);
 		this.name = nome;
 		this.cartas = cartas;
 		this.classe = whichClass(new ArrayList<>(cartas.keySet()));

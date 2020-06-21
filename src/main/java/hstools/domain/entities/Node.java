@@ -13,8 +13,14 @@ import lombok.Data;
 public abstract class Node implements Comparable<Node> {
 //	@Id
 //	@GeneratedValue
-	protected String id;// ex. card id = "GAME_005", deck id = deckstring...
+	protected Long id;
 	protected String name;
+	protected Double size;
+
+	public Node(Long id) {
+		this.id = id;
+		this.size = Double.valueOf("1");
+	}
 
 //	@Override
 //	public String toString() {

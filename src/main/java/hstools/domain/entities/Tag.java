@@ -16,14 +16,16 @@ public class Tag extends Node {
 	private String regex, description, expr;
 	private Set<Tag> tags = new HashSet<Tag>();
 
-	public Tag(String name, String regex, String expr, String description) {
+	public Tag(Long id, String name, String regex, String expr, String description) {
+		super(id);
 		this.name = name;
 		this.regex = regex;
 		this.expr = expr;
 		this.description = description;
 	}
-
-	public Tag(String name, String regex) {
+	
+	public Tag(Long id, String name, String regex) {
+		super(id);
 		this.name = name;
 		this.regex = regex;
 	}
