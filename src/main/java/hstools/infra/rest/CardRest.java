@@ -2,7 +2,7 @@ package hstools.infra.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import hstools.domain.components.CardService;
+import hstools.domain.components.CardComponent;
 
 //@RequestMapping(value = "/api/v1")
 ////@Transactional(rollbackOn = { Exception.class })
@@ -14,7 +14,7 @@ import hstools.domain.components.CardService;
 //@Api(description = "External services for card quering.")
 public class CardRest {
 	@Autowired
-	private CardService cs;
+	private CardComponent cs;
 
 //	@GetMapping("/cards")
 //	@ResponseBody

@@ -32,16 +32,16 @@ import hstools.util.Util;
 @Service
 public class GameService extends Thread {
 	@Autowired
-	private DataScienceService dss;
+	private DataScienceComponent scienceComp;
 
 	Player player1 = new Player(0L), opponent = new Player(1L);
 	// CardBuilder cb;
 	int lastSize;
-	private DeckService db;
+	private DeckComponent deckComp;
 
 	public GameService() {
 		// cb = new CardBuilder();
-		db = new DeckService();
+		deckComp = new DeckComponent();
 	}
 
 	@Override
@@ -75,7 +75,7 @@ public class GameService extends Thread {
 						acerto(card);
 						// TODO usar todas mecanicas mais jogadas? s� as com
 						// mais ocorrencias?
-						Set<Card> temp = dss.possiveis();
+						Set<Card> temp = scienceComp.possiveis();
 						// TODO
 						// App.provaveis(temp);
 					}
@@ -137,7 +137,7 @@ public class GameService extends Thread {
 	private ClassLoader cl = this.getClass().getClassLoader();
 
 	public static void main(String[] args) {
-		CardService cb = new CardService();
+		CardComponent cb = new CardComponent();
 		GameService gb = new GameService();
 		gb.readMatches();
 		// leSinergias();

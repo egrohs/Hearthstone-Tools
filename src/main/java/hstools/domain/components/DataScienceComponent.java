@@ -31,18 +31,47 @@ import hstools.playaid.ZoneLogReader;
  *
  */
 @Service
-@DependsOn(value = { "Tags" })
-public class DataScienceService {
+@DependsOn(value = { "Cards" })
+public class DataScienceComponent {
 	@Autowired
-	private CardService cs;
+	private CardComponent cardComp;
 	@Autowired
-	private DeckService ds;
+	private DeckComponent deckComp;
 	@Autowired
-	private TagBuilder tb;
+	private SynergyBuilder synComp;
 
 	public void tagsAffin() {
+		synComp.loadCombos();
+		Map<String, SynergyEdge<Tag>> tagSins = new LinkedHashMap<String, SynergyEdge<Tag>>();
+		for (SynergyEdge<Card> s : synComp.getCardsSynergies()) {
+			Card c1 = (Card) s.getE1();
+			Card c2 = (Card) s.getE2();
+			for (Tag t1 : c1.getTags()) {
+				for (Tag t2 : c2.getTags()) {
+					String key = "" + t1.getId() + t2.getId();
+					if (!tagSins.containsKey(key))
+						tagSins.put(key, new SynergyEdge<Tag>(t1, t2, 1));
+					else
+						tagSins.get(key).setFreq(tagSins.get(key).getFreq() + 1);
+				}
+			}
+		}
+//		for (Card c : cardComp.getCards()) {
+//			for (Tag t : c.getTags()) {
+//				t.setSize(t.getSize() + 1);
+//			}
+//		}
+		for (String key : tagSins.keySet()) {
+			SynergyEdge<Tag> s = tagSins.get(key);
+			System.out.println(s.getE1().getName() + "\t" + s.getE2().getName() + "\t" + s.getFreq());
+		}
+	}
+
+	@Deprecated
+	public void tagsAffin2() {
+		// Conclusion: Match plays cannot be used to card synegies
 		// int[][] affinity = new int[tb.getTags().size()][tb.getTags().size()];
-		List<SynergyEdge<Card>> cardSins = cs.generateMatchesCardsSim();
+		List<SynergyEdge<Card>> cardSins = synComp.generateMatchesCardsSim();
 		Map<String, SynergyEdge<Tag>> tagSins = new LinkedHashMap<String, SynergyEdge<Tag>>();
 		for (SynergyEdge<Card> s : cardSins) {
 			Card c1 = (Card) s.getE1();
@@ -59,27 +88,57 @@ public class DataScienceService {
 		}
 		for (String key : tagSins.keySet()) {
 			SynergyEdge<Tag> s = tagSins.get(key);
-			System.out.println(s.getE1().getName() + "\t" + s.getE1().getName() + "\t" + s.getFreq());
+			System.out.println(s.getE1().getName() + "\t" + s.getE2().getName() + "\t" + s.getFreq());
 		}
 //		printSortedMatrix(affinity, Card.class);
 	}
 
-	private void printSortedMatrix(int[][] matrix, Class node) {
-		Map<String, Double> m = new LinkedHashMap<>();
-		for (int i = 0; i < matrix.length; i++) {
-			int[] js = matrix[i];
-			for (int j = 0; j < js.length; j++) {
-				System.out.println(cs.getCard("" + i) + "\t" + cs.getCard("" + j) + "\t" + matrix[i][j]);
+	@Deprecated
+	public void tagsAffin3() {
+		// card syns from decks seems not work too
+		deckComp.loadProDecks();
+		List<SynergyEdge<Card>> cardSins = new ArrayList<SynergyEdge<Card>>();
+		for (Deck d : deckComp.getDecks()) {
+			for (Card c1 : d.getCards().keySet()) {
+				for (Card c2 : d.getCards().keySet()) {
+					cardSins.add(new SynergyEdge<Card>(c1, c2, 1));
+				}
 			}
 		}
+
+		Map<String, SynergyEdge<Tag>> tagSins = new LinkedHashMap<String, SynergyEdge<Tag>>();
+		for (SynergyEdge<Card> s : cardSins) {
+			Card c1 = (Card) s.getE1();
+			Card c2 = (Card) s.getE2();
+			for (Tag t1 : c1.getTags()) {
+				for (Tag t2 : c2.getTags()) {
+					String key = "" + t1.getId() + t2.getId();
+					if (!tagSins.containsKey(key))
+						tagSins.put(key, new SynergyEdge<Tag>(t1, t2, 1));
+					else
+						tagSins.get(key).setFreq(tagSins.get(key).getFreq() + 1);
+				}
+			}
+		}
+		for (Card c : cardComp.getCards()) {
+			for (Tag t : c.getTags()) {
+				t.setSize(t.getSize() + 1);
+			}
+		}
+		for (String key : tagSins.keySet()) {
+			SynergyEdge<Tag> s = tagSins.get(key);
+			System.out.println(s.getE1().getName() + "\t" + s.getE2().getName() + "\t"
+					+ s.getFreq() / (s.getE1().getSize() + s.getE2().getSize()));
+		}
+//		printSortedMatrix(affinity, Card.class);
 	}
 
 	public void cardsMatrix() {
 		// TODO abordagem 2, por matrix de afinidade.
-		int[][] affinity = new int[cs.getCards().size()][cs.getCards().size()];
-		for (Deck deck : ds.getDecks()) {
-			for (Card c1 : deck.getCartas().keySet()) {
-				for (Card c2 : deck.getCartas().keySet()) {
+		int[][] affinity = new int[cardComp.getCards().size()][cardComp.getCards().size()];
+		for (Deck deck : deckComp.getDecks()) {
+			for (Card c1 : deck.getCards().keySet()) {
+				for (Card c2 : deck.getCards().keySet()) {
 					affinity[c1.getDbfId().intValue()][c2.getDbfId().intValue()]++;
 				}
 			}
@@ -97,8 +156,8 @@ public class DataScienceService {
 		for (String k : sorted.keySet()) {
 			int val = sorted.get(k);
 			if (val > 9)
-				System.out.println(cs.getCard(k.split(",")[0]).getName() + " & " + cs.getCard(k.split(",")[1]).getName()
-						+ " = " + sorted.get(k));
+				System.out.println(cardComp.getCard(k.split(",")[0]).getName() + " & "
+						+ cardComp.getCard(k.split(",")[1]).getName() + " = " + sorted.get(k));
 		}
 	}
 
@@ -132,7 +191,7 @@ public class DataScienceService {
 	private Map<Deck, Double> similaridade(String[] cartas) {
 		Map<Deck, Double> prob = new HashMap<Deck, Double>();
 		System.out.println("----------------------");
-		for (Deck deck : ds.getDecks()) {
+		for (Deck deck : deckComp.getDecks()) {
 			int cont = 0;
 			for (String c : cartas) {
 				Integer qnt = deck.getQnt(c);
@@ -164,7 +223,7 @@ public class DataScienceService {
 		// TODO deve considerar todas cartas ja jogadas
 		// CardBuilder.generateCardSynergies(card);
 		// TODO tem que ser o mana que ele terminou o turno
-		Set<SynergyEdge<Card>> sub = cs.opponentPlays(card, PowerLogReader.lastMana + 1, opo);
+		Set<SynergyEdge<Card>> sub = synComp.opponentPlays(card, PowerLogReader.lastMana + 1, opo);
 		List<SynergyEdge<Card>> exibe = new ArrayList<SynergyEdge<Card>>(sub);
 		Collections.sort(exibe);
 		Map<Card, String> temp = new LinkedHashMap<Card, String>();

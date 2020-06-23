@@ -5,175 +5,121 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
-import javax.annotation.PostConstruct;
-
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.context.annotation.DependsOn;
+import org.springframework.stereotype.Component;
 
 import hstools.domain.entities.Card;
 import hstools.domain.entities.Card.CLASS;
-import hstools.domain.entities.Expansion;
 import hstools.domain.entities.SynergyEdge;
 import hstools.domain.entities.Tag;
+import hstools.util.GoogleSheets;
 import hstools.util.Util;
 import lombok.Getter;
 
 /**
- * For load and build all hs cards, stores all synergies between two cards.
- * Expansions, classes, etc... here??
+ * Load tags and synergies from google sheets. Should it be on scrap or
+ * datascience service?
  * 
  * @author EGrohs
+ *
  */
-@Service("Cards")
-//TODO retrieve hearthstonetopdecksDecks cards rankings to salve in local file?
-//TODO https://hearthstoneapi.com/ retrieve GETInfo typse, classes, patch, sets, std, wild, factions, rarity, races...
-public class CardService {
+@Component("Synergies")
+@DependsOn(value = { "Cards" })
+public class SynergyBuilder {
 	@Autowired
-	private ScrapService web;
+	private CardComponent cardComp;
 	@Getter
-	private List<Expansion> expansions = new ArrayList<Expansion>();
-	@Getter
-	private List<Card> cards = new ArrayList<Card>();
 	private List<SynergyEdge<Card>> cardsSynergies = new ArrayList<SynergyEdge<Card>>();
-	private ClassLoader cl = this.getClass().getClassLoader();
-
-	@PostConstruct
-	public void init() {
-		// public CardService() {
-		buildCards();
-	}
-
-	private int containsTag(Tag tag) {
-		int i = 0;
-		for (Card card : cards) {
-			if (card.getTags().contains(tag)) {
-				i++;
-				System.out.println(card.getName());
-			}
-		}
-		System.out.println(i);
-		return i;
-	}
-
-	/**
-	 * Load json card db api in memory. Using hearthstonejson cause it has a
-	 * separated db file of only colletionable cards.
-	 */
-	public List<Card> buildCards() {
-		final String api = "https://api.hearthstonejson.com/v1/latest/enUS/cards.collectible.json";
-		if (cards.size() == 0) {
-			try {
-				File file = new File("cards.collectible.json");
-				if (!file.exists()) {
-					// file.delete();
-					Files.copy(new URL(api).openStream(), Paths.get("cards.collectible.json"));
-				}
-				JSONArray sets = (JSONArray) Util.file2JSONObject(file.getName());
-				generateCards(sets);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			System.out.println(cards.size() + " cards created.");
-		}
-		return cards;
-	}
-
-	/**
-	 * Parse json array and create card objects.
-	 * 
-	 * @param array JSONObject with cards data.
-	 */
-	private final void generateCards(JSONArray array) {
-		Iterator<JSONObject> iterator = array.iterator();
-		Long id = 0L;
-		while (iterator.hasNext()) {
-			JSONObject o = iterator.next();
-			Boolean col = (Boolean) o.get("collectible");
-			if (col != null && col == true /*
-											 * && !"HERO".equals((String) o.get("type"))
-											 */) {
-				Card.CLASS classe;
-				String c = (String) o.get("multiClassGroup");
-				if (c == null) {
-					c = (String) o.get("cardClass");
-				}
-				if (c == null) {
-					c = (String) o.get("playerClass");
-				}
-				classe = Card.CLASS.valueOf(c);
-
-				// TODO card mechanics??
-				// List<String> mechs = (List<String>) o.get("mechanics");
-
-				String text = (String) o.get("text");
-				try {
-					if (text != null) {
-						text = new String(text.getBytes("ISO-8859-1"), "UTF-8");
+	@Getter
+	private List<SynergyEdge<Tag>> tagsSynergies = new ArrayList<SynergyEdge<Tag>>();
+	private ClassLoader clsLoader = this.getClass().getClassLoader();
+	
+	public void loadCombos() {
+		List<String[]> syns = Util.csv2CardSyns();
+		for (String[] combo : syns) {
+			for (int i = 0; i < combo.length; i++) {
+				String cName1 = combo[i];
+				for (int j = i; j < combo.length; j++) {
+					String cName2 = combo[j];
+					if (!cName1.isBlank() && !cName2.isBlank()) {
+						Card c1 = cardComp.getCard(cName1);
+						Card c2 = cardComp.getCard(cName2);
+						cardsSynergies.add(new SynergyEdge<>(c1, c2, 1));
 					}
-				} catch (UnsupportedEncodingException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				}
-				JSONArray reftags = (JSONArray) o.get("referencedTags");
-				JSONArray mechanics = (JSONArray) o.get("mechanics");
-
-				cards.add(new Card(id, (String) o.get("id"), ((Long) o.get("dbfId")).intValue(), (String) o.get("name"),
-						(String) o.get("set"), (String) o.get("race"), classe, (String) o.get("type"), text,
-						(Long) o.get("cost"), (Long) o.get("attack"), (Long) o.get("health"),
-						(Long) o.get("durability"), (String) o.get("rarity"), reftags == null ? "" : reftags.toString(),
-						mechanics == null ? "" : mechanics.toString()));
-				id++;
 			}
 		}
-		// if (getCard("The Coin") == null)
-		{
-			// TODO adiciona a moeda
-			cards.add(new Card(id++, "GAME_005", 1746, "the coin", "CORE", "ALLIANCE", CLASS.NEUTRAL, "SPELL",
-					"Add 1 mana this turn...", 0L, null, null, null, "COMMON", "", ""));
+		// System.out.println(tags.size() + " tags loaded.");
+	}
+
+	// Depends on previous tagsSynergies calculated
+	public List<SynergyEdge<Card>> sinergias(Card c1, boolean everyCard) {
+		List<SynergyEdge<Card>> cardsSynergies = new ArrayList<SynergyEdge<Card>>();
+		for (SynergyEdge<Tag> ts : tagsSynergies) {
+			Tag tag = null;
+			Tag tag1 = (Tag) ts.getE1();
+			Tag tag2 = (Tag) ts.getE2();
+			if (c1.getTags().contains(tag1)) {
+				tag = tag2;
+			} else if (c1.getTags().contains(tag2)) {
+				tag = tag1;
+			}
+			if (tag != null) {
+				for (Card c2 : cardComp.getCards()) {
+					if ((everyCard || c2.getClasse() == CLASS.NEUTRAL || c1.getClasse() == c2.getClasse())
+							&& c2.getTags().contains(tag)) {
+						SynergyEdge<Card> cs = new SynergyEdge<Card>(c1, c2,
+								c2.getText() + "\t" + tag1.getRegex() + " + " + tag2.getRegex(), ts.getWeight());
+						cardsSynergies.add(cs);
+
+						System.out.println(cs);
+					}
+				}
+			}
 		}
-		Collections.sort(cards);
+		return cardsSynergies;
 	}
 
 	/**
-	 * Find a card by name or id.
+	 * Generate all synergies for card c1
 	 * 
-	 * @param idsORname
-	 * @return Card.
+	 * @param everyCard if true, generate all synergies, class independ.
 	 */
-	public Card getCard(String idsORname) {
-		if (idsORname != null && !"".equals(idsORname)) {
-			for (Card c : cards) {
-				if (c.getName().equalsIgnoreCase(idsORname.trim().replaceAll("’", "'"))) {
-					return c;
-				}
-				if (c.getDbfId().toString().equalsIgnoreCase(idsORname)) {
-					return c;
-				}
-				if (c.getId().toString().equalsIgnoreCase(idsORname)) {
-					return c;
-				}
-				if (c.getCardId().equalsIgnoreCase(idsORname)) {
-					return c;
-				}
-			}
+	public List<SynergyEdge<Card>> generateCardSynergies(Card c1, boolean everyCard) {
+		List<SynergyEdge<Card>> cardsSynergies = new ArrayList<SynergyEdge<Card>>();
+		if (c1 != null && !c1.isCalculada()) {
+			cardsSynergies.addAll(sinergias(c1, everyCard));
+			// Collections.sort(Sinergias.cardsSynergies);
+			c1.setCalculada(true);
 		}
-		// TODO CS2_013t excess mana not found..
-		throw new RuntimeException("Card not found: " + idsORname);
-		// return null;
+		return cardsSynergies;
+	}
+
+	/**
+	 * Generate all cards synergies.
+	 */
+	private void generateCardsSynergies() {
+		List<SynergyEdge<Card>> cardsSynergies = new ArrayList<SynergyEdge<Card>>();
+		System.out.println("generateCardsSynergies...");
+		long ini = System.currentTimeMillis();
+		for (Card c1 : cardComp.getCards()) {
+			cardsSynergies.addAll(generateCardSynergies(c1, false));
+		}
+		// imprimSins();
+
+		// Collections.sort(Sinergias.cardsSynergies);
+		System.out.println(cardsSynergies.size() + " sinergies calculated from parsed card texts in "
+				+ (System.currentTimeMillis() - ini) / 60000 + " minutes.");
 	}
 
 	/**
@@ -232,13 +178,13 @@ public class CardService {
 		while (iterator.hasNext()) {
 			JSONObject o = iterator.next();
 			String id = (String) o.get("id");
-			Card c = getCard(id);
+			Card c = cardComp.getCard(id);
 			JSONArray sin = (JSONArray) o.get("synergies");
 			if (sin != null) {
 				Iterator<JSONArray> iterator2 = sin.iterator();
 				while (iterator2.hasNext()) {
 					JSONArray o2 = iterator2.next();
-					Card c2 = getCard((String) o2.get(0));
+					Card c2 = cardComp.getCard((String) o2.get(0));
 					Float value = Float.parseFloat(o2.get(1).toString());
 					// TODO remover esse if
 					if (value > 4.0) {
@@ -255,15 +201,15 @@ public class CardService {
 	private void readCardSinergies() {
 		Scanner sc = null;
 		try {
-			sc = new Scanner(new File(cl.getResource("sinergias.csv").getFile()));
+			sc = new Scanner(new File(clsLoader.getResource("sinergias.csv").getFile()));
 		} catch (FileNotFoundException e) {
 			// TODO deve gera-lo...
 			e.printStackTrace();
 		}
 		while (sc.hasNextLine()) {
 			String[] line = sc.nextLine().split("\t");
-			Card c1 = getCard(line[0]);
-			Card c2 = getCard(line[1]);
+			Card c1 = cardComp.getCard(line[0]);
+			Card c2 = cardComp.getCard(line[1]);
 			int freq = Integer.parseInt(line[2]);
 			float val = Float.parseFloat(line[3]);
 			String mech = line[4];
@@ -283,8 +229,8 @@ public class CardService {
 		while (iterator.hasNext()) {
 			JSONObject o = iterator.next();
 			try {
-				Card source = getCard((String) o.get("source"));
-				Card target = getCard((String) o.get("target"));
+				Card source = cardComp.getCard((String) o.get("source"));
+				Card target = cardComp.getCard((String) o.get("target"));
 				cardSins.add(new SynergyEdge<Card>(source, target, 1));
 			} catch (RuntimeException e) {
 				// TODO: handle exception
@@ -294,7 +240,7 @@ public class CardService {
 //		iterator = nodes.iterator();
 //		while (iterator.hasNext()) {
 //			JSONObject o = iterator.next();
-//			Card c = getCard((String) o.get("id"));
+//			Card c = cb.getCard((String) o.get("id"));
 //			if (c != null)
 //				c.setSize((Double) o.get("radius"));
 //		}
@@ -313,7 +259,7 @@ public class CardService {
 		// EscreveArquivo.escreveArquivo("sinergias.csv", sb.toString());
 		PrintWriter out = null;
 		try {
-			out = new PrintWriter(new File(cl.getResource("sinergias.csv").getFile()));
+			out = new PrintWriter(new File(clsLoader.getResource("sinergias.csv").getFile()));
 			out.println(sb.toString());
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -340,10 +286,10 @@ public class CardService {
 				String player = (String) hist.get("player");
 				if ("me".equals(player)) {
 					if (myprev == null) {
-						myprev = getCard(id);
+						myprev = cardComp.getCard(id);
 						continue;
 					}
-					myatual = getCard(id);
+					myatual = cardComp.getCard(id);
 					if (myatual != null) {
 						SynergyEdge<Card> s = getCardSynergy(myprev, myatual);
 						if (s == null) {
@@ -354,10 +300,10 @@ public class CardService {
 					}
 				} else if ("opponent".equals(player)) {
 					if (opoprev == null) {
-						opoprev = getCard(id);
+						opoprev = cardComp.getCard(id);
 						continue;
 					}
-					opoatual = getCard(id);
+					opoatual = cardComp.getCard(id);
 					if (opoatual != null) {
 						SynergyEdge<Card> s = getCardSynergy(opoprev, opoatual);
 						if (s == null) {
@@ -426,5 +372,58 @@ public class CardService {
 			}
 		}
 		return sub;
+	}
+
+	/**
+	 * Gera lista de cartas que tem sinergia com as cartas informadas.
+	 * 
+	 * @param classe       Limita as classes de cartas que podem entrar na lista.
+	 * @param initialCards Cartas para se verificar sinergia com.
+	 * @param deck         Lista de saida?!
+	 * @param depth        Limita profundidade de busca no grafo das sinergias.
+	 * @return Lista de cartas com sinergia às informadas.
+	 */
+	private Set<Card> buildDeck(Card.CLASS classe, String[] initialCards, Set<Card> deck, int depth) {
+		System.out.println("Sinergias para " + initialCards[0]);
+		for (String cardname : initialCards) {
+			Card c = cardComp.getCard(cardname);
+			for (SynergyEdge<Card> s : opponentPlays(c, 10, classe)) {
+				Card c1 = (Card) s.getE1();
+				Card c2 = (Card) s.getE2();
+				if (c == c1 || c == c2) {
+					if (Card.CLASS.contem(classe, c1.getClasse()) || Card.CLASS.contem(classe, c2.getClasse())) {
+						deck.add(c1);
+						deck.add(c2);
+					}
+				}
+			}
+		}
+		return deck;
+	}
+
+	/**
+	 * Import all card tags form google sheet
+	 */
+	public void importTagSinergies() {
+		List<List<Object>> values = GoogleSheets.getDados("1WNcRrDzxyoy_TRm9v15VSGwEiRPqJhUhReq0Wh8Jp14",
+				"TAG_EDGES!A2:D");
+		for (List<Object> row : values) {
+			String source = (String) row.get(0);
+			String taget = row.size() > 1 ? (String) row.get(1) : "";
+			String label = row.size() > 2 ? (String) row.get(2) : "";
+			Float weight = row.size() > 3 ? (Float) row.get(3) : 0.0f;
+			Tag t1 = cardComp.getTags().get(source);
+			Tag t2 = cardComp.getTags().get(taget);
+			if (t2 != null) {
+				tagsSynergies.add(new SynergyEdge<Tag>(t1, t2, label, weight));
+			}
+		}
+		for (Tag t1 : cardComp.getTags().values()) {
+			if (t1.getRegex() != null && !"".equals(t1.getRegex())) {
+				// Almost every tag synergies with itself.
+				tagsSynergies.add(new SynergyEdge<Tag>(t1, t1, t1.getName(), 0.0f));
+			}
+		}
+		System.out.println(tagsSynergies.size() + " tags-synergies imported.");
 	}
 }

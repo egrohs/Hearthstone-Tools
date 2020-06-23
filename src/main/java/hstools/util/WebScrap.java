@@ -1,7 +1,6 @@
-package hstools.domain.components;
+package hstools.util;
 
 import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,16 +16,11 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-import hstools.domain.entities.Card;
 import hstools.domain.entities.Deck;
 import hstools.domain.entities.Deck.Formato;
 import hstools.domain.entities.Expansion;
-import hstools.domain.entities.SynergyEdge;
 import hstools.domain.entities.Tag;
-import hstools.net.GoogleSheets;
 
 /**
  * Scrap all online info about hs.
@@ -34,12 +28,8 @@ import hstools.net.GoogleSheets;
  * @author EGrohs
  *
  */
-@Component("Scrap")
-public class ScrapService {
-	@Autowired
-	private CardService cs;
-	@Autowired
-	private TagBuilder ts;
+//@Component("WebScrap")
+public class WebScrap {
 	// TODO download do meta atual wild
 	// https://tempostorm.com/hearthstone/meta-snapshot/wild
 	// https://www.vicioussyndicate.com/wild-drr
@@ -69,7 +59,8 @@ public class ScrapService {
 		return doc;
 	}
 
-	public void wikipediaExpansions() {
+	public List<Expansion> wikipediaExpansions() {
+		List<Expansion> exps = new ArrayList<Expansion>();
 		String url = "https://en.wikipedia.org/wiki/Hearthstone";
 		Document docRanks = getDocument(url);
 		Elements names = docRanks.select("table.wikitable.plainrowheaders tbody tr th[scope]");
@@ -79,10 +70,11 @@ public class ScrapService {
 		for (Element n : names) {
 			if (n.attributes().size() == 1) {
 				System.out.println(n.text() + "\t" + releases.get(i).text() + "\t" + endStd.get(i).text());
-				cs.getExpansions().add(new Expansion(n.text(), releases.get(i).text(), endStd.get(i).text()));
+				exps.add(new Expansion(n.text(), releases.get(i).text(), endStd.get(i).text()));
 				i++;
 			}
 		}
+		return exps;
 	}
 
 	public void hearthstonetopdecksCardRank() {
@@ -192,42 +184,13 @@ public class ScrapService {
 		System.out.println("Title : " + doc.title());
 	}
 
-	/**
-	 * Import all card ranks form google sheet
-	 */
-	public void importCardRanks() {
-		List<List<Object>> values = null;
-		try {
-			values = GoogleSheets.getDados("1WNcRrDzxyoy_TRm9v15VSGwEiRPqJhUhReq0Wh8Jp14", "CARDS!A2:E");
-		} catch (GeneralSecurityException | IOException e) {
-			e.printStackTrace();
-		}
-		int count = 0;
-		// TODO buscar pelo nome do header da coluna
-		for (List<Object> row : values) {
-			String cardName = (String) row.get(0);
-			Float rank = (Float) row.get(3);
-			Card c1 = cs.getCard(cardName);
-			if (c1 != null) {
-				c1.setRank(rank);
-				count++;
-			}
-		}
-		System.out.println(count + " card ranks imported.");
-	}
-
 	// TODO armazenar localmente as tags evitando buscar se mesma versao ou sem
 	// internet.
 	/** Import tags from google spreadsheet. */
-	public Map<String, Tag> importTags() {
+	public static Map<String, Tag> importTags() {
 		Map<String, Tag> tags = new HashMap<String, Tag>();
-		List<List<Object>> values = null;
-		try {
-			values = GoogleSheets.getDados("1WNcRrDzxyoy_TRm9v15VSGwEiRPqJhUhReq0Wh8Jp14", "TAGS!A2:C");
-		} catch (GeneralSecurityException | IOException e) {
-			e.printStackTrace();
-		}
-
+		List<List<Object>> values = GoogleSheets.getDados("1WNcRrDzxyoy_TRm9v15VSGwEiRPqJhUhReq0Wh8Jp14", "TAGS!A2:C");
+//TODO remover linha vazias vazias null
 		if (values == null || values.isEmpty()) {
 			System.out.println("No data found.");
 		} else {
@@ -246,63 +209,5 @@ public class ScrapService {
 		}
 		System.out.println(tags.size() + " tags imported.");
 		return tags;
-	}
-
-	/**
-	 * Import all card tags form google sheet
-	 */
-	public List<SynergyEdge<Tag>> importTagSinergies() {
-		List<SynergyEdge<Tag>> tagsSynergies = new ArrayList<SynergyEdge<Tag>>();
-		List<List<Object>> values = null;
-		try {
-			values = GoogleSheets.getDados("1WNcRrDzxyoy_TRm9v15VSGwEiRPqJhUhReq0Wh8Jp14", "TAG_EDGES!A2:D");
-		} catch (GeneralSecurityException | IOException e) {
-			e.printStackTrace();
-		}
-
-		for (List<Object> row : values) {
-			String source = (String) row.get(0);
-			String taget = row.size() > 1 ? (String) row.get(1) : "";
-			String label = row.size() > 2 ? (String) row.get(2) : "";
-			Float weight = row.size() > 3 ? (Float) row.get(3) : 0.0f;
-			Tag t1 = ts.getTags().get(source);
-			Tag t2 = ts.getTags().get(taget);
-			if (t2 != null) {
-				tagsSynergies.add(new SynergyEdge<Tag>(t1, t2, label, weight));
-			}
-		}
-		for (Tag t1 : ts.getTags().values()) {
-			if (t1.getRegex() != null && !"".equals(t1.getRegex())) {
-				// Almost every tag synergies with itself.
-				tagsSynergies.add(new SynergyEdge<Tag>(t1, t1, t1.getName(), 0.0f));
-			}
-		}
-		System.out.println(tagsSynergies.size() + " tags synergies imported.");
-		return tagsSynergies;
-	}
-
-	public void importTags2() {
-		List<List<Object>> values = null;
-		try {
-			values = GoogleSheets.getDados("1WNcRrDzxyoy_TRm9v15VSGwEiRPqJhUhReq0Wh8Jp14", "CARD_FUNC!A2:B");
-		} catch (GeneralSecurityException | IOException e) {
-			e.printStackTrace();
-		}
-
-		if (values == null || values.isEmpty()) {
-			System.out.println("No data found.");
-		} else {
-			Long id = 0L;
-			for (List<Object> row : values) {
-				String name = (String) row.get(0);
-				String regex = row.size() > 1 ? (String) row.get(1) : "";
-				Tag t = ts.getTags().get(name);
-				if (t == null) {
-					ts.getTags().put(name, new Tag(id, name, regex));
-					id++;
-				}
-			}
-		}
-		System.out.println(ts.getTags().size() + " tags2 imported.");
 	}
 }

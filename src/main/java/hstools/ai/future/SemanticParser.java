@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import hstools.domain.components.CardService;
+import hstools.domain.components.CardComponent;
 import hstools.domain.entities.Card;
 
 /**
@@ -16,7 +16,7 @@ import hstools.domain.entities.Card;
  */
 public class SemanticParser {
 	@Autowired
-	private static CardService cb;
+	private static CardComponent cb;
 
 	public static void main(String[] args) {
 		Token state = null;

@@ -1,4 +1,4 @@
-package hstools.net;
+package hstools.util;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -69,24 +69,20 @@ public class GoogleSheets {
 	 * @throws IOException
 	 * @throws GeneralSecurityException
 	 */
-	public static List<List<Object>> getDados(String spreadsheetId, String range)
-			throws GeneralSecurityException, IOException {
-		// Build a new authorized API client service.
-		final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-		Sheets service = new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
-				.setApplicationName(APPLICATION_NAME).build();
-		ValueRange response = service.spreadsheets().values().get(spreadsheetId, range).execute();
-//	List<List<Object>> values = response.getValues();
-//	if (values == null || values.isEmpty()) {
-//	    //System.out.println("No data found.");
-//	} else {
-//	    //System.out.println("Name, Major");
-//	    for (List row : values) {
-//		// Print columns A and C, which correspond to indices 0 and 2.
-//		//System.out.printf("%s, %s\n", row.get(0), row.get(2));
-//	    }
-//	}
-		// TODO Auto-generated method stub
+	public static List<List<Object>> getDados(String spreadsheetId, String range) {
+		ValueRange response = null;
+		try {
+			NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+			Sheets service = new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
+					.setApplicationName(APPLICATION_NAME).build();
+			response = service.spreadsheets().values().get(spreadsheetId, range).execute();
+		} catch (GeneralSecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return response.getValues();
 	}
 }

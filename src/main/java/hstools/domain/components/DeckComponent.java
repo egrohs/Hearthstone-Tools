@@ -15,12 +15,13 @@ import java.util.Scanner;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
 
 import hstools.domain.entities.Card;
 import hstools.domain.entities.Deck;
 import hstools.domain.entities.Deck.Formato;
-import hstools.domain.entities.SynergyEdge;
+import hstools.domain.entities.Tag;
 import lombok.Getter;
 
 /**
@@ -30,12 +31,95 @@ import lombok.Getter;
  *
  */
 @Service
-public class DeckService {
+@DependsOn(value = { "Cards" })
+public class DeckComponent {
 	@Autowired
-	private CardService cb;
+	private CardComponent cardComp;
+
+	@Autowired
+	private ArtificialNeuralNetwork annComp;
+
 	@Getter
 	private Set<Deck> decks = new LinkedHashSet<Deck>();
 	Long id = 0L;
+
+	public void calcStats(Deck deck) {
+		for (Card c : deck.getCards().keySet()) {
+			for (Tag t : c.getTags()) {
+				deck.getTags().compute(t, (tokenKey, oldValue) -> oldValue == null ? deck.getCards().get(c)
+						: oldValue + deck.getCards().get(c));
+			}
+		}
+		for (Tag t : deck.getTags().keySet()) {
+			if (t.getName().equals("HARD_REMOVE")) {
+				deck.incHard_remove(deck.getTags().get(t));
+			} else if (t.getName().equals("SOFT_REMOVE")) {// TODO rever, reduce attack...
+				deck.incSoft_remove(deck.getTags().get(t));
+			} else if (t.getName().equals("DRAW") || t.getName().equals("GENERATE")) {
+				deck.incCard_adv(deck.getTags().get(t));
+			} else if (t.getName().equals("LOW_COST_MINION")) {
+				deck.incLow_cost_minions(deck.getTags().get(t));
+			} else if (t.getName().equals("TAUNT") || t.getName().equals("LIFESTEAL") || t.getName().equals("ARMOR")
+					|| t.getName().equals("HEALTH_RESTORE")) {
+				deck.incSurv(deck.getTags().get(t));
+			}
+		}
+		int acum = 0;
+		for (Card c : deck.getCards().keySet()) {
+			acum += c.getCost();
+			if (c.getType().equals("minion")) {
+				deck.setQnt_minions(deck.getQnt_minions() + 1);
+			}
+//				if (c.getRank() < 3.3) {
+//					low_rank += cartas.get(c);
+//				}
+			// TODO spells
+			if (c.getAttack() >= 8 || (c.getTags().toString().contains("WINDFURY") && c.getAttack() >= 3)
+					|| (c.getTags().toString().contains("CHARGE") && c.getAttack() >= 5)) {
+				deck.setFinishers(deck.getFinishers() + 1);
+			}
+		}
+		deck.setAvg_mana(acum / 30.0);
+//		System.out.print(deck.getName() + "\t");
+//		System.out.print(deck.getLow_cost_minions() + ",");
+//			if (hard_remove >= 1 && hard_remove <= 2) {
+//				System.out.println("hard_remove = " + hard_remove + " ref = 1 a 2 control|destroy|shuffle|transform");
+//			}
+//			if (soft_remove >= 4 && soft_remove <= 8) {
+//				System.out.println("soft_remove = " + soft_remove + " ref = 4 a 8 deal \\d+ damage|silence|return to");
+//			}
+//			if (ones >= 2 && ones <= 10) {
+//				System.out.println("ones = " + ones + " ref = 2 a 10");
+//			}
+//			if (twos >= 2 && twos <= 8) {
+//				System.out.println("twos = " + twos + " ref = 2 a 8");
+//			}
+//			if (threes >= 4 && threes <= 10) {
+//				System.out.println("threes = " + threes + " ref = 4 a 10");
+//			}
+//			if (fours >= 4 && fours <= 6) {
+//				System.out.println("fours = " + fours + " ref = 4 a 6");
+//			}
+//			if (fives >= 1 && fives <= 6) {
+//				System.out.println("fives = " + fives + " ref = 1 a 6");
+//			}
+//			if (sixes >= 0 && sixes <= 4) {
+//				System.out.println("sixes = " + sixes + " ref = 0 a 4");
+//			}
+//		System.out.print(avg_mana + ",");
+//		System.out.print(card_adv + ",");
+//		System.out.print(surv + ",");
+//		System.out.println(archtype);
+//			if (avg_mana < 3) {// tem control warrior e priest com avg_mana = 3
+//				System.out.println("AGGRO");
+//			} else if (avg_mana >= 4) {
+//				// System.out.print(hard_remove + soft_remove + ",");
+//				System.out.println("CONTROL");
+//			} else {
+//				// System.out.print(hard_remove + soft_remove + ",");
+//				System.out.println("MIDRANGE");
+//			}
+	}
 
 	public void unloadDeck(String deckString) {
 		// TODO Auto-generated method stub
@@ -49,7 +133,7 @@ public class DeckService {
 			while (sc.hasNextLine()) {
 				String deckstr = sc.nextLine();
 				// System.out.println(deckstr);
-				decks.add(decode(deckstr));
+				decks.add(decodeDeckString(deckstr));
 			}
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -94,9 +178,9 @@ public class DeckService {
 								i = 1;
 							if (vals.length > 1 && !"".equals(vals[i]) && !"".equals(vals[i + 1])) {
 								try {
-									cartas.put(cb.getCard(vals[i]), Integer.parseInt(vals[i + 1]));
+									cartas.put(cardComp.getCard(vals[i]), Integer.parseInt(vals[i + 1]));
 								} catch (Exception rt) {
-									cartas.put(cb.getCard(vals[i + 1]), Integer.parseInt(vals[i]));
+									cartas.put(cardComp.getCard(vals[i + 1]), Integer.parseInt(vals[i]));
 								}
 							}
 						}
@@ -115,33 +199,6 @@ public class DeckService {
 	}
 
 	/**
-	 * Gera lista de cartas que tem sinergia com as cartas informadas.
-	 * 
-	 * @param classe       Limita as classes de cartas que podem entrar na lista.
-	 * @param initialCards Cartas para se verificar sinergia com.
-	 * @param deck         Lista de saida?!
-	 * @param depth        Limita profundidade de busca no grafo das sinergias.
-	 * @return Lista de cartas com sinergia às informadas.
-	 */
-	private Set<Card> buildDeck(Card.CLASS classe, String[] initialCards, Set<Card> deck, int depth) {
-		System.out.println("Sinergias para " + initialCards[0]);
-		for (String cardname : initialCards) {
-			Card c = cb.getCard(cardname);
-			for (SynergyEdge<Card> s : cb.opponentPlays(c, 10, classe)) {
-				Card c1 = (Card) s.getE1();
-				Card c2 = (Card) s.getE2();
-				if (c == c1 || c == c2) {
-					if (Card.CLASS.contem(classe, c1.getClasse()) || Card.CLASS.contem(classe, c2.getClasse())) {
-						deck.add(c1);
-						deck.add(c2);
-					}
-				}
-			}
-		}
-		return deck;
-	}
-
-	/**
 	 *
 	 * @param data the base64 decoded data. This method intentionnaly does not
 	 *             decode Base64 as implementation differ greatly between android
@@ -151,7 +208,7 @@ public class DeckService {
 	 * @throws Exception
 	 */
 	// TODO calcular a expansao e epoca do deck pelas suas cartas mais recentes
-	public Deck decode(String encodedString) {
+	public Deck decodeDeckString(String encodedString) {
 		byte[] data = Base64.getDecoder().decode(encodedString);
 		// String decodedString = new String(data);
 		ByteBuffer byteBuffer = ByteBuffer.wrap(data);
@@ -172,7 +229,7 @@ public class DeckService {
 		for (int i = 0; i < heroCount; i++) {
 			// result.heroes.add(VarInt.getVarInt(byteBuffer));
 			// TODO pegar instancia do cardbuilder
-			cartas.put(cb.getCard(String.valueOf(VarInt.getVarInt(byteBuffer))), 1);
+			cartas.put(cardComp.getCard(String.valueOf(VarInt.getVarInt(byteBuffer))), 1);
 		}
 
 		for (int i = 1; i <= 3; i++) {
@@ -185,12 +242,14 @@ public class DeckService {
 				} else {
 					count = i;
 				}
-				cartas.put(cb.getCard(String.valueOf(dbfId)), count);
+				cartas.put(cardComp.getCard(String.valueOf(dbfId)), count);
 			}
 		}
 		Deck deck = new Deck(id, "", cartas);
 		id++;
 		deck.setFormato(formato);
+		annComp.classifyDeck(deck);
+		System.out.println("Deck decoded: " + deck);
 		return deck;
 	}
 }
@@ -200,7 +259,6 @@ public class DeckService {
  * arrays.
  */
 class VarInt {
-
 	/**
 	 * Maximum encoded size of 32-bit positive integers (in bytes)
 	 */

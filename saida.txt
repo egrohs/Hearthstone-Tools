@@ -1,0 +1,10 @@
+@relation archtypes
+
+@attribute low_cost_minions numeric
+@attribute avg_mana numeric
+@attribute card_adv numeric
+@attribute surv numeric
+@attribute archtype {AGGRO,MIDRANGE,CONTROL,COMBO,FACE,TRIBAL,TEMPO,MILL}
+
+@data
+6,3.933333,5,8,COMBO

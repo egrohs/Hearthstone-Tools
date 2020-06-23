@@ -1,53 +1,53 @@
-Aldor Peacekeeper;Stampeding Kodo;;;opo debuff;Stampeding Kodo
-Ancestral Spirit;Cairne Bloodhoof;;;deathrattle ou aura ou eot ou sot;com ressurect
-Ancient Watcher;Sunfury Protector;;;ok disadvantage com silence;
-Auchenai Soulpriest;Circle of Healing;;;Auchenai Soulpriest;com restore
-Auchenai Soulpriest;Innervate;Innervate;Tree of Life;empate?  Auchenai Soulpriest + Tree of Life;
-Baron Rivendare;Ancestral Spirit;Reincarnate;Sylvanas Windrunner;Ok? deathrattle;com ressummon
-Blingtron 3000;Harrison Jones;;;muito especifico? Dar uma arma ao opo;destoy opo arma
-Cruel Taskmaster;Big Game Hunter;;;buff opo;Big Game Hunter
-Deadly Poison;Assassin's Blade;Blade Flurry;;buff arma;Blade Flurry
-Deathlord;Dancing Swords;Wailing Soul;;ok disadvantage com silence;
-Dragon Consort;Chromaggus;;;ok;
-Dragonkin Sorcerer;Power Word: Shield;;;Whenever <b>you</b> target this minion with a spell, gain +1/+1. ;com spells
-Echoing Ooze;Mark of the Wild;;;Buff + summon copy;
-Equality;Solemn Vigil;;;die | reduzir health (global)? | aoe dmg;
-Feign Death;Sylvanas Windrunner;;;ok;
-Feral Spirit;Flametongue Totem;;;Summon + aoe buff ou adjacent;
-Feugen;Stalagg;Baron Rivendare;;ok;
-Flame Imp;Flame Imp;(Coin);Demonfire;no, aggro start;
-Flamestrike;Dragon's Breath;;;ok;
-Flamewaker;Arcane Missiles;;;After you cast a spell,;com spells
-Force of Nature;Savage Roar;Innervate;Savage Roar;summon;com buff all
-Frost Nova;Doomsayer;;;Freeze + dmg all ou destroy all;
-Gang Up;Coldlight Oracle;;;minion bom;com Coldlight Oracle
-Raging Worgen;Dread Infernal;Power Overwhelming;;Enrage + low all aoe dmg;
-Hunter's Mark;Wild Pyromancer;;;die | reduzir health (global)? | aoe dmg;
-Imp Master;Sword of Justice;;;ok, summon + summon;
-Imp Master;Stormwind Champion;;;Summon + aoe buff ou adjacent;
-Injured Blademaster;Circle of Healing;;;<b>Battlecry:</b> Deal 4 damage to HIMSELF. ;com restore
-Kel'Thuzad;Reincarnate;;;Kel'Thuzad;com ressummon
-King Mukla;Lorewalker Cho;Faceless Manipulator;;give opo spells +;Lorewalker Cho
-Leeroy Jenkins;Unleash the Hounds;;;summon pro oponente;Unleash the Hounds
-Leeroy Jenkins;Ancestral Spirit;Reincarnate;;Charge + ressumon;
-Leeroy Jenkins;Shadowstep;Cold Blood;Power Overwhelming;ok charge com return + buff;
-Lightwell;Divine Spirit;Inner Fire;;High hp + Divine Spirit + Inner Fire;
-Loatheb;Millhouse Manastorm;;;muito especifico? Reduzir e aumentar custo spells opo;
-Loatheb;Shadowstep;;;Ok Battlecry + return;
-Mad Scientist;Duplicate;;;no, good minion;Duplicate
-Mana Wyrm;(Coin);Mirror Image;;good minion + taunt ou give divine shield;
-Molten Giant;Sunfury Protector;Defender of Argus;;Ok ? High health;com give taunt
-Noble Sacrifice;Avenge;;;no;
-Onyxia;Bloodlust;;;Summon + aoe buff ou adjacent;
-Onyxia;Innervate;Savage Roar;;Summon + aoe buff ou adjacent;
-Poison Seeds;Starfall;;;die | reduzir health (global)? | aoe dmg;
-Power Overwhelming;Void Terror;;;temp buff;Void Terror
-Shrinkmeister;Shadow Madness;Youthful Brewmaster;Recombobulator;Ok? Control + transform;
-Stalagg;Shadowflame;;;high attack minion;Shadowflame
-Sylvanas Windrunner;Reincarnate;;;deathrattle ou aura ou eot ou sot;
-Sylvanas Windrunner;Power Overwhelming;;;Deathrattle + self destroy;
-Sylvanas Windrunner;Brawl;;;Ok Deathrattle + destroy all;
-Warsong Commander;Grim Patron;;;no more → give charge/rush?;
-Warsong Commander;Molten Giant;Youthful Brewmaster;;low cost minion + charge + return;
-Whirlwind;Acolyte of Pain;;;dmg all com receber dano (masoquista);
-Wild Pyromancer;Equality;;;die | reduzir health (global)? | aoe dmg;
+Aldor Peacekeeper;Stampeding Kodo;;
+Ancestral Spirit;Cairne Bloodhoof;;
+Ancient Watcher;Sunfury Protector;;
+Auchenai Soulpriest;Circle of Healing;;
+Auchenai Soulpriest;Innervate;Innervate;Tree of Life
+Baron Rivendare;Ancestral Spirit;Reincarnate;Sylvanas Windrunner
+Blingtron 3000;Harrison Jones;;
+Cruel Taskmaster;Big Game Hunter;;
+Deadly Poison;Assassin's Blade;Blade Flurry;
+Deathlord;Dancing Swords;Wailing Soul;
+Dragon Consort;Chromaggus;;
+Dragonkin Sorcerer;Power Word: Shield;;
+Echoing Ooze;Mark of the Wild;;
+Equality;Solemn Vigil;;
+Feign Death;Sylvanas Windrunner;;
+Feral Spirit;Flametongue Totem;;
+Feugen;Stalagg;Baron Rivendare;
+Flame Imp;Flame Imp;The Coin;Demonfire
+Flamestrike;Dragon's Breath;;
+Flamewaker;Arcane Missiles;;
+Force of Nature;Savage Roar;Innervate;Savage Roar
+Frost Nova;Doomsayer;;
+Gang Up;Coldlight Oracle;;
+Raging Worgen;Dread Infernal;Power Overwhelming;
+Hunter's Mark;Wild Pyromancer;;
+Imp Master;Sword of Justice;;
+Imp Master;Stormwind Champion;;
+Injured Blademaster;Circle of Healing;;
+Kel'Thuzad;Reincarnate;;
+King Mukla;Lorewalker Cho;Faceless Manipulator;
+Leeroy Jenkins;Unleash the Hounds;;
+Leeroy Jenkins;Ancestral Spirit;Reincarnate;
+Leeroy Jenkins;Shadowstep;Cold Blood;Power Overwhelming
+Lightwell;Divine Spirit;Inner Fire;
+Loatheb;Millhouse Manastorm;;
+Loatheb;Shadowstep;;
+Mad Scientist;Duplicate;;
+Mana Wyrm;The Coin;Mirror Image;
+Molten Giant;Sunfury Protector;Defender of Argus;
+Noble Sacrifice;Avenge;;
+Onyxia;Bloodlust;;
+Onyxia;Innervate;Savage Roar;
+Poison Seeds;Starfall;;
+Power Overwhelming;Void Terror;;
+Shrinkmeister;Shadow Madness;Youthful Brewmaster;Recombobulator
+Stalagg;Shadowflame;;
+Sylvanas Windrunner;Reincarnate;;
+Sylvanas Windrunner;Power Overwhelming;;
+Sylvanas Windrunner;Brawl;;
+Warsong Commander;Grim Patron;;
+Warsong Commander;Molten Giant;Youthful Brewmaster;
+Whirlwind;Acolyte of Pain;;
+Wild Pyromancer;Equality;;

@@ -9,7 +9,7 @@ import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import hstools.domain.components.CardService;
+import hstools.domain.components.CardComponent;
 import hstools.domain.entities.Card;
 
 /**
@@ -19,7 +19,7 @@ import hstools.domain.entities.Card;
  *
  */
 public class ZoneLogReader extends Thread {
-	private CardService cb;
+	private CardComponent cb;
     private long pos;
     // private long size;
     // static boolean deleted;

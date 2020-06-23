@@ -6,11 +6,12 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
-import hstools.domain.components.CardService;
-import hstools.domain.components.DataScienceService;
-import hstools.domain.components.DeckService;
-import hstools.domain.components.ScrapService;
-import hstools.domain.components.TagBuilder;
+import hstools.domain.components.ArtificialNeuralNetwork;
+import hstools.domain.components.CardComponent;
+import hstools.domain.components.DataScienceComponent;
+import hstools.domain.components.DeckComponent;
+import hstools.domain.components.SynergyBuilder;
+import hstools.domain.entities.Deck;
 
 @SpringBootApplication // (scanBasePackages = { "hstools.components" })
 @ComponentScan("hstools.domain.components")
@@ -21,19 +22,19 @@ public class HearthstoneToolsApplication implements CommandLineRunner {
 	// private SessionFactory neo4j;
 
 	@Autowired
-	private CardService cb;
+	private CardComponent cardComp;
 
 	@Autowired
-	private DeckService db;
+	private DeckComponent deckComp;
 
 	@Autowired
-	private TagBuilder tb;
+	private SynergyBuilder synComp;
+
+	@Autowired
+	private DataScienceComponent scienceComp;
 	
 	@Autowired
-	private DataScienceService ss;
-	
-	@Autowired
-	private ScrapService scrap;
+	private ArtificialNeuralNetwork annComp;
 
 	public static void main(String[] args) {
 		SpringApplication.run(HearthstoneToolsApplication.class, args);
@@ -41,6 +42,13 @@ public class HearthstoneToolsApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
+		deckComp.loadProDecks();
+		for (Deck deck : deckComp.getDecks()) {
+//TODO dar um geito de descobrir o archtype desses decks pra usar como massa de treino, escrevendo resultado em arquivo
+			annComp.classifyDeck(deck);
+		}
+		// deckComp.decodeDeckString(
+//		"AAEBAR8CjQGiAg7yAagCtQPSA8kEkgWxCNsJ/gz1DfcN2w/UEboTAA==");
 //		ss.tagsAffin();
 //		cb.hearthstonetopdecksCardRank();
 //scrap.wikipediaExpansions();
@@ -58,7 +66,6 @@ public class HearthstoneToolsApplication implements CommandLineRunner {
 
 //		neo4j.createOrUpdate(new Card("carta teste"));
 
-//		db.loadProDecks();
 //		ss.matrix();
 	}
 }
