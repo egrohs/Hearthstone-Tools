@@ -5,6 +5,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.neo4j.repository.config.EnableNeo4jRepositories;
 
 import hstools.domain.components.ArtificialNeuralNetwork;
 import hstools.domain.components.CardComponent;
@@ -15,6 +16,7 @@ import hstools.domain.entities.Deck;
 
 @SpringBootApplication // (scanBasePackages = { "hstools.components" })
 @ComponentScan("hstools.domain.components")
+@EnableNeo4jRepositories
 public class HearthstoneToolsApplication implements CommandLineRunner {
 	// @Autowired
 	// private EntityService neo4j;

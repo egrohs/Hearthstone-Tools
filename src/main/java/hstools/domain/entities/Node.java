@@ -1,5 +1,9 @@
 package hstools.domain.entities;
 
+import org.neo4j.ogm.annotation.GeneratedValue;
+import org.neo4j.ogm.annotation.Id;
+import org.neo4j.ogm.annotation.NodeEntity;
+
 import lombok.Data;
 
 /**
@@ -9,10 +13,10 @@ import lombok.Data;
  *
  */
 @Data
-//@NodeEntity
+@NodeEntity
 public abstract class Node implements Comparable<Node> {
-//	@Id
-//	@GeneratedValue
+	@Id
+	@GeneratedValue
 	protected Long id;
 	protected String name;
 	protected Double size;

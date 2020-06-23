@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.jsoup.Jsoup;
+import org.neo4j.ogm.annotation.NodeEntity;
 
 import lombok.Data;
 
