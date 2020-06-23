@@ -126,14 +126,17 @@ public class DeckComponent {
 
 	}
 
-	public void loadProDecks() {
+	public void decodeDecksFromFile(String fname) {
 		Scanner sc = null;
 		try {
-			sc = new Scanner(new File("src/main/resources/decks/pro/pro.txt"));
+			sc = new Scanner(new File("src/main/resources/decks/deckStrings/" + fname));
 			while (sc.hasNextLine()) {
-				String deckstr = sc.nextLine();
+				String[] line = sc.nextLine().split("\t");
 				// System.out.println(deckstr);
-				decks.add(decodeDeckString(deckstr));
+				Deck deck = decodeDeckString(line[0]);
+				if (line.length > 1)
+					deck.setArchtype(line[1]);
+				decks.add(deck);
 			}
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -248,7 +251,6 @@ public class DeckComponent {
 		Deck deck = new Deck(id, "", cartas);
 		id++;
 		deck.setFormato(formato);
-		annComp.classifyDeck(deck);
 		System.out.println("Deck decoded: " + deck);
 		return deck;
 	}

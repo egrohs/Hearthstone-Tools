@@ -42,13 +42,11 @@ public class HearthstoneToolsApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		deckComp.loadProDecks();
-		for (Deck deck : deckComp.getDecks()) {
-//TODO dar um geito de descobrir o archtype desses decks pra usar como massa de treino, escrevendo resultado em arquivo
-			annComp.classifyDeck(deck);
-		}
-		// deckComp.decodeDeckString(
-//		"AAEBAR8CjQGiAg7yAagCtQPSA8kEkgWxCNsJ/gz1DfcN2w/UEboTAA==");
+		//deckComp.decodeDecksFromFile("commonHSTopDecks.txt");
+		//annComp.generateTrainFile();
+		Deck deck = deckComp.decodeDeckString(
+		"AAEBAZ8FAtMWoM4CDkaMAegBzgPIBNcF1gbdCowO2BTdrgKLvQK4xwLYxwIA");
+		annComp.classifyDeck(deck);
 //		ss.tagsAffin();
 //		cb.hearthstonetopdecksCardRank();
 //scrap.wikipediaExpansions();

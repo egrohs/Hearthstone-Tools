@@ -38,7 +38,7 @@ public class ArtificialNeuralNetwork {
 
 	@PostConstruct
 	public void init() {
-		trainFromFile("deck_archtypes_train3.arff");
+		trainFromFile("deckArchtypeTrain.arff");
 	}
 
 	private void trainFromFile(String filepath) {
@@ -126,6 +126,24 @@ public class ArtificialNeuralNetwork {
 		classify(archInst);
 		deck.setArchtype(classVal.get((int) archInst.get(0).value(4)));
 		System.out.println(archInst);
+	}
+
+	public void generateTrainFile() {
+		System.out.println("@RELATION archtypes");
+		System.out.println("@ATTRIBUTE low_cost_minions NUMERIC");
+		System.out.println("@ATTRIBUTE avg_mana NUMERIC");
+		System.out.println("@ATTRIBUTE card_adv NUMERIC");
+		System.out.println("@ATTRIBUTE surv NUMERIC");
+		System.out.println("@ATTRIBUTE archtype {AGGRO,MIDRANGE,CONTROL,COMBO,FACE,TRIBAL,TEMPO,MILL}");
+		System.out.println("@DATA");
+		for (Deck deck : deckComp.getDecks()) {
+			deckComp.calcStats(deck);
+			System.out.print(deck.getLow_cost_minions() + ",");
+			System.out.print(deck.getAvg_mana() + ",");
+			System.out.print(deck.getCard_adv() + ",");
+			System.out.print(deck.getSurv() + ",");
+			System.out.println(deck.getArchtype());
+		}
 	}
 
 	private Instances defineArchtypesInstancesAttributes() {

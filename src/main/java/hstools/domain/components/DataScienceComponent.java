@@ -96,7 +96,7 @@ public class DataScienceComponent {
 	@Deprecated
 	public void tagsAffin3() {
 		// card syns from decks seems not work too
-		deckComp.loadProDecks();
+		deckComp.decodeDecksFromFile("proHSTopDecks.txt");
 		List<SynergyEdge<Card>> cardSins = new ArrayList<SynergyEdge<Card>>();
 		for (Deck d : deckComp.getDecks()) {
 			for (Card c1 : d.getCards().keySet()) {

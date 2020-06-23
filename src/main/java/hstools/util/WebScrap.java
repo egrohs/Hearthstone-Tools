@@ -144,21 +144,28 @@ public class WebScrap {
 		Elements tempostormDecks = docMeta.select("hs-snapshot-body div div div div div div div div a");
 	}
 
+	public static void main(String[] args) {
+		new WebScrap().hearthstonetopdecksDecks();
+	}
+
 	public void hearthstonetopdecksDecks() {
 		try {
-			int page = 1;
-			for (int i = page;; i++) {
-				String url = "https://www.hearthstonetopdecks.com/decks/page/" + i
-						+ "?st&class_id&style_id&t_id&f_id=716&pt_id=1&sort=top-all";
+			//for (int i = 2; i < 6; i++)
+			{
+//				String url = "https://www.hearthstonetopdecks.com/decks/page/" + i
+//						+ "?st&class_id&style_id&t_id&f_id=716&pt_id=1&sort=top-all";
+				String url = "https://www.hearthstonetopdecks.com/decks/?st=&class_id=&style_id=&t_id=1260&f_id=716&pt_id=2&sort=top-all";
 				Document docDecks = getDocument(url);
 				Elements decks = docDecks.select("tbody tr td h4 a");
-				System.out.println("-------------PAGE" + i + "-----------");
+	//			System.out.println("-------------PAGE" + i + "-----------");
 				for (Element deck : decks) {
 					String deckLink = deck.attr("href");
 					Document docDeck = Jsoup.connect(deckLink).data("query", "Java").userAgent("Mozilla")
 							.cookie("auth", "token").timeout(3000).post();
-					Elements ideckstring = docDeck.select("input[type=text]");
-					System.out.println(ideckstring.val());
+					Element deckType = docDeck.select("strong:contains(type)").first();
+					Elements deckstring = docDeck.select("input[type=text]");
+					System.out.println(deckstring.val() + "\t"
+							+ (deckType != null ? deckType.nextElementSibling().text().toUpperCase() : ""));
 				}
 			}
 		} catch (Exception e) {
