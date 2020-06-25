@@ -5,11 +5,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import hstools.domain.components.ArtificialNeuralNetwork;
 import hstools.domain.components.CardComponent;
-import hstools.domain.components.DataScienceComponent;
-import hstools.domain.components.DeckComponent;
-import hstools.domain.components.SynergyBuilder;
+import hstools.domain.entities.Card;
 import hstools.repositories.CardRepository;
 
 @SpringBootApplication // (scanBasePackages = { "hstools.components" })
@@ -51,7 +48,9 @@ public class HearthstoneToolsApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception
 	{
-		cRepo.save(cardComp.getCards().get(0));
+		for (Card c : cardComp.getCards()) {
+			cRepo.save(c);
+		}
 		System.out.println("SALVOU");
 //		cRepo.findAll();
 //		Deck deck = deckComp.decodeDeckString(

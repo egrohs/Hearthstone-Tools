@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.neo4j.ogm.annotation.NodeEntity;
+import org.neo4j.ogm.annotation.Relationship;
 
 import lombok.Data;
 
@@ -17,6 +18,7 @@ import lombok.Data;
 //@EqualsAndHashCode(callSuper=true)
 public class Tag extends Node {
 	private String regex, description, expr;
+	@Relationship
 	private Set<Tag> tags = new HashSet<Tag>();
 
 	public Tag(String name, String regex, String expr, String description) {
