@@ -13,6 +13,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import javax.annotation.PostConstruct;
 //import javax.annotation.PostConstruct;
@@ -25,8 +27,8 @@ import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import hstools.Constants.CLASS;
 import hstools.domain.entities.Card;
-import hstools.domain.entities.Card.CLASS;
 import hstools.domain.entities.Expansion;
 import hstools.domain.entities.Tag;
 import hstools.repositories.CardRepository;
@@ -51,17 +53,19 @@ public class CardComponent {
 	private List<Card> cards = new ArrayList<Card>();
 	@Getter
 	private Map<String, Tag> tags = new HashMap<String, Tag>();
-	
+
 	@Autowired
 	private CardRepository cRepo;
 
 	@PostConstruct
 	public void init() {
+		Iterable<Card> iterable = () -> cRepo.findAll().iterator();
+		cards = StreamSupport.stream(iterable.spliterator(), false).collect(Collectors.toList());
 		// expansions = web.wikipediaExpansions();
 		// importCards();
-		buildCards();
-		tags = WebScrap.importTags();
-		buildCardTags();
+	//	buildCards();
+	//	tags = WebScrap.importTags();
+	//	buildCardTags();
 		// importCardRanks();
 	}
 
@@ -77,7 +81,7 @@ public class CardComponent {
 			Float rank = (Float) row.get(3);
 			Card c1 = getCard(cardName);
 			if (c1 != null) {
-				c1.setRank(rank);
+				c1.getStats().setRank(rank);
 				count++;
 			}
 		}
@@ -132,7 +136,7 @@ public class CardComponent {
 			if (col != null && col == true /*
 											 * && !"HERO".equals((String) o.get("type"))
 											 */) {
-				Card.CLASS classe;
+				CLASS classe;
 				String c = (String) o.get("multiClassGroup");
 				if (c == null) {
 					c = (String) o.get("cardClass");
@@ -140,7 +144,7 @@ public class CardComponent {
 				if (c == null) {
 					c = (String) o.get("playerClass");
 				}
-				classe = Card.CLASS.valueOf(c);
+				classe = CLASS.valueOf(c);
 
 				// TODO card mechanics??
 				// List<String> mechs = (List<String>) o.get("mechanics");
@@ -157,11 +161,12 @@ public class CardComponent {
 				JSONArray reftags = (JSONArray) o.get("referencedTags");
 				JSONArray mechanics = (JSONArray) o.get("mechanics");
 
-				cards.add(new Card((String) o.get("id"), ((Long) o.get("dbfId")).intValue(), (String) o.get("name"),
+				Card card = new Card((String) o.get("id"), ((Long) o.get("dbfId")).intValue(), (String) o.get("name"),
 						(String) o.get("set"), (String) o.get("race"), classe, (String) o.get("type"), text,
 						(Long) o.get("cost"), (Long) o.get("attack"), (Long) o.get("health"),
 						(Long) o.get("durability"), (String) o.get("rarity"), reftags == null ? "" : reftags.toString(),
-						mechanics == null ? "" : mechanics.toString()));
+						mechanics == null ? "" : mechanics.toString());
+				cards.add(card);
 			}
 		}
 		// if (getCard("The Coin") == null)
@@ -188,7 +193,7 @@ public class CardComponent {
 				if (c.getDbfId().toString().equalsIgnoreCase(idsORname)) {
 					return c;
 				}
-				if (c.getId().toString().equalsIgnoreCase(idsORname)) {
+				if (c.getId() != null && c.getId().toString().equalsIgnoreCase(idsORname)) {
 					return c;
 				}
 				if (c.getCardId().equalsIgnoreCase(idsORname)) {

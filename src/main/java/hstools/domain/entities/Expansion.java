@@ -2,13 +2,13 @@ package hstools.domain.entities;
 
 import java.time.LocalDate;
 
-import hstools.domain.entities.Deck.Formato;
+import hstools.Constants.Format;
 import lombok.Data;
 
 @Data
-public class Expansion {
-	private String name, shortname;
-	private Formato f;
+public class Expansion extends Node {
+	private String shortname;
+	private Format format;
 	private LocalDate release;
 	private int qntCards;
 

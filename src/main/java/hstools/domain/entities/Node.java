@@ -3,6 +3,8 @@ package hstools.domain.entities;
 import org.neo4j.ogm.annotation.GeneratedValue;
 import org.neo4j.ogm.annotation.Id;
 
+import com.sun.istack.NotNull;
+
 import lombok.Data;
 
 /**
@@ -16,6 +18,7 @@ public abstract class Node implements Comparable<Node> {
 	@Id
 	@GeneratedValue
 	protected Long id; // temp id used by neo4j at runtime, must never be set by app
+	@NotNull
 	protected String name;
 	protected Double size;
 
@@ -23,10 +26,10 @@ public abstract class Node implements Comparable<Node> {
 		this.size = Double.valueOf("1");
 	}
 
-//	@Override
-//	public String toString() {
-//		return name;
-//	}
+	@Override
+	public String toString() {
+		return name;
+	}
 
 	@Override
 	public int compareTo(Node o) {

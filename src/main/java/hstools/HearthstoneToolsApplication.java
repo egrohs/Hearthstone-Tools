@@ -5,8 +5,10 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import hstools.domain.components.ArtificialNeuralNetwork;
 import hstools.domain.components.CardComponent;
-import hstools.domain.entities.Card;
+import hstools.domain.components.DeckComponent;
+import hstools.domain.entities.Deck;
 import hstools.repositories.CardRepository;
 
 @SpringBootApplication // (scanBasePackages = { "hstools.components" })
@@ -15,19 +17,19 @@ import hstools.repositories.CardRepository;
 public class HearthstoneToolsApplication implements CommandLineRunner {
 	@Autowired
 	private CardComponent cardComp;
-//
-//	@Autowired
-//	private DeckComponent deckComp;
+
+	@Autowired
+	private DeckComponent deckComp;
 //
 //	@Autowired
 //	private SynergyBuilder synComp;
 //
 //	@Autowired
 //	private DataScienceComponent scienceComp;
-//
-//	@Autowired
-//	private ArtificialNeuralNetwork annComp;
-//	
+
+	@Autowired
+	private ArtificialNeuralNetwork annComp;
+	
 	@Autowired
 	private CardRepository cRepo;
 
@@ -48,14 +50,9 @@ public class HearthstoneToolsApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception
 	{
-		for (Card c : cardComp.getCards()) {
-			cRepo.save(c);
-		}
-		System.out.println("SALVOU");
-//		cRepo.findAll();
-//		Deck deck = deckComp.decodeDeckString(
-//		"AAEBAZ8FAtMWoM4CDkaMAegBzgPIBNcF1gbdCowO2BTdrgKLvQK4xwLYxwIA");
-//		annComp.classifyDeck(deck);
+		Deck deck = deckComp.decodeDeckString(
+		"AAEBAf0GBsnCApfTAurmAtvpApz4Arf9AgyKAfcEtgfhB5vCAufLAvLQAvjQAojSAovhAvzlAujnAgA=");
+		annComp.classifyDeck(deck);
 
 		// ss.tagsAffin();
 //		cb.hearthstonetopdecksCardRank();

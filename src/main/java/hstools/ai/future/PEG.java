@@ -234,14 +234,14 @@ public class PEG {
 				for (Card defender : cards) {
 					if (!defender.getType().equals("Spell")) {// && Wearpon!!!
 						if (attacker.getCost() == defender.getCost()) {
-							attacker.incCombats();
+							attacker.getStats().incCombats();
 							// wins
 							if (attacker.getAttack() >= defender.getHealth() && attacker.getHealth() > defender.getAttack()) {
-								attacker.incWins();
+								attacker.getStats().incWins();
 							} else if (attacker.getAttack() < defender.getHealth() && attacker.getHealth() <= defender.getAttack()) {
-								attacker.incLoses();
+								attacker.getStats().incLoses();
 							} else {
-								attacker.incDraws();
+								attacker.getStats().incDraws();
 							}
 						}
 					}

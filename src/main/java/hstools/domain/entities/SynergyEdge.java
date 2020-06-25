@@ -1,5 +1,9 @@
 package hstools.domain.entities;
 
+import org.neo4j.ogm.annotation.EndNode;
+import org.neo4j.ogm.annotation.RelationshipEntity;
+import org.neo4j.ogm.annotation.StartNode;
+
 import lombok.Data;
 
 /**
@@ -10,19 +14,19 @@ import lombok.Data;
  * @param <T>
  */
 @Data
-//@RelationshipEntity(type = "SYNERGY")
+@RelationshipEntity(type = "SYNERGY")
 //@EqualsAndHashCode(callSuper=true)
 public class SynergyEdge<T extends Node> implements Comparable<SynergyEdge<T>> {
 	private Long id;
-//	@StartNode
-	private Node e1;
-//	@EndNode
-	private Node e2;
+	@StartNode
+	private T e1;
+	@EndNode
+	private T e2;
 	private int freq;
 	private Float weight = 0f;
 	private String label, mechs;
 
-	public SynergyEdge(Node e1, Node e2, int freq, Float v, String mm) {
+	public SynergyEdge(T e1, T e2, int freq, Float v, String mm) {
 		this.e1 = e1;
 		this.e2 = e2;
 		this.freq = freq;
@@ -30,21 +34,21 @@ public class SynergyEdge<T extends Node> implements Comparable<SynergyEdge<T>> {
 		this.mechs = mm;
 	}
 
-	public SynergyEdge(Node e1, Node e2, String label, Float v) {
+	public SynergyEdge(T e1, T e2, String label, Float v) {
 		this.e1 = e1;
 		this.e2 = e2;
 		this.label = label;
 		this.weight = v;
 	}
 
-	public SynergyEdge(Node e1, Node e2, float v, String mm) {
+	public SynergyEdge(T e1, T e2, float v, String mm) {
 		this.e1 = e1;
 		this.e2 = e2;
 		this.weight = v;
 		this.mechs = mm;
 	}
 
-	public SynergyEdge(Node e1, Node e2, int freq) {
+	public SynergyEdge(T e1, T e2, int freq) {
 		if (e1 == null || e2 == null)
 			throw new RuntimeException("Null nodes");
 		this.e1 = e1;

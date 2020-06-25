@@ -1,6 +1,6 @@
 package hstools.domain.entities;
 
-import hstools.domain.entities.Card.CLASS;
+import hstools.Constants.CLASS;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

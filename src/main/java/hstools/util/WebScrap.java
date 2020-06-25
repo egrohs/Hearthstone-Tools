@@ -8,7 +8,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-
 import org.jsoup.Connection;
 import org.jsoup.Connection.Method;
 import org.jsoup.Jsoup;
@@ -16,8 +15,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import hstools.Constants.Format;
 import hstools.domain.entities.Deck;
-import hstools.domain.entities.Deck.Formato;
 import hstools.domain.entities.Expansion;
 import hstools.domain.entities.Tag;
 
@@ -33,7 +32,7 @@ public class WebScrap {
 	// https://tempostorm.com/hearthstone/meta-snapshot/wild
 	// https://www.vicioussyndicate.com/wild-drr
 	private LocalDate date;
-	private Formato formato;
+	private Format format;
 	private Map<Integer, Deck> decks = new LinkedHashMap<>();
 
 	//@PostConstruct

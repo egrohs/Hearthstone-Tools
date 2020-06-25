@@ -6,13 +6,19 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import javax.annotation.PostConstruct;
 
 //import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import hstools.Constants.Archtype;
 import hstools.domain.entities.Deck;
 import weka.classifiers.Evaluation;
 import weka.classifiers.functions.MultilayerPerceptron;
@@ -33,10 +39,9 @@ public class ArtificialNeuralNetwork {
 	private ClassLoader clsLoader = ArtificialNeuralNetwork.class.getClassLoader();
 	// Instance of NN
 	private MultilayerPerceptron mlp = new MultilayerPerceptron();
-//TODO usar enum?
-	ArrayList<String> classVal = new ArrayList<String>();
+	List<String> classVal = new ArrayList<String>();
 
-	//@PostConstruct
+	@PostConstruct
 	public void init() {
 		trainFromFile("deckArchtypeTrain.arff");
 	}
@@ -110,13 +115,13 @@ public class ArtificialNeuralNetwork {
 		Instances archInst = defineArchtypesInstancesAttributes();
 		double[] instanceValue1 = new double[archInst.numAttributes()];
 		// qnt cards, type == "minion" && cost < 3
-		instanceValue1[0] = deck.getLow_cost_minions();
+		instanceValue1[0] = deck.getStats().getLow_cost_minions();
 		// (ones + twos * 2 + threes * 3 + fours * 4 + fives * 5 + sixes * 7) / 30.0;
-		instanceValue1[1] = deck.getAvg_mana();
+		instanceValue1[1] = deck.getStats().getAvg_mana();
 		// qnt cards com tags "DRAW" or "GENERATE"
-		instanceValue1[2] = deck.getCard_adv();
+		instanceValue1[2] = deck.getStats().getCard_adv();
 		// qnt cards com tags "TAUNT", "LIFESTEAL", "ARMOR" or "HEALTH_RESTORE"
-		instanceValue1[3] = deck.getSurv();
+		instanceValue1[3] = deck.getStats().getSurv();
 		// instanceValue1[4] = 0; // archtype a ser descoberto
 
 		// 9,3.066666666666667,1,2,AGGRO
@@ -124,7 +129,7 @@ public class ArtificialNeuralNetwork {
 		archInst.add(new DenseInstance(1.0, instanceValue1));
 
 		classify(archInst);
-		deck.setArchtype(classVal.get((int) archInst.get(0).value(4)));
+		deck.getStats().setArchtype(Archtype.values()[(int) archInst.get(0).value(4)]);
 		System.out.println(archInst);
 	}
 
@@ -138,25 +143,17 @@ public class ArtificialNeuralNetwork {
 		System.out.println("@DATA");
 		for (Deck deck : deckComp.getDecks()) {
 			deckComp.calcStats(deck);
-			System.out.print(deck.getLow_cost_minions() + ",");
-			System.out.print(deck.getAvg_mana() + ",");
-			System.out.print(deck.getCard_adv() + ",");
-			System.out.print(deck.getSurv() + ",");
-			System.out.println(deck.getArchtype());
+			System.out.print(deck.getStats().getLow_cost_minions() + ",");
+			System.out.print(deck.getStats().getAvg_mana() + ",");
+			System.out.print(deck.getStats().getCard_adv() + ",");
+			System.out.print(deck.getStats().getSurv() + ",");
+			System.out.println(deck.getStats().getArchtype());
 		}
 	}
 
 	private Instances defineArchtypesInstancesAttributes() {
 		ArrayList<Attribute> atts = new ArrayList<Attribute>(5);
-		classVal.add("AGGRO");
-		classVal.add("MIDRANGE");
-		classVal.add("CONTROL");
-		classVal.add("COMBO");
-		classVal.add("FACE");
-		classVal.add("TRIBAL");
-		classVal.add("TEMPO");
-		classVal.add("MILL");
-
+		classVal = Stream.of(Archtype.values()).map(Archtype::name).collect(Collectors.toList());
 		atts.add(new Attribute("low_cost_minions"));
 		atts.add(new Attribute("avg_mana"));
 		atts.add(new Attribute("card_adv"));

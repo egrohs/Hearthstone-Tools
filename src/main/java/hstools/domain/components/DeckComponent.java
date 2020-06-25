@@ -18,9 +18,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
 
+import hstools.Constants.Archtype;
+import hstools.Constants.Format;
 import hstools.domain.entities.Card;
 import hstools.domain.entities.Deck;
-import hstools.domain.entities.Deck.Formato;
 import hstools.domain.entities.Tag;
 import lombok.Getter;
 
@@ -48,23 +49,23 @@ public class DeckComponent {
 		}
 		for (Tag t : deck.getTags().keySet()) {
 			if (t.getName().equals("HARD_REMOVE")) {
-				deck.incHard_remove(deck.getTags().get(t));
+				deck.getStats().incHard_remove(deck.getTags().get(t));
 			} else if (t.getName().equals("SOFT_REMOVE")) {// TODO rever, reduce attack...
-				deck.incSoft_remove(deck.getTags().get(t));
+				deck.getStats().incSoft_remove(deck.getTags().get(t));
 			} else if (t.getName().equals("DRAW") || t.getName().equals("GENERATE")) {
-				deck.incCard_adv(deck.getTags().get(t));
+				deck.getStats().incCard_adv(deck.getTags().get(t));
 			} else if (t.getName().equals("LOW_COST_MINION")) {
-				deck.incLow_cost_minions(deck.getTags().get(t));
+				deck.getStats().incLow_cost_minions(deck.getTags().get(t));
 			} else if (t.getName().equals("TAUNT") || t.getName().equals("LIFESTEAL") || t.getName().equals("ARMOR")
 					|| t.getName().equals("HEALTH_RESTORE")) {
-				deck.incSurv(deck.getTags().get(t));
+				deck.getStats().incSurv(deck.getTags().get(t));
 			}
 		}
 		int acum = 0;
 		for (Card c : deck.getCards().keySet()) {
 			acum += c.getCost();
 			if (c.getType().equals("minion")) {
-				deck.setQnt_minions(deck.getQnt_minions() + 1);
+				deck.getStats().setQnt_minions(deck.getStats().getQnt_minions() + 1);
 			}
 //				if (c.getRank() < 3.3) {
 //					low_rank += cartas.get(c);
@@ -72,10 +73,10 @@ public class DeckComponent {
 			// TODO spells
 			if (c.getAttack() >= 8 || (c.getTags().toString().contains("WINDFURY") && c.getAttack() >= 3)
 					|| (c.getTags().toString().contains("CHARGE") && c.getAttack() >= 5)) {
-				deck.setFinishers(deck.getFinishers() + 1);
+				deck.getStats().setFinishers(deck.getStats().getFinishers() + 1);
 			}
 		}
-		deck.setAvg_mana(acum / 30.0);
+		deck.getStats().setAvg_mana(acum / 30.0);
 //		System.out.print(deck.getName() + "\t");
 //		System.out.print(deck.getLow_cost_minions() + ",");
 //			if (hard_remove >= 1 && hard_remove <= 2) {
@@ -131,7 +132,7 @@ public class DeckComponent {
 				// System.out.println(deckstr);
 				Deck deck = decodeDeckString(line[0]);
 				if (line.length > 1)
-					deck.setArchtype(line[1]);
+					deck.getStats().setArchtype(Archtype.values()[Integer.parseInt(line[1])]);
 				decks.add(deck);
 			}
 		} catch (FileNotFoundException e) {
@@ -185,7 +186,7 @@ public class DeckComponent {
 						}
 					}
 					Deck deck = new Deck(file.getName(), cartas);
-					deck.setArchtype(obs);
+					deck.getStats().setArchtype(Archtype.values()[Integer.parseInt(obs)]);
 					decks.add(deck);
 					sc.close();
 				} catch (FileNotFoundException e) {
@@ -216,7 +217,7 @@ public class DeckComponent {
 			// throw new ParseException("bad version: " + version);
 		}
 
-		Formato formato = Formato.getByValor(VarInt.getVarInt(byteBuffer));
+		Format formato = Format.getByValor(VarInt.getVarInt(byteBuffer));
 		Map<Card, Integer> cartas = new HashMap<>();
 //		if (result.format != FT_STANDARD && result.format != FT_WILD) {
 //           throw new ParseException("bad format: " + result.format);
@@ -244,7 +245,7 @@ public class DeckComponent {
 			}
 		}
 		Deck deck = new Deck("", cartas);
-		deck.setFormato(formato);
+		deck.setFormat(formato);
 		System.out.println("Deck decoded: " + deck);
 		return deck;
 	}

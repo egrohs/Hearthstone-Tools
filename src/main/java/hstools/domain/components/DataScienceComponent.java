@@ -15,8 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
 
+import hstools.Constants.CLASS;
 import hstools.domain.entities.Card;
-import hstools.domain.entities.Card.CLASS;
 import hstools.domain.entities.Deck;
 import hstools.domain.entities.Player;
 import hstools.domain.entities.SynergyEdge;
@@ -90,7 +90,7 @@ public class DataScienceComponent {
 			SynergyEdge<Tag> s = tagSins.get(key);
 			System.out.println(s.getE1().getName() + "\t" + s.getE2().getName() + "\t" + s.getFreq());
 		}
-//		printSortedMatrix(affinity, Card.class);
+//		printSortedMatrix(affinity, CLASS);
 	}
 
 	@Deprecated
@@ -130,7 +130,7 @@ public class DataScienceComponent {
 			System.out.println(s.getE1().getName() + "\t" + s.getE2().getName() + "\t"
 					+ s.getFreq() / (s.getE1().getSize() + s.getE2().getSize()));
 		}
-//		printSortedMatrix(affinity, Card.class);
+//		printSortedMatrix(affinity, CLASS);
 	}
 
 	public void cardsMatrix() {

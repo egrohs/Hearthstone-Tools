@@ -18,8 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
+import hstools.Constants.CLASS;
 import hstools.domain.entities.Card;
-import hstools.domain.entities.Card.CLASS;
 import hstools.domain.entities.SynergyEdge;
 import hstools.domain.entities.Tag;
 import hstools.util.GoogleSheets;
@@ -383,7 +383,7 @@ public class SynergyBuilder {
 	 * @param depth        Limita profundidade de busca no grafo das sinergias.
 	 * @return Lista de cartas com sinergia às informadas.
 	 */
-	private Set<Card> buildDeck(Card.CLASS classe, String[] initialCards, Set<Card> deck, int depth) {
+	private Set<Card> buildDeck(CLASS classe, String[] initialCards, Set<Card> deck, int depth) {
 		System.out.println("Sinergias para " + initialCards[0]);
 		for (String cardname : initialCards) {
 			Card c = cardComp.getCard(cardname);
@@ -391,7 +391,7 @@ public class SynergyBuilder {
 				Card c1 = (Card) s.getE1();
 				Card c2 = (Card) s.getE2();
 				if (c == c1 || c == c2) {
-					if (Card.CLASS.contem(classe, c1.getClasse()) || Card.CLASS.contem(classe, c2.getClasse())) {
+					if (CLASS.contem(classe, c1.getClasse()) || CLASS.contem(classe, c2.getClasse())) {
 						deck.add(c1);
 						deck.add(c2);
 					}

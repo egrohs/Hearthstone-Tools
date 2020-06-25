@@ -5,68 +5,31 @@ import java.util.Set;
 
 import org.jsoup.Jsoup;
 import org.neo4j.ogm.annotation.NodeEntity;
+import org.neo4j.ogm.annotation.Relationship;
 
+import hstools.Constants.CLASS;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * Objeto carta.
  */
 @Data
 @NodeEntity
-//@EqualsAndHashCode(callSuper=true)
+@EqualsAndHashCode(callSuper=true)
 public class Card extends Node {
-//	@Id
-//	@GeneratedValue
-//	protected Long id;
 	private boolean calculada;
 	private CLASS classe;
 	private StringBuilder text = new StringBuilder();
-	private String cardId, race, function, type, rarity, mechs, refTags;
-	private Expansion set;
-	private Integer dbfId, cost, attack, health, dur, popularity, combats, wins, draws, loses;
-	private boolean aggro/* , visited */;
-	// Map<Card, Float> synergies = new LinkedHashMap<Card, Float>();
-	// @Relationship(type = "TAG")
+	private String cardId, race, type, rarity, mechs, refTags;
+	private Expansion expansion;
+	private Integer dbfId, cost, attack, health, dur;
+	
+	@Relationship
+	private CardStats stats;
+	@Relationship(type = "TAG")
 	private Set<Tag> tags = new HashSet<Tag>();
-	private float rank;
-
-	public enum CLASS {
-		WARRIOR, DRUID, HUNTER, PRIEST, MAGE, SHAMAN, ROGUE, PALADIN, WARLOCK, DEMONHUNTER, JADE_LOTUS, KABAL,
-		GRIMY_GOONS, NEUTRAL;
-
-		public static boolean contem(CLASS c1, CLASS c2) {
-			switch (c1) {
-			case NEUTRAL:
-				return c2 == NEUTRAL;
-			case JADE_LOTUS:
-				if (c2 == DRUID || c2 == ROGUE || c2 == SHAMAN || c2 == NEUTRAL) {
-					return true;
-				}
-				break;
-			case KABAL:
-				if (c2 == MAGE || c2 == PRIEST || c2 == WARLOCK || c2 == NEUTRAL) {
-					return true;
-				}
-				break;
-			case GRIMY_GOONS:
-				if (c2 == HUNTER || c2 == PALADIN || c2 == WARRIOR || c2 == NEUTRAL) {
-					return true;
-				}
-				break;
-			default:
-				if (c1 == c2 || c2 == NEUTRAL) {
-					return true;
-				}
-				break;
-			}
-			return false;
-		}
-		// @Override
-		// public String toString() {
-		// return this.getName()().toLowerCase().replaceAll("_", " ");
-		// }
-	}
-
+	public Card() {}
 	public Card(String cardId, Integer dbfId, String name, String set, String faction, CLASS classe,
 			String type, String text, Long cos, Long atta, Long health, Long dur, String rarity, String refTags,
 			String mechs) {
@@ -75,7 +38,7 @@ public class Card extends Node {
 //		this.getChildren().add(new ImageView(new Image("file:res/cards/" + this.id + ".png")));
 //		StackPane.setAlignment(this, Pos.CENTER_LEFT);
 		this.name = name.toLowerCase();
-		this.set = null;
+		this.expansion = null;
 		this.race = faction == null ? "" : faction;
 		this.classe = classe;
 		this.type = type.toLowerCase();
@@ -87,15 +50,11 @@ public class Card extends Node {
 		this.health = (health == null ? null : Integer.parseInt(health.toString()));
 		this.dur = (dur == null ? null : Integer.parseInt(dur.toString()));
 		this.rarity = rarity;
-		if (this.getCost() > 0 && this.getAttack() != null && this.getAttack() > 2) {
-			float agg = ((float) this.getAttack() / this.getCost());
-			if (agg > 1.5f) {
-				aggro = true;
-			}
-		}
+		
 		this.refTags = refTags;
 		this.mechs = mechs;
 		trim();
+		this.stats = new CardStats();
 	}
 
 	/*
@@ -113,37 +72,6 @@ public class Card extends Node {
 			text = new StringBuilder(Jsoup.parse(text.toString()).text().toLowerCase().replaceAll("\\$", "")
 					.replaceAll("\\#", "").replaceAll("�", " ").trim());
 		}
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		// boolean r = super.equals(obj);
-		// if (r && !id.equals(((Carta) obj).id))
-		if (obj instanceof Card && id.equals(((Card) obj).id)) {
-			return true;
-		}
-		return false;
-	}
-
-//	@Override
-//	public String toString() {
-//		return name;
-//	}
-
-	public void incDraws() {
-		this.draws++;
-	}
-
-	public void incCombats() {
-		this.combats++;
-	}
-
-	public void incWins() {
-		this.wins++;
-	}
-
-	public void incLoses() {
-		this.loses++;
 	}
 
 	/** Modify the expression replacing variables. */
