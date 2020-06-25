@@ -12,9 +12,12 @@ import lombok.Data;
  * Objeto carta.
  */
 @Data
-//@NodeEntity
+@NodeEntity
 //@EqualsAndHashCode(callSuper=true)
 public class Card extends Node {
+//	@Id
+//	@GeneratedValue
+//	protected Long id;
 	private boolean calculada;
 	private CLASS classe;
 	private StringBuilder text = new StringBuilder();
@@ -64,10 +67,9 @@ public class Card extends Node {
 		// }
 	}
 
-	public Card(Long id, String cardId, Integer dbfId, String name, String set, String faction, CLASS classe,
+	public Card(String cardId, Integer dbfId, String name, String set, String faction, CLASS classe,
 			String type, String text, Long cos, Long atta, Long health, Long dur, String rarity, String refTags,
 			String mechs) {
-		super(id);
 		this.cardId = cardId;
 		this.dbfId = dbfId;
 //		this.getChildren().add(new ImageView(new Image("file:res/cards/" + this.id + ".png")));
@@ -123,10 +125,10 @@ public class Card extends Node {
 		return false;
 	}
 
-	@Override
-	public String toString() {
-		return name;
-	}
+//	@Override
+//	public String toString() {
+//		return name;
+//	}
 
 	public void incDraws() {
 		this.draws++;

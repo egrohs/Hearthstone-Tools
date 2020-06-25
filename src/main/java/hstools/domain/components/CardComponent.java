@@ -15,19 +15,21 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import javax.annotation.PostConstruct;
+//import javax.annotation.PostConstruct;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import hstools.domain.entities.Card;
 import hstools.domain.entities.Card.CLASS;
 import hstools.domain.entities.Expansion;
-import hstools.domain.entities.SynergyEdge;
 import hstools.domain.entities.Tag;
+import hstools.repositories.CardRepository;
 import hstools.util.GoogleSheets;
 import hstools.util.Util;
 import hstools.util.WebScrap;
@@ -49,16 +51,17 @@ public class CardComponent {
 	private List<Card> cards = new ArrayList<Card>();
 	@Getter
 	private Map<String, Tag> tags = new HashMap<String, Tag>();
+	
+	@Autowired
+	private CardRepository cRepo;
 
 	@PostConstruct
 	public void init() {
-		// public CardService() {
 		// expansions = web.wikipediaExpansions();
 		// importCards();
 		buildCards();
 		tags = WebScrap.importTags();
 		buildCardTags();
-
 		// importCardRanks();
 	}
 
@@ -123,7 +126,6 @@ public class CardComponent {
 	 */
 	private final void generateCards(JSONArray array) {
 		Iterator<JSONObject> iterator = array.iterator();
-		Long id = 0L;
 		while (iterator.hasNext()) {
 			JSONObject o = iterator.next();
 			Boolean col = (Boolean) o.get("collectible");
@@ -155,18 +157,17 @@ public class CardComponent {
 				JSONArray reftags = (JSONArray) o.get("referencedTags");
 				JSONArray mechanics = (JSONArray) o.get("mechanics");
 
-				cards.add(new Card(id, (String) o.get("id"), ((Long) o.get("dbfId")).intValue(), (String) o.get("name"),
+				cards.add(new Card((String) o.get("id"), ((Long) o.get("dbfId")).intValue(), (String) o.get("name"),
 						(String) o.get("set"), (String) o.get("race"), classe, (String) o.get("type"), text,
 						(Long) o.get("cost"), (Long) o.get("attack"), (Long) o.get("health"),
 						(Long) o.get("durability"), (String) o.get("rarity"), reftags == null ? "" : reftags.toString(),
 						mechanics == null ? "" : mechanics.toString()));
-				id++;
 			}
 		}
 		// if (getCard("The Coin") == null)
 		{
 			// TODO adiciona a moeda
-			cards.add(new Card(id++, "GAME_005", 1746, "the coin", "CORE", "ALLIANCE", CLASS.NEUTRAL, "SPELL",
+			cards.add(new Card("GAME_005", 1746, "the coin", "CORE", "ALLIANCE", CLASS.NEUTRAL, "SPELL",
 					"Add 1 mana this turn...", 0L, null, null, null, "COMMON", "", ""));
 		}
 		Collections.sort(cards);

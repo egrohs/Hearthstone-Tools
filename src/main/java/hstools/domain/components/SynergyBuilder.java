@@ -51,7 +51,7 @@ public class SynergyBuilder {
 				String cName1 = combo[i];
 				for (int j = i; j < combo.length; j++) {
 					String cName2 = combo[j];
-					if (!cName1.isBlank() && !cName2.isBlank()) {
+					if (!cName1.isEmpty() && !cName2.isEmpty()) {
 						Card c1 = cardComp.getCard(cName1);
 						Card c2 = cardComp.getCard(cName2);
 						cardsSynergies.add(new SynergyEdge<>(c1, c2, 1));

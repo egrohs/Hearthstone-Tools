@@ -3,6 +3,8 @@ package hstools.domain.entities;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.neo4j.ogm.annotation.NodeEntity;
+
 import lombok.Data;
 
 /**
@@ -11,21 +13,20 @@ import lombok.Data;
  *
  */
 @Data
+@NodeEntity
 //@EqualsAndHashCode(callSuper=true)
 public class Tag extends Node {
 	private String regex, description, expr;
 	private Set<Tag> tags = new HashSet<Tag>();
 
-	public Tag(Long id, String name, String regex, String expr, String description) {
-		super(id);
+	public Tag(String name, String regex, String expr, String description) {
 		this.name = name;
 		this.regex = regex;
 		this.expr = expr;
 		this.description = description;
 	}
 	
-	public Tag(Long id, String name, String regex) {
-		super(id);
+	public Tag(String name, String regex) {
 		this.name = name;
 		this.regex = regex;
 	}

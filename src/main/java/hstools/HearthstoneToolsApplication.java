@@ -4,52 +4,61 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.data.neo4j.repository.config.EnableNeo4jRepositories;
 
 import hstools.domain.components.ArtificialNeuralNetwork;
 import hstools.domain.components.CardComponent;
 import hstools.domain.components.DataScienceComponent;
 import hstools.domain.components.DeckComponent;
 import hstools.domain.components.SynergyBuilder;
-import hstools.domain.entities.Deck;
+import hstools.repositories.CardRepository;
 
 @SpringBootApplication // (scanBasePackages = { "hstools.components" })
-@ComponentScan("hstools.domain.components")
-@EnableNeo4jRepositories
+//@ComponentScan("hstools.domain.components")
+//@EnableNeo4jRepositories("hstools.repositories")
 public class HearthstoneToolsApplication implements CommandLineRunner {
-	// @Autowired
-	// private EntityService neo4j;
-	// private Session neo4j;
-	// private SessionFactory neo4j;
-
 	@Autowired
 	private CardComponent cardComp;
-
+//
+//	@Autowired
+//	private DeckComponent deckComp;
+//
+//	@Autowired
+//	private SynergyBuilder synComp;
+//
+//	@Autowired
+//	private DataScienceComponent scienceComp;
+//
+//	@Autowired
+//	private ArtificialNeuralNetwork annComp;
+//	
 	@Autowired
-	private DeckComponent deckComp;
-
-	@Autowired
-	private SynergyBuilder synComp;
-
-	@Autowired
-	private DataScienceComponent scienceComp;
-	
-	@Autowired
-	private ArtificialNeuralNetwork annComp;
+	private CardRepository cRepo;
 
 	public static void main(String[] args) {
 		SpringApplication.run(HearthstoneToolsApplication.class, args);
 	}
 
+//	@Bean
+//	public Configuration getConfiguration() {
+//		String uri = getDatabaseUri();
+//		Configuration config = new Configuration();
+//		config.set("dbms.allow_format_migration", "true"); // Allow upgrade of neo4j version
+//		config.driverConfiguration().setDriverClassName("org.neo4j.ogm.drivers.embedded.driver.EmbeddedDriver")
+//				.setURI(uri);
+//		return config;
+//	}
+
 	@Override
-	public void run(String... args) throws Exception {
-		//deckComp.decodeDecksFromFile("commonHSTopDecks.txt");
-		//annComp.generateTrainFile();
-		Deck deck = deckComp.decodeDeckString(
-		"AAEBAZ8FAtMWoM4CDkaMAegBzgPIBNcF1gbdCowO2BTdrgKLvQK4xwLYxwIA");
-		annComp.classifyDeck(deck);
-//		ss.tagsAffin();
+	public void run(String... args) throws Exception
+	{
+		cRepo.save(cardComp.getCards().get(0));
+		System.out.println("SALVOU");
+//		cRepo.findAll();
+//		Deck deck = deckComp.decodeDeckString(
+//		"AAEBAZ8FAtMWoM4CDkaMAegBzgPIBNcF1gbdCowO2BTdrgKLvQK4xwLYxwIA");
+//		annComp.classifyDeck(deck);
+
+		// ss.tagsAffin();
 //		cb.hearthstonetopdecksCardRank();
 //scrap.wikipediaExpansions();
 //

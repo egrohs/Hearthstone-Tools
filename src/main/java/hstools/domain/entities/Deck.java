@@ -59,8 +59,7 @@ public class Deck extends Node {
 	private int surv;
 	// TODO Techs depende do meta
 
-	public Deck(Long id, String nome, Map<Card, Integer> cartas) {
-		super(id);
+	public Deck(String nome, Map<Card, Integer> cartas) {
 		this.name = nome;
 		this.cards = cartas;
 		this.classe = whichClass(new ArrayList<>(cartas.keySet()));

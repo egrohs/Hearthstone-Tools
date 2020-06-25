@@ -36,12 +36,8 @@ public class DeckComponent {
 	@Autowired
 	private CardComponent cardComp;
 
-	@Autowired
-	private ArtificialNeuralNetwork annComp;
-
 	@Getter
 	private Set<Deck> decks = new LinkedHashSet<Deck>();
-	Long id = 0L;
 
 	public void calcStats(Deck deck) {
 		for (Card c : deck.getCards().keySet()) {
@@ -188,8 +184,7 @@ public class DeckComponent {
 							}
 						}
 					}
-					Deck deck = new Deck(id, file.getName(), cartas);
-					id++;
+					Deck deck = new Deck(file.getName(), cartas);
 					deck.setArchtype(obs);
 					decks.add(deck);
 					sc.close();
@@ -248,8 +243,7 @@ public class DeckComponent {
 				cartas.put(cardComp.getCard(String.valueOf(dbfId)), count);
 			}
 		}
-		Deck deck = new Deck(id, "", cartas);
-		id++;
+		Deck deck = new Deck("", cartas);
 		deck.setFormato(formato);
 		System.out.println("Deck decoded: " + deck);
 		return deck;

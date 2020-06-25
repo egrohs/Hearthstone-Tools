@@ -8,8 +8,4 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class Player extends Node {
 	private CLASS classe;
-
-	public Player(Long id) {
-		super(id);
-	}
 }

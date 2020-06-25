@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
-import javax.annotation.PostConstruct;
+//import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -36,7 +36,7 @@ public class ArtificialNeuralNetwork {
 //TODO usar enum?
 	ArrayList<String> classVal = new ArrayList<String>();
 
-	@PostConstruct
+	//@PostConstruct
 	public void init() {
 		trainFromFile("deckArchtypeTrain.arff");
 	}

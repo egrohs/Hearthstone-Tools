@@ -34,7 +34,7 @@ public class GameService extends Thread {
 	@Autowired
 	private DataScienceComponent scienceComp;
 
-	Player player1 = new Player(0L), opponent = new Player(1L);
+	Player player1 = new Player(), opponent = new Player();
 	// CardBuilder cb;
 	int lastSize;
 	private DeckComponent deckComp;

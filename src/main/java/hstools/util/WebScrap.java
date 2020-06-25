@@ -8,7 +8,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
 
 import org.jsoup.Connection;
 import org.jsoup.Connection.Method;
@@ -37,7 +36,7 @@ public class WebScrap {
 	private Formato formato;
 	private Map<Integer, Deck> decks = new LinkedHashMap<>();
 
-	@PostConstruct
+	//@PostConstruct
 	public void init() {
 
 	}
@@ -201,7 +200,6 @@ public class WebScrap {
 		if (values == null || values.isEmpty()) {
 			System.out.println("No data found.");
 		} else {
-			Long id = 0L;
 			for (List<Object> row : values) {
 				String name = (String) row.get(0);
 				String regex = row.size() > 1 ? (String) row.get(1) : "";
@@ -209,8 +207,7 @@ public class WebScrap {
 				String desc = row.size() > 3 ? (String) row.get(3) : "";
 				Tag t = tags.get(name);
 				if (t == null) {
-					tags.put(name, new Tag(id, name, regex, expr, desc));
-					id++;
+					tags.put(name, new Tag(name, regex, expr, desc));
 				}
 			}
 		}
