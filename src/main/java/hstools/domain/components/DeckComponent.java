@@ -53,19 +53,25 @@ public class DeckComponent {
 			} else if (t.getName().equals("SOFT_REMOVE")) {// TODO rever, reduce attack...
 				deck.getStats().incSoft_remove(deck.getTags().get(t));
 			} else if (t.getName().equals("DRAW") || t.getName().equals("GENERATE")) {
+				//CARD_ADV
 				deck.getStats().incCard_adv(deck.getTags().get(t));
 			} else if (t.getName().equals("LOW_COST_MINION")) {
+				//AGGRO
 				deck.getStats().incLow_cost_minions(deck.getTags().get(t));
-			} else if (t.getName().equals("TAUNT") || t.getName().equals("LIFESTEAL") || t.getName().equals("ARMOR")
+			} else if (t.getName().equals("HIGH_COST")) {
+				//HIGH_COST
+				deck.getStats().incHigh_cost(deck.getTags().get(t));
+			}else if (t.getName().equals("TAUNT") || t.getName().equals("LIFESTEAL") || t.getName().equals("ARMOR")
 					|| t.getName().equals("HEALTH_RESTORE")) {
+				//SURVIVABILITY
 				deck.getStats().incSurv(deck.getTags().get(t));
 			}
 		}
 		int acum = 0;
 		for (Card c : deck.getCards().keySet()) {
-			acum += c.getCost();
+			acum += c.getCost() * deck.getCards().get(c);
 			if (c.getType().equals("minion")) {
-				deck.getStats().setQnt_minions(deck.getStats().getQnt_minions() + 1);
+				deck.getStats().setQnt_minions(deck.getStats().getQnt_minions() + deck.getCards().get(c));
 			}
 //				if (c.getRank() < 3.3) {
 //					low_rank += cartas.get(c);
@@ -73,7 +79,7 @@ public class DeckComponent {
 			// TODO spells
 			if (c.getAttack() >= 8 || (c.getTags().toString().contains("WINDFURY") && c.getAttack() >= 3)
 					|| (c.getTags().toString().contains("CHARGE") && c.getAttack() >= 5)) {
-				deck.getStats().setFinishers(deck.getStats().getFinishers() + 1);
+				deck.getStats().setFinishers(deck.getStats().getFinishers() + deck.getCards().get(c));
 			}
 		}
 		deck.getStats().setAvg_mana(acum / 30.0);

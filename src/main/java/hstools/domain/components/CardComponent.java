@@ -34,7 +34,6 @@ import hstools.domain.entities.Tag;
 import hstools.repositories.CardRepository;
 import hstools.util.GoogleSheets;
 import hstools.util.Util;
-import hstools.util.WebScrap;
 import lombok.Getter;
 
 /**
@@ -61,12 +60,17 @@ public class CardComponent {
 	public void init() {
 		Iterable<Card> iterable = () -> cRepo.findAll().iterator();
 		cards = StreamSupport.stream(iterable.spliterator(), false).collect(Collectors.toList());
+		System.out.println(cards.size() + " cards loaded.");
 		// expansions = web.wikipediaExpansions();
 		// importCards();
-	//	buildCards();
-	//	tags = WebScrap.importTags();
-	//	buildCardTags();
+//		buildCards();
+//		tags = WebScrap.importTags();
+//		buildCardTags();
 		// importCardRanks();
+
+//		for (Card card : cards) {
+//			cRepo.save(card);
+//		}
 	}
 
 	/**

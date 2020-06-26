@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @NodeEntity
-public class CardStats {
+public class CardStats extends Node {
 	private float rank;
 	private Integer popularity, combats, wins, draws, loses;
 	private boolean aggro/* , visited */;

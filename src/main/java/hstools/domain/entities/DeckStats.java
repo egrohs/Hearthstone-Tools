@@ -24,6 +24,7 @@ public class DeckStats {
 	private int low_cost_minions;
 	private int surv;
 	// TODO Techs depende do meta
+	private Integer high_cost;//high cost cards > 5
 	
 	public void incHard_remove(int integer) {
 		hard_remove += integer;
@@ -43,5 +44,9 @@ public class DeckStats {
 
 	public void incSurv(Integer integer) {
 		surv += integer;
+	}
+
+	public void incHigh_cost(Integer integer) {
+		high_cost += integer;
 	}
 }
