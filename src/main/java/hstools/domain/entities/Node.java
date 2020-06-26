@@ -8,7 +8,10 @@ import com.sun.istack.NotNull;
 import lombok.Data;
 
 /**
- * Abstract Entity for neo4j graph visualization.
+ * Abstract Entity for neo4j graph visualization. You should write your equals
+ * and hashCode in a domain specific way for managed entities. We strongly
+ * advise developers to not use the native id described by a Long field in
+ * combination with @Id @GeneratedValue in these methods.
  * 
  * @author EGrohs
  *

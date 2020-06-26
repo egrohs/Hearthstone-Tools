@@ -39,11 +39,11 @@ public class SynergyBuilder {
 	@Autowired
 	private CardComponent cardComp;
 	@Getter
-	private List<SynergyEdge<Card>> cardsSynergies = new ArrayList<SynergyEdge<Card>>();
+	private List<SynergyEdge<Card, Card>> cardsSynergies = new ArrayList<SynergyEdge<Card, Card>>();
 	@Getter
-	private List<SynergyEdge<Tag>> tagsSynergies = new ArrayList<SynergyEdge<Tag>>();
+	private List<SynergyEdge<Tag, Tag>> tagsSynergies = new ArrayList<SynergyEdge<Tag, Tag>>();
 	private ClassLoader clsLoader = this.getClass().getClassLoader();
-	
+
 	public void loadCombos() {
 		List<String[]> syns = Util.csv2CardSyns();
 		for (String[] combo : syns) {
@@ -63,12 +63,12 @@ public class SynergyBuilder {
 	}
 
 	// Depends on previous tagsSynergies calculated
-	public List<SynergyEdge<Card>> sinergias(Card c1, boolean everyCard) {
-		List<SynergyEdge<Card>> cardsSynergies = new ArrayList<SynergyEdge<Card>>();
-		for (SynergyEdge<Tag> ts : tagsSynergies) {
+	public List<SynergyEdge<Card, Card>> sinergias(Card c1, boolean everyCard) {
+		List<SynergyEdge<Card, Card>> cardsSynergies = new ArrayList<SynergyEdge<Card, Card>>();
+		for (SynergyEdge<Tag, Tag> ts : tagsSynergies) {
 			Tag tag = null;
-			Tag tag1 = (Tag) ts.getE1();
-			Tag tag2 = (Tag) ts.getE2();
+			Tag tag1 = (Tag) ts.getSource();
+			Tag tag2 = (Tag) ts.getTarget();
 			if (c1.getTags().contains(tag1)) {
 				tag = tag2;
 			} else if (c1.getTags().contains(tag2)) {
@@ -78,7 +78,7 @@ public class SynergyBuilder {
 				for (Card c2 : cardComp.getCards()) {
 					if ((everyCard || c2.getClasse() == CLASS.NEUTRAL || c1.getClasse() == c2.getClasse())
 							&& c2.getTags().contains(tag)) {
-						SynergyEdge<Card> cs = new SynergyEdge<Card>(c1, c2,
+						SynergyEdge<Card, Card> cs = new SynergyEdge<Card, Card>(c1, c2,
 								c2.getText() + "\t" + tag1.getRegex() + " + " + tag2.getRegex(), ts.getWeight());
 						cardsSynergies.add(cs);
 
@@ -95,8 +95,8 @@ public class SynergyBuilder {
 	 * 
 	 * @param everyCard if true, generate all synergies, class independ.
 	 */
-	public List<SynergyEdge<Card>> generateCardSynergies(Card c1, boolean everyCard) {
-		List<SynergyEdge<Card>> cardsSynergies = new ArrayList<SynergyEdge<Card>>();
+	public List<SynergyEdge<Card, Card>> generateCardSynergies(Card c1, boolean everyCard) {
+		List<SynergyEdge<Card, Card>> cardsSynergies = new ArrayList<SynergyEdge<Card, Card>>();
 		if (c1 != null && !c1.isCalculada()) {
 			cardsSynergies.addAll(sinergias(c1, everyCard));
 			// Collections.sort(Sinergias.cardsSynergies);
@@ -109,7 +109,7 @@ public class SynergyBuilder {
 	 * Generate all cards synergies.
 	 */
 	private void generateCardsSynergies() {
-		List<SynergyEdge<Card>> cardsSynergies = new ArrayList<SynergyEdge<Card>>();
+		List<SynergyEdge<Card, Card>> cardsSynergies = new ArrayList<SynergyEdge<Card, Card>>();
 		System.out.println("generateCardsSynergies...");
 		long ini = System.currentTimeMillis();
 		for (Card c1 : cardComp.getCards()) {
@@ -130,9 +130,9 @@ public class SynergyBuilder {
 		try {
 			fw = new FileWriter("cardSinergies.csv");
 			fw.write("Source\tTarget\tm1\tm2\r\n");
-			for (SynergyEdge<Card> s : cardsSynergies) {
-				Card c1 = (Card) s.getE1();
-				Card c2 = (Card) s.getE2();
+			for (SynergyEdge<Card, Card> s : cardsSynergies) {
+				Card c1 = (Card) s.getSource();
+				Card c2 = (Card) s.getTarget();
 				fw.write(c1.getName() + "\t" + c2.getName() + "\r\n");
 			}
 		} catch (IOException e) {
@@ -155,9 +155,9 @@ public class SynergyBuilder {
 	 * @return Return the synergy with those Cards.
 	 */
 	// TODO retornar lista de sinergias, não apenas uma.
-	private SynergyEdge<Card> getCardSynergy(Card e1, Card e2) {
-		for (SynergyEdge<Card> s : cardsSynergies) {
-			if ((e1 == s.getE1() && e2 == s.getE2()) || (e1 == s.getE2() && e2 == s.getE1())) {
+	private SynergyEdge<Card, Card> getCardSynergy(Card e1, Card e2) {
+		for (SynergyEdge<Card, Card> s : cardsSynergies) {
+			if ((e1 == s.getSource() && e2 == s.getTarget()) || (e1 == s.getTarget() && e2 == s.getSource())) {
 				return s;
 			}
 		}
@@ -188,7 +188,7 @@ public class SynergyBuilder {
 					Float value = Float.parseFloat(o2.get(1).toString());
 					// TODO remover esse if
 					if (value > 4.0) {
-						cardsSynergies.add(new SynergyEdge<Card>(c, c2, value, ""));
+						cardsSynergies.add(new SynergyEdge<Card, Card>(c, c2, value, ""));
 					}
 				}
 			}
@@ -214,24 +214,24 @@ public class SynergyBuilder {
 			float val = Float.parseFloat(line[3]);
 			String mech = line[4];
 			if (c1 != null && c2 != null) {
-				cardsSynergies.add(new SynergyEdge<Card>(c1, c2, freq, val, mech));
+				cardsSynergies.add(new SynergyEdge<Card, Card>(c1, c2, freq, val, mech));
 			}
 		}
 		sc.close();
 		System.out.println(cardsSynergies.size() + " pre calculated sinergies loaded.");
 	}
 
-	public List<SynergyEdge<Card>> generateMatchesCardsSim() {
+	public List<SynergyEdge<Card, Card>> generateMatchesCardsSim() {
 		JSONObject jo = (JSONObject) Util.file2JSONObject("src/main/resources/synergy/matchesCardHerthSim.json");
 		JSONArray nodes = (JSONArray) jo.get("nodes"), links = (JSONArray) jo.get("links");
-		List<SynergyEdge<Card>> cardSins = new ArrayList<SynergyEdge<Card>>();
+		List<SynergyEdge<Card, Card>> cardSins = new ArrayList<SynergyEdge<Card, Card>>();
 		Iterator<JSONObject> iterator = links.iterator();
 		while (iterator.hasNext()) {
 			JSONObject o = iterator.next();
 			try {
 				Card source = cardComp.getCard((String) o.get("source"));
 				Card target = cardComp.getCard((String) o.get("target"));
-				cardSins.add(new SynergyEdge<Card>(source, target, 1));
+				cardSins.add(new SynergyEdge<Card, Card>(source, target, 1));
 			} catch (RuntimeException e) {
 				// TODO: handle exception
 			}
@@ -250,8 +250,8 @@ public class SynergyBuilder {
 	private void imprimSins() {
 		// Collections.sort((List<SynergyEdge<Card>>) cardsSynergies);
 		StringBuilder sb = new StringBuilder();
-		for (SynergyEdge<Card> s : cardsSynergies) {
-			String line = s.getE1() + "\t" + s.getE2() + "\t" + s.getFreq() + "\t" + s.getWeight() + "\t"
+		for (SynergyEdge<Card, Card> s : cardsSynergies) {
+			String line = s.getSource() + "\t" + s.getTarget() + "\t" + s.getFreq() + "\t" + s.getWeight() + "\t"
 					+ s.getMechs();
 			sb.append(line + "\r\n");
 			System.out.println(line);
@@ -291,9 +291,9 @@ public class SynergyBuilder {
 					}
 					myatual = cardComp.getCard(id);
 					if (myatual != null) {
-						SynergyEdge<Card> s = getCardSynergy(myprev, myatual);
+						SynergyEdge<Card, Card> s = getCardSynergy(myprev, myatual);
 						if (s == null) {
-							s = new SynergyEdge<Card>(myprev, myatual, 1);
+							s = new SynergyEdge<Card, Card>(myprev, myatual, 1);
 							cardsSynergies.add(s);
 						}
 						s.setWeight(s.getWeight() + 1);
@@ -305,9 +305,9 @@ public class SynergyBuilder {
 					}
 					opoatual = cardComp.getCard(id);
 					if (opoatual != null) {
-						SynergyEdge<Card> s = getCardSynergy(opoprev, opoatual);
+						SynergyEdge<Card, Card> s = getCardSynergy(opoprev, opoatual);
 						if (s == null) {
-							s = new SynergyEdge<Card>(opoprev, opoatual, 1);
+							s = new SynergyEdge<Card, Card>(opoprev, opoatual, 1);
 							cardsSynergies.add(s);
 						}
 						s.setWeight(s.getWeight() + 1);
@@ -329,11 +329,11 @@ public class SynergyBuilder {
 		// Set<Sinergia> sub = new LinkedHashSet<Sinergia>();
 		Set<Card> sub = new LinkedHashSet<Card>();
 		if (c != null) {
-			for (SynergyEdge<Card> s : cardsSynergies) {
-				if (s.getE1() == c || s.getE2() == c) {
-					Card c2 = (Card) s.getE2();
+			for (SynergyEdge<Card, Card> s : cardsSynergies) {
+				if (s.getSource() == c || s.getTarget() == c) {
+					Card c2 = (Card) s.getTarget();
 					if (c == c2) {
-						c = (Card) s.getE1();
+						c = (Card) s.getSource();
 					}
 					// cartas com sinergia com custo provavel no turno
 					if (CLASS.contem(hsClass, c2.getClasse()) && c2.getCost() <= currentMana) {
@@ -353,15 +353,15 @@ public class SynergyBuilder {
 	 * @param manaRestante Mana restante no turno atual.
 	 * @return
 	 */
-	public Set<SynergyEdge<Card>> opponentPlays(Card c, int manaRestante, CLASS opo) {
-		Set<SynergyEdge<Card>> sub = new LinkedHashSet<SynergyEdge<Card>>();
+	public Set<SynergyEdge<Card, Card>> opponentPlays(Card c, int manaRestante, CLASS opo) {
+		Set<SynergyEdge<Card, Card>> sub = new LinkedHashSet<SynergyEdge<Card, Card>>();
 		// Set<Carta> sub = new LinkedHashSet<Carta>();
 		if (c != null) {
-			for (SynergyEdge<Card> s : cardsSynergies) {
-				if (s.getE1() == c || s.getE2() == c) {
-					Card c2 = (Card) s.getE2();
+			for (SynergyEdge<Card, Card> s : cardsSynergies) {
+				if (s.getSource() == c || s.getTarget() == c) {
+					Card c2 = (Card) s.getTarget();
 					if (c == c2) {
-						c = (Card) s.getE1();
+						c = (Card) s.getSource();
 					}
 					// cartas com sinergia com custo provavel no turno
 					if (CLASS.contem(opo, c2.getClasse()) && c2.getCost() <= manaRestante) {
@@ -387,9 +387,9 @@ public class SynergyBuilder {
 		System.out.println("Sinergias para " + initialCards[0]);
 		for (String cardname : initialCards) {
 			Card c = cardComp.getCard(cardname);
-			for (SynergyEdge<Card> s : opponentPlays(c, 10, classe)) {
-				Card c1 = (Card) s.getE1();
-				Card c2 = (Card) s.getE2();
+			for (SynergyEdge<Card, Card> s : opponentPlays(c, 10, classe)) {
+				Card c1 = (Card) s.getSource();
+				Card c2 = (Card) s.getTarget();
 				if (c == c1 || c == c2) {
 					if (CLASS.contem(classe, c1.getClasse()) || CLASS.contem(classe, c2.getClasse())) {
 						deck.add(c1);
@@ -415,13 +415,13 @@ public class SynergyBuilder {
 			Tag t1 = cardComp.getTags().get(source);
 			Tag t2 = cardComp.getTags().get(taget);
 			if (t2 != null) {
-				tagsSynergies.add(new SynergyEdge<Tag>(t1, t2, label, weight));
+				tagsSynergies.add(new SynergyEdge<Tag, Tag>(t1, t2, label, weight));
 			}
 		}
 		for (Tag t1 : cardComp.getTags().values()) {
 			if (t1.getRegex() != null && !"".equals(t1.getRegex())) {
 				// Almost every tag synergies with itself.
-				tagsSynergies.add(new SynergyEdge<Tag>(t1, t1, t1.getName(), 0.0f));
+				tagsSynergies.add(new SynergyEdge<Tag, Tag>(t1, t1, t1.getName(), 0.0f));
 			}
 		}
 		System.out.println(tagsSynergies.size() + " tags-synergies imported.");

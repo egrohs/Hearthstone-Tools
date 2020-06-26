@@ -75,7 +75,7 @@ public class GameService extends Thread {
 						acerto(card);
 						// TODO usar todas mecanicas mais jogadas? s� as com
 						// mais ocorrencias?
-						Set<Card> temp = scienceComp.possiveis();
+						//Set<Card> temp = scienceComp.possiveis();
 						// TODO
 						// App.provaveis(temp);
 					}

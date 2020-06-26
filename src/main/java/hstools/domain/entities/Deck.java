@@ -1,9 +1,7 @@
 package hstools.domain.entities;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
@@ -25,20 +23,47 @@ public class Deck extends Node {
 	@Relationship
 	private DeckStats stats;
 	@Relationship
-	private Map<Card, Integer> cards = new HashMap<>();
+	// private Map<Card, Integer> cards = new HashMap<>();
+	private Set<SynergyEdge<Deck, Card>> cards = new HashSet<SynergyEdge<Deck, Card>>();
 	@Relationship
-	private Map<Tag, Integer> tags = new HashMap<>();
+	// private Map<Tag, Integer> tags = new HashMap<>();
+	private Set<SynergyEdge<Deck, Tag>> tags = new HashSet<SynergyEdge<Deck, Tag>>();
 
-	public Deck(String nome, Map<Card, Integer> cartas) {
+	public Deck() {
+		this.stats = new DeckStats();
+	}
+
+	public Deck(String nome, Set<SynergyEdge<Deck, Card>> cards) {
 		this.name = nome;
-		this.cards = cartas;
-		this.classe = whichClass(new ArrayList<>(cartas.keySet()));
+		this.cards = cards;
+		for (SynergyEdge<Deck, Card> s : cards) {
+			this.classe = s.getTarget().getClasse();
+			if (this.classe != CLASS.NEUTRAL) {
+				break;
+			}
+		}
 		this.stats = new DeckStats();
 		calcSet();
 	}
 
+	public void incTagSynergy(Tag tag) {
+		SynergyEdge<Deck, Tag> syn = null;
+		for (SynergyEdge<Deck, Tag> s : tags) {
+			if (s.getTarget().equals(tag)) {
+				syn = s;
+				break;
+			}
+		}
+		if (syn == null) {
+			syn = new SynergyEdge<>(this, tag, 1);
+		}
+		syn.setFreq(syn.getFreq() + 1);
+		tags.add(syn);
+	}
+
 	private void calcSet() {
-		for (Card c : cards.keySet()) {
+		// for (Card c : cards.keySet())
+		{
 
 		}
 	}
@@ -57,26 +82,9 @@ public class Deck extends Node {
 		StringBuilder sb = new StringBuilder();
 		sb.append(name + "\r\n");
 		sb.append(classe + "\r\n");
-		for (Card c : cards.keySet()) {
-			sb.append(c.getName() + "\t" + cards.get(c) + "\r\n");
+		for (SynergyEdge<Deck, Card> s : cards) {
+			sb.append(s.getTarget().toString() + "\t" + s.getFreq() + "\r\n");
 		}
 		return sb.toString();
-	}
-
-	private CLASS whichClass(List<Card> cartas) {
-		Map<CLASS, Integer> qnts = new HashMap<CLASS, Integer>();
-		CLASS most = CLASS.NEUTRAL;
-		for (Card c : cartas) {
-			if (qnts.get(c.getClasse()) == null)
-				qnts.put(c.getClasse(), 1);
-			else
-				qnts.put(c.getClasse(), qnts.get(c.getClasse()) + 1);
-		}
-		for (CLASS cls : qnts.keySet()) {
-			if (most == CLASS.NEUTRAL || qnts.get(most) < qnts.get(cls)) {
-				most = cls;
-			}
-		}
-		return most;
 	}
 }

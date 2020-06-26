@@ -8,7 +8,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import hstools.domain.components.CardComponent;
 import hstools.domain.components.DeckComponent;
-import hstools.domain.entities.Card;
 import hstools.domain.entities.Deck;
 
 @RunWith(SpringRunner.class)
@@ -29,8 +28,6 @@ public class DeckServiceTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		for (Card c : d.getCards().keySet()) {
-			System.out.print("(" + c.getName() + ", " + d.getCards().get(c) + ") ");
-		}
+		System.out.println(d);
 	}
 }

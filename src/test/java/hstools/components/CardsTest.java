@@ -26,6 +26,7 @@ public class CardsTest {
 
 //TODO fazer not asserts introspectivos, de forma que todas tags que as cartas nao tiverem devem ser geradas automaticamente. 
 	// @Test
+	/*
 	public void testCardsTags() {
 		assertTrue(!cb.getCard("corpsetaker").getTags().contains(cb.getTags().get("FREEZE")));
 		assertTrue(!cb.getCard("corpsetaker").getTags().contains(cb.getTags().get("OVERLOAD")));
@@ -829,7 +830,7 @@ public class CardsTest {
 		assertTrue(!cb.getCard("gral, the shark").getTags().contains(cb.getTags().get("RUSH")));
 		assertTrue(!cb.getCard("gral, the shark").getTags().contains(cb.getTags().get("ATTACK_MODIFY")));
 	}
-
+*/
 	@Test
 	public void testCardSinergies() {
 		String[] HAND = { "Arcane Breath", "Cleric of Scales", "Sand Breath", "Soul Infusion", "Breath of Dreams",

@@ -16,7 +16,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @NodeEntity
-@EqualsAndHashCode(callSuper=true)
+@EqualsAndHashCode(callSuper = true)
 public class Card extends Node {
 	private boolean calculada;
 	private CLASS classe;
@@ -24,15 +24,19 @@ public class Card extends Node {
 	private String cardId, race, type, rarity, mechs, refTags;
 	private Expansion expansion;
 	private Integer dbfId, cost, attack, health, dur;
-	
+
 	@Relationship
 	private CardStats stats;
 	@Relationship(type = "TAG")
 	private Set<Tag> tags = new HashSet<Tag>();
-	public Card() {}
-	public Card(String cardId, Integer dbfId, String name, String set, String faction, CLASS classe,
-			String type, String text, Long cos, Long atta, Long health, Long dur, String rarity, String refTags,
-			String mechs) {
+
+	// private Set<SynergyEdge<Card, Tag>> tags = new HashSet<SynergyEdge<Card,
+	// Tag>>();
+	public Card() {
+	}
+
+	public Card(String cardId, Integer dbfId, String name, String set, String faction, CLASS classe, String type,
+			String text, Long cos, Long atta, Long health, Long dur, String rarity, String refTags, String mechs) {
 		this.cardId = cardId;
 		this.dbfId = dbfId;
 //		this.getChildren().add(new ImageView(new Image("file:res/cards/" + this.id + ".png")));
@@ -50,7 +54,7 @@ public class Card extends Node {
 		this.health = (health == null ? null : Integer.parseInt(health.toString()));
 		this.dur = (dur == null ? null : Integer.parseInt(dur.toString()));
 		this.rarity = rarity;
-		
+
 		this.refTags = refTags;
 		this.mechs = mechs;
 		trim();
@@ -97,5 +101,9 @@ public class Card extends Node {
 			}
 		}
 		return expr;
+	}
+
+	public String toString() {
+		return name;
 	}
 }

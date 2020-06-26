@@ -20,7 +20,6 @@ import hstools.domain.entities.Card;
 import hstools.domain.entities.Deck;
 import hstools.domain.entities.Player;
 import hstools.domain.entities.SynergyEdge;
-import hstools.domain.entities.Tag;
 import hstools.playaid.PowerLogReader;
 import hstools.playaid.ZoneLogReader;
 
@@ -41,124 +40,25 @@ public class DataScienceComponent {
 	private SynergyBuilder synComp;
 
 	public void tagsAffin() {
-		synComp.loadCombos();
-		Map<String, SynergyEdge<Tag>> tagSins = new LinkedHashMap<String, SynergyEdge<Tag>>();
-		for (SynergyEdge<Card> s : synComp.getCardsSynergies()) {
-			Card c1 = (Card) s.getE1();
-			Card c2 = (Card) s.getE2();
-			for (Tag t1 : c1.getTags()) {
-				for (Tag t2 : c2.getTags()) {
-					String key = "" + t1.getId() + t2.getId();
-					if (!tagSins.containsKey(key))
-						tagSins.put(key, new SynergyEdge<Tag>(t1, t2, 1));
-					else
-						tagSins.get(key).setFreq(tagSins.get(key).getFreq() + 1);
-				}
-			}
-		}
-//		for (Card c : cardComp.getCards()) {
-//			for (Tag t : c.getTags()) {
-//				t.setSize(t.getSize() + 1);
+//		synComp.loadCombos();
+//		Map<String, SynergyEdge<Tag>> tagSins = new LinkedHashMap<String, SynergyEdge<Tag>>();
+//		for (SynergyEdge<Card> s : synComp.getCardsSynergies()) {
+//			Card c1 = (Card) s.getSource();
+//			Card c2 = (Card) s.getTarget();
+//			for (Tag t1 : c1.getTags()) {
+//				for (Tag t2 : c2.getTags()) {
+//					String key = "" + t1.getId() + t2.getId();
+//					if (!tagSins.containsKey(key))
+//						tagSins.put(key, new SynergyEdge<Tag>(t1, t2, 1));
+//					else
+//						tagSins.get(key).setFreq(tagSins.get(key).getFreq() + 1);
+//				}
 //			}
 //		}
-		for (String key : tagSins.keySet()) {
-			SynergyEdge<Tag> s = tagSins.get(key);
-			System.out.println(s.getE1().getName() + "\t" + s.getE2().getName() + "\t" + s.getFreq());
-		}
-	}
-
-	@Deprecated
-	public void tagsAffin2() {
-		// Conclusion: Match plays cannot be used to card synegies
-		// int[][] affinity = new int[tb.getTags().size()][tb.getTags().size()];
-		List<SynergyEdge<Card>> cardSins = synComp.generateMatchesCardsSim();
-		Map<String, SynergyEdge<Tag>> tagSins = new LinkedHashMap<String, SynergyEdge<Tag>>();
-		for (SynergyEdge<Card> s : cardSins) {
-			Card c1 = (Card) s.getE1();
-			Card c2 = (Card) s.getE2();
-			for (Tag t1 : c1.getTags()) {
-				for (Tag t2 : c2.getTags()) {
-					String key = "" + t1.getId() + t2.getId();
-					if (!tagSins.containsKey(key))
-						tagSins.put(key, new SynergyEdge<Tag>(t1, t2, 1));
-					else
-						tagSins.get(key).setFreq(tagSins.get(key).getFreq() + 1);
-				}
-			}
-		}
-		for (String key : tagSins.keySet()) {
-			SynergyEdge<Tag> s = tagSins.get(key);
-			System.out.println(s.getE1().getName() + "\t" + s.getE2().getName() + "\t" + s.getFreq());
-		}
-//		printSortedMatrix(affinity, CLASS);
-	}
-
-	@Deprecated
-	public void tagsAffin3() {
-		// card syns from decks seems not work too
-		deckComp.decodeDecksFromFile("proHSTopDecks.txt");
-		List<SynergyEdge<Card>> cardSins = new ArrayList<SynergyEdge<Card>>();
-		for (Deck d : deckComp.getDecks()) {
-			for (Card c1 : d.getCards().keySet()) {
-				for (Card c2 : d.getCards().keySet()) {
-					cardSins.add(new SynergyEdge<Card>(c1, c2, 1));
-				}
-			}
-		}
-
-		Map<String, SynergyEdge<Tag>> tagSins = new LinkedHashMap<String, SynergyEdge<Tag>>();
-		for (SynergyEdge<Card> s : cardSins) {
-			Card c1 = (Card) s.getE1();
-			Card c2 = (Card) s.getE2();
-			for (Tag t1 : c1.getTags()) {
-				for (Tag t2 : c2.getTags()) {
-					String key = "" + t1.getId() + t2.getId();
-					if (!tagSins.containsKey(key))
-						tagSins.put(key, new SynergyEdge<Tag>(t1, t2, 1));
-					else
-						tagSins.get(key).setFreq(tagSins.get(key).getFreq() + 1);
-				}
-			}
-		}
-		for (Card c : cardComp.getCards()) {
-			for (Tag t : c.getTags()) {
-				t.setSize(t.getSize() + 1);
-			}
-		}
-		for (String key : tagSins.keySet()) {
-			SynergyEdge<Tag> s = tagSins.get(key);
-			System.out.println(s.getE1().getName() + "\t" + s.getE2().getName() + "\t"
-					+ s.getFreq() / (s.getE1().getSize() + s.getE2().getSize()));
-		}
-//		printSortedMatrix(affinity, CLASS);
-	}
-
-	public void cardsMatrix() {
-		// TODO abordagem 2, por matrix de afinidade.
-		int[][] affinity = new int[cardComp.getCards().size()][cardComp.getCards().size()];
-		for (Deck deck : deckComp.getDecks()) {
-			for (Card c1 : deck.getCards().keySet()) {
-				for (Card c2 : deck.getCards().keySet()) {
-					affinity[c1.getDbfId().intValue()][c2.getDbfId().intValue()]++;
-				}
-			}
-		}
-		Map<String, Integer> sorted = new LinkedHashMap<>();
-		for (int i = 0; i < affinity.length; i++) {
-			for (int j = 0; j < affinity.length; j++) {
-				sorted.put("" + i + "," + j, affinity[i][j]);
-			}
-		}
-		sorted.entrySet().stream().sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
-				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (x, y) -> {
-					throw new AssertionError();
-				}, LinkedHashMap::new));
-		for (String k : sorted.keySet()) {
-			int val = sorted.get(k);
-			if (val > 9)
-				System.out.println(cardComp.getCard(k.split(",")[0]).getName() + " & "
-						+ cardComp.getCard(k.split(",")[1]).getName() + " = " + sorted.get(k));
-		}
+//		for (String key : tagSins.keySet()) {
+//			SynergyEdge<Tag> s = tagSins.get(key);
+//			System.out.println(s.getE1().getName() + "\t" + s.getE2().getName() + "\t" + s.getFreq());
+//		}
 	}
 
 	/**
@@ -218,31 +118,26 @@ public class DataScienceComponent {
 	 * @param card
 	 * @return
 	 */
-	private Map<Card, String> possiveis2(Card card, CLASS opo) {
+	private Map<Card, String> possiveis(Card card, CLASS opo) {
 		// calcula possiveis jogadas.
 		// TODO deve considerar todas cartas ja jogadas
 		// CardBuilder.generateCardSynergies(card);
 		// TODO tem que ser o mana que ele terminou o turno
-		Set<SynergyEdge<Card>> sub = synComp.opponentPlays(card, PowerLogReader.lastMana + 1, opo);
-		List<SynergyEdge<Card>> exibe = new ArrayList<SynergyEdge<Card>>(sub);
-		Collections.sort(exibe);
-		Map<Card, String> temp = new LinkedHashMap<Card, String>();
-		for (SynergyEdge<Card> sinergia : exibe) {
-			Card c = (Card) sinergia.getE2();
-			if (card == c) {
-				c = (Card) sinergia.getE1();
-			}
-			if (!temp.containsKey(c)) {
-				String t = c.getName() + " f:" + sinergia.getFreq() + " v:" + sinergia.getWeight();
-				temp.put(c, t);
-			}
-		}
-		return temp;
-	}
-
-	public Set<Card> possiveis() {
-		// TODO return TagBuilder.getMechsCards(mechs, PowerLogReader.lastMana + 1,
-		// opponent.getClasse());
+//		Set<SynergyEdge<Card>> sub = synComp.opponentPlays(card, PowerLogReader.lastMana + 1, opo);
+//		List<SynergyEdge<Card>> exibe = new ArrayList<SynergyEdge<Card>>(sub);
+//		Collections.sort(exibe);
+//		Map<Card, String> temp = new LinkedHashMap<Card, String>();
+//		for (SynergyEdge<Card> sinergia : exibe) {
+//			Card c = (Card) sinergia.getE2();
+//			if (card == c) {
+//				c = (Card) sinergia.getE1();
+//			}
+//			if (!temp.containsKey(c)) {
+//				String t = c.getName() + " f:" + sinergia.getFreq() + " v:" + sinergia.getWeight();
+//				temp.put(c, t);
+//			}
+//		}
+//		return temp;
 		return null;
 	}
 }

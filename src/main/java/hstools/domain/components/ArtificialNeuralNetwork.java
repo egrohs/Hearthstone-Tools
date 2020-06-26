@@ -40,35 +40,39 @@ public class ArtificialNeuralNetwork {
 	// Instance of NN
 	private MultilayerPerceptron mlp = new MultilayerPerceptron();
 	List<String> classVal = new ArrayList<String>();
+	private boolean trained;
 
-	@PostConstruct
-	public void init() {
-		trainFromFile("deckArchtypeTrain.arff");
-	}
+//	@PostConstruct
+//	public void init() {
+//		trainFromFile("deckArchtypeTrain.arff");
+//	}
 
 	private void trainFromFile(String filepath) {
-		try {
-			// Reading training arff or csv file
-			FileReader trainreader = new FileReader(new File(clsLoader.getResource(filepath).getFile()));
-			Instances train = new Instances(trainreader);
-			train.setClassIndex(train.numAttributes() - 1);
-			// Setting Parameters
-			mlp.setLearningRate(0.1);
-			mlp.setMomentum(0.2);
-			mlp.setTrainingTime(20000);
-			mlp.setHiddenLayers("20");
-			mlp.buildClassifier(train);
+		if (!trained) {
+			try {
+				// Reading training arff or csv file
+				FileReader trainreader = new FileReader(new File(clsLoader.getResource(filepath).getFile()));
+				Instances train = new Instances(trainreader);
+				train.setClassIndex(train.numAttributes() - 1);
+				// Setting Parameters
+				mlp.setLearningRate(0.1);
+				mlp.setMomentum(0.2);
+				mlp.setTrainingTime(20000);
+				mlp.setHiddenLayers("20");
+				mlp.buildClassifier(train);
 
-			// For evaluation of training data,
-			Evaluation eval = new Evaluation(train);
-			eval.evaluateModel(mlp, train);
-			System.out.println("ERROR: " + eval.errorRate()); // Printing Training Mean root squared Error
-			System.out.println(eval.toSummaryString()); // Summary of Training
-			// To apply K-Fold validation
-			int kfolds = 3;
-			eval.crossValidateModel(mlp, train, kfolds, new Random(1));
-		} catch (Exception ex) {
-			ex.printStackTrace();
+				// For evaluation of training data,
+				Evaluation eval = new Evaluation(train);
+				eval.evaluateModel(mlp, train);
+				System.out.println("ERROR: " + eval.errorRate()); // Printing Training Mean root squared Error
+				System.out.println(eval.toSummaryString()); // Summary of Training
+				// To apply K-Fold validation
+				int kfolds = 3;
+				eval.crossValidateModel(mlp, train, kfolds, new Random(1));
+				trained = true;
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
 		}
 	}
 
@@ -111,21 +115,23 @@ public class ArtificialNeuralNetwork {
 	}
 
 	public void classifyDeck(Deck deck) {
+		trainFromFile("deckArchtypeTrain.arff");
 		deckComp.calcStats(deck);
 		Instances archInst = defineArchtypesInstancesAttributes();
 		double[] instanceValue1 = new double[archInst.numAttributes()];
 		// qnt cards, type == "minion" && cost < 3
 		instanceValue1[0] = deck.getStats().getLow_cost_minions();
 		// (ones + twos * 2 + threes * 3 + fours * 4 + fives * 5 + sixes * 7) / 30.0;
-		instanceValue1[1] = deck.getStats().getAvg_mana();
+		// instanceValue1[1] = deck.getStats().getAvg_mana();
+		instanceValue1[1] = deck.getStats().getHigh_cost();
+		instanceValue1[2] = deck.getStats().getSoft_removals() + deck.getStats().getHard_removals();
+		instanceValue1[3] = deck.getStats().getBoard_control();
 		// qnt cards com tags "DRAW" or "GENERATE"
-		instanceValue1[2] = deck.getStats().getCard_adv();
+		instanceValue1[4] = deck.getStats().getCard_adv();
 		// qnt cards com tags "TAUNT", "LIFESTEAL", "ARMOR" or "HEALTH_RESTORE"
-		instanceValue1[3] = deck.getStats().getSurv();
-		// instanceValue1[4] = 0; // archtype a ser descoberto
+		instanceValue1[5] = deck.getStats().getSurvs();
+		// instanceValue1[6] = 0; // archtype a ser descoberto
 
-		// 9,3.066666666666667,1,2,AGGRO
-		// 6,3.933333,5,8,COMBO
 		archInst.add(new DenseInstance(1.0, instanceValue1));
 
 		classify(archInst);
@@ -136,7 +142,10 @@ public class ArtificialNeuralNetwork {
 	public void generateTrainFile() {
 		System.out.println("@RELATION archtypes");
 		System.out.println("@ATTRIBUTE low_cost_minions NUMERIC");
-		System.out.println("@ATTRIBUTE avg_mana NUMERIC");
+		// System.out.println("@ATTRIBUTE avg_mana NUMERIC");
+		System.out.println("@ATTRIBUTE high_cost NUMERIC");
+		System.out.println("@ATTRIBUTE removals NUMERIC");
+		System.out.println("@ATTRIBUTE board_control NUMERIC");
 		System.out.println("@ATTRIBUTE card_adv NUMERIC");
 		System.out.println("@ATTRIBUTE surv NUMERIC");
 		System.out.println("@ATTRIBUTE archtype {AGGRO,MIDRANGE,CONTROL,COMBO,FACE,TRIBAL,TEMPO,MILL}");
@@ -144,9 +153,13 @@ public class ArtificialNeuralNetwork {
 		for (Deck deck : deckComp.getDecks()) {
 			deckComp.calcStats(deck);
 			System.out.print(deck.getStats().getLow_cost_minions() + ",");
-			System.out.print(deck.getStats().getAvg_mana() + ",");
+			// System.out.print(deck.getStats().getAvg_mana() + ",");
+			System.out.print(deck.getStats().getHigh_cost() + ",");
+			System.out.print(deck.getStats().getSoft_removals() + deck.getStats().getHard_removals() + ",");
+			System.out.print(deck.getStats().getBoard_control() + ",");
+
 			System.out.print(deck.getStats().getCard_adv() + ",");
-			System.out.print(deck.getStats().getSurv() + ",");
+			System.out.print(deck.getStats().getSurvs() + ",");
 			System.out.println(deck.getStats().getArchtype());
 		}
 	}

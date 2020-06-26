@@ -50,9 +50,12 @@ public class HearthstoneToolsApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception
 	{
-		Deck deck = deckComp.decodeDeckString(
-		"AAEBAR8CxQiG0wIOqAK1A+sH2wntCf4Mzq4CubQC6rsC7LsCicMCjsMCps4Cxs4CAA==");
-		annComp.classifyDeck(deck);
+		deckComp.decodeDecksFromFile("commonHSTopDecks.txt");
+		annComp.generateTrainFile();
+		
+//		Deck deck = deckComp.decodeDeckString(
+//		"AAEBAR8CxQiG0wIOqAK1A+sH2wntCf4Mzq4CubQC6rsC7LsCicMCjsMCps4Cxs4CAA==");
+//		annComp.classifyDeck(deck);
 
 		// ss.tagsAffin();
 //		cb.hearthstonetopdecksCardRank();

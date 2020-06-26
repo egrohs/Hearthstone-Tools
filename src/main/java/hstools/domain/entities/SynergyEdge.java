@@ -16,43 +16,42 @@ import lombok.Data;
 @Data
 @RelationshipEntity(type = "SYNERGY")
 //@EqualsAndHashCode(callSuper=true)
-public class SynergyEdge<T extends Node> implements Comparable<SynergyEdge<T>> {
-	private Long id;
+public class SynergyEdge<S extends Node, T extends Node> extends Node {// implements Comparable<SynergyEdge<S, T>> {
 	@StartNode
-	private T e1;
+	private S source;
 	@EndNode
-	private T e2;
+	private T target;
 	private int freq;
 	private Float weight = 0f;
 	private String label, mechs;
 
-	public SynergyEdge(T e1, T e2, int freq, Float v, String mm) {
-		this.e1 = e1;
-		this.e2 = e2;
+	public SynergyEdge(S e1, T e2, int freq, Float v, String mm) {
+		this.source = e1;
+		this.target = e2;
 		this.freq = freq;
 		this.weight = v;
 		this.mechs = mm;
 	}
 
-	public SynergyEdge(T e1, T e2, String label, Float v) {
-		this.e1 = e1;
-		this.e2 = e2;
+	public SynergyEdge(S e1, T e2, String label, Float v) {
+		this.source = e1;
+		this.target = e2;
 		this.label = label;
 		this.weight = v;
 	}
 
-	public SynergyEdge(T e1, T e2, float v, String mm) {
-		this.e1 = e1;
-		this.e2 = e2;
+	public SynergyEdge(S e1, T e2, float v, String mm) {
+		this.source = e1;
+		this.target = e2;
 		this.weight = v;
 		this.mechs = mm;
 	}
 
-	public SynergyEdge(T e1, T e2, int freq) {
+	public SynergyEdge(S e1, T e2, int freq) {
 		if (e1 == null || e2 == null)
 			throw new RuntimeException("Null nodes");
-		this.e1 = e1;
-		this.e2 = e2;
+		this.source = e1;
+		this.target = e2;
 		this.freq = freq;
 	}
 
@@ -62,32 +61,36 @@ public class SynergyEdge<T extends Node> implements Comparable<SynergyEdge<T>> {
 	public boolean equals(Object obj) {
 		if (obj == null || !(obj instanceof SynergyEdge))
 			return false;
-		SynergyEdge<T> s2 = (SynergyEdge<T>) obj;
+		SynergyEdge<S, T> s2 = (SynergyEdge<S, T>) obj;
 		// from here, must not test for nulls.
 		if (weight != s2.getWeight())
 			return false;
-		if ((e1 != s2.getE1() || e2 != s2.getE2()) && e1 != s2.getE2())
+		if ((source != s2.getSource() || target != s2.getTarget()) && source != s2.getTarget())
 			return false;
 		return true;
 	}
-
-	@Override
-	public int compareTo(SynergyEdge<T> o) {
-		if (freq > o.freq) {
-			return -1;
-		} else if (freq < o.freq) {
-			return 1;
-		}
-		if (weight > o.getWeight()) {
-			return -1;
-		} else if (weight < o.getWeight()) {
-			return 1;
-		}
-		return 0;
-	}
+//	@Override
+//	public int compareTo(Node o) {
+//		// TODO Auto-generated method stub
+//		return super.compareTo(o);
+//	}
+//	@Override
+//	public int compareTo(SynergyEdge<S, T> o) {
+//		if (freq > o.freq) {
+//			return -1;
+//		} else if (freq < o.freq) {
+//			return 1;
+//		}
+//		if (weight > o.getWeight()) {
+//			return -1;
+//		} else if (weight < o.getWeight()) {
+//			return 1;
+//		}
+//		return 0;
+//	}
 
 	@Override
 	public String toString() {
-		return e1 + "\t" + e2 + "\t" + label;
+		return source + "\t" + target + "\t" + label;
 	}
 }
