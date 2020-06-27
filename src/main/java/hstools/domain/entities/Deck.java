@@ -46,7 +46,7 @@ public class Deck extends Node {
 		calcSet();
 	}
 
-	public void incTagSynergy(Tag tag) {
+	public void acumTagSynergy(Tag tag, int f) {
 		SynergyEdge<Deck, Tag> syn = null;
 		for (SynergyEdge<Deck, Tag> s : tags) {
 			if (s.getTarget().equals(tag)) {
@@ -55,10 +55,11 @@ public class Deck extends Node {
 			}
 		}
 		if (syn == null) {
-			syn = new SynergyEdge<>(this, tag, 1);
+			syn = new SynergyEdge<>(this, tag, 0);
 		}
-		syn.setFreq(syn.getFreq() + 1);
+		syn.setFreq(syn.getFreq() + f);
 		tags.add(syn);
+		System.out.println("taagg " + syn.getTarget() + ": " + syn.getFreq());
 	}
 
 	private void calcSet() {

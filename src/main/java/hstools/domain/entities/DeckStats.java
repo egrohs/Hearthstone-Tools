@@ -26,7 +26,7 @@ public class DeckStats {
 	private int board_control;
 
 	// TODO Techs depende do meta
-	private Integer high_cost;// high cost cards > 5
+	private int high_cost;// high cost cards > 5
 
 	public void incHard_remove(int integer) {
 		hard_removals += integer;
@@ -36,23 +36,23 @@ public class DeckStats {
 		soft_removals += integer;
 	}
 
-	public void incCard_adv(Integer integer) {
+	public void incCard_adv(int integer) {
 		card_adv += integer;
 	}
 
-	public void incLow_cost_minions(Integer integer) {
+	public void incLow_cost_minions(int integer) {
 		low_cost_minions += integer;
 	}
 
-	public void incSurv(Integer integer) {
+	public void incSurv(int integer) {
 		survs += integer;
 	}
 
-	public void incHigh_cost(Integer integer) {
+	public void incHigh_cost(int integer) {
 		high_cost += integer;
 	}
 
-	public void incBoard_control(Integer integer) {
+	public void incBoard_control(int integer) {
 		board_control += integer;
 	}
 }

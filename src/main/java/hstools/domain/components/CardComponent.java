@@ -13,8 +13,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import javax.annotation.PostConstruct;
 //import javax.annotation.PostConstruct;
@@ -34,6 +32,7 @@ import hstools.domain.entities.Tag;
 import hstools.repositories.CardRepository;
 import hstools.util.GoogleSheets;
 import hstools.util.Util;
+import hstools.util.WebScrap;
 import lombok.Getter;
 
 /**
@@ -46,26 +45,28 @@ import lombok.Getter;
 //TODO retrieve hearthstonetopdecksDecks cards rankings to salve in local file?
 //TODO https://hearthstoneapi.com/ retrieve GETInfo types, classes, patch, sets, std, wild, factions, rarity, races...
 public class CardComponent {
+	static ScriptEngine jsEngine = new ScriptEngineManager().getEngineByName("JavaScript");
 	@Getter
 	private List<Expansion> expansions = new ArrayList<Expansion>();
 	@Getter
 	private List<Card> cards = new ArrayList<Card>();
 	@Getter
-	private Map<String, Tag> tags = new HashMap<String, Tag>();
+	private static Map<String, Tag> tags = new HashMap<String, Tag>();
 
 	@Autowired
 	private CardRepository cRepo;
 
 	@PostConstruct
 	public void init() {
-		Iterable<Card> iterable = () -> cRepo.findAll().iterator();
-		cards = StreamSupport.stream(iterable.spliterator(), false).collect(Collectors.toList());
-		System.out.println(cards.size() + " cards loaded.");
+//		Iterable<Card> iterable = () -> cRepo.findAll().iterator();
+//		cards = StreamSupport.stream(iterable.spliterator(), false).collect(Collectors.toList());
+//		System.out.println(cards.size() + " cards loaded.");
+
 		// expansions = web.wikipediaExpansions();
 		// importCards();
-//		buildCards();
-//		tags = WebScrap.importTags();
-//		buildCardTags();
+		buildCards();
+		tags = WebScrap.importTags();
+	//	buildAllCardTags();
 		// importCardRanks();
 
 //		for (Card card : cards) {
@@ -213,22 +214,26 @@ public class CardComponent {
 	/**
 	 * Generate all cards Tags.
 	 */
-	public void buildCardTags() {
-		ScriptEngine jsEngine = new ScriptEngineManager().getEngineByName("JavaScript");
-		try {
-			for (Card c : getCards()) {
-				for (Tag tag : tags.values()) {
-					String expr = c.replaceVars(tag.getExpr());
-					if ((expr == null || expr.equals("") || (boolean) jsEngine.eval(expr) == true)
-							&& Pattern.compile(tag.getRegex()).matcher(c.getText()).find()) {
-						c.getTags().add(tag);
-					}
-				}
-			}
-		} catch (ScriptException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	public void buildAllCardTags() {
+		for (Card c : getCards()) {
+			buildCardTags(c);
 		}
 		System.out.println(tags.keySet().size() + " tags created.");
+	}
+
+	public static void buildCardTags(Card c) {
+		for (Tag tag : tags.values()) {
+			String expr = c.replaceVars(tag.getExpr());
+			try {
+				if ((expr == null || expr.equals("") || (boolean) jsEngine.eval(expr) == true)
+						&& Pattern.compile(tag.getRegex()).matcher(c.getText()).find()) {
+					c.addTag(tag);
+					//System.out.println(c + "\thas\t" + tag);
+				}
+			} catch (ScriptException e) {
+				// e.printStackTrace();
+				//System.err.println("FAIL: " + c + "\thas?\t" + tag + " EXPR: " + expr);
+			}
+		}
 	}
 }

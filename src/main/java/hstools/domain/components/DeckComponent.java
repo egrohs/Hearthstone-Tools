@@ -9,8 +9,10 @@ import java.nio.ByteBuffer;
 import java.util.Base64;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
@@ -21,7 +23,6 @@ import hstools.Constants.Format;
 import hstools.domain.entities.Card;
 import hstools.domain.entities.Deck;
 import hstools.domain.entities.SynergyEdge;
-import hstools.domain.entities.Tag;
 import lombok.Getter;
 
 /**
@@ -40,36 +41,45 @@ public class DeckComponent {
 	private Set<Deck> decks = new LinkedHashSet<Deck>();
 
 	public void calcStats(Deck deck) {
-		for (SynergyEdge<Deck, Card> s : deck.getCards()) {
-			Card c = s.getTarget();
-			for (Tag t : c.getTags()) {
-				deck.incTagSynergy(t);
+		// Build deck tags
+//		for (SynergyEdge<Deck, Card> s : deck.getCards()) {
+//			Card c = s.getTarget();
+//			for (Tag t : c.getTags()) {
+//				// System.out.print("caard " + c+" ");
+//				deck.acumTagSynergy(t, s.getFreq());
+//			}
+//		}
+		for (SynergyEdge<Deck, Card> ss : deck.getCards()) {
+			List<String> tags = ss.getTarget().getTags().stream().map(t -> t.getName()).collect(Collectors.toList());
+			if (tags.stream().anyMatch(List.of("HARD_REMOVE")::contains)) {
+				deck.getStats().incHard_remove(ss.getFreq());
 			}
-		}
-		for (SynergyEdge<Deck, Tag> s : deck.getTags()) {
-			String tname = s.getTarget().getName();
-			if (tname.matches("HARD_REMOVE")) {
-				deck.getStats().incHard_remove(s.getFreq());
-			} else if (tname.matches("SOFT_REMOVE")) {// TODO rever, reduce attack...
-				deck.getStats().incSoft_remove(s.getFreq());
-			} else if (tname.matches("DRAW|GENERATE")) {
+			if (tags.stream().anyMatch(List.of("SOFT_REMOVE")::contains)) {// TODO rever, reduce attack...
+				deck.getStats().incSoft_remove(ss.getFreq());
+			}
+			if (tags.stream().anyMatch(List.of("DRAW", "GENERATE")::contains)) {
 				// CARD_ADV
-				deck.getStats().incCard_adv(s.getFreq());
-			} else if (tname.matches("LOW_COST_MINION")) {
+				deck.getStats().incCard_adv(ss.getFreq());
+			}
+			if (tags.stream().anyMatch(List.of("LOW_COST_MINION")::contains)) {
 				// AGGRO
-				deck.getStats().incLow_cost_minions(s.getFreq());
-			} else if (tname.matches("DAMAGE_ALL|DAMAGE_ENEMIES")) {
+				deck.getStats().incLow_cost_minions(ss.getFreq());
+			}
+			if (tags.stream().anyMatch(List.of("DAMAGE_ALL", "DAMAGE_ENEMIES", "DEAL_DAMAGE")::contains)) {
 				// BOARD
-				deck.getStats().incBoard_control(s.getFreq());
-			} else if (tname.matches("HIGH_COST")) {
+				deck.getStats().incBoard_control(ss.getFreq());
+			}
+			if (tags.stream().anyMatch(List.of("HIGH_COST")::contains)) {
 				// HIGH_COST
-				deck.getStats().incHigh_cost(s.getFreq());
-			} else if (tname.matches("TAUNT|LIFESTEAL|ARMOR|HEALTH_RESTORE")) {
+				deck.getStats().incHigh_cost(ss.getFreq());
+			}
+			if (tags.stream().anyMatch(List.of("TAUNT", "LIFESTEAL", "ARMOR", "HEALTH_RESTORE")::contains)) {
 				// SURVIVABILITY
-				deck.getStats().incSurv(s.getFreq());
+				deck.getStats().incSurv(ss.getFreq());
 			}
 		}
 		// TODO FINISHER, spells
+		//System.out.println(deck.getStats());
 	}
 
 	public void unloadDeck(String deckString) {
@@ -186,10 +196,9 @@ public class DeckComponent {
 		int heroCount = VarInt.getVarInt(byteBuffer);
 		// result.heroes = new ArrayList<>();
 		for (int i = 0; i < heroCount; i++) {
-			// result.heroes.add(VarInt.getVarInt(byteBuffer));
-			// TODO pegar instancia do cardbuilder
-			cards.add(new SynergyEdge<Deck, Card>(deck, cardComp.getCard(String.valueOf(VarInt.getVarInt(byteBuffer))),
-					1));
+			int cInt = VarInt.getVarInt(byteBuffer);
+//			cards.add(new SynergyEdge<Deck, Card>(deck, cardComp.getCard(String.valueOf(cInt)),
+//					1));
 		}
 
 		for (int i = 1; i <= 3; i++) {

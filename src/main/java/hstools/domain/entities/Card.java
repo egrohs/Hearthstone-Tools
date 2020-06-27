@@ -8,6 +8,7 @@ import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
 import hstools.Constants.CLASS;
+import hstools.domain.components.CardComponent;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -33,6 +34,17 @@ public class Card extends Node {
 	// private Set<SynergyEdge<Card, Tag>> tags = new HashSet<SynergyEdge<Card,
 	// Tag>>();
 	public Card() {
+	}
+
+	public Set<Tag> getTags() {
+		if (text.toString() != null && !"".equals(text.toString())) {
+			CardComponent.buildCardTags(this);
+		}
+		return tags;
+	}
+	
+	public void addTag(Tag t) {
+		tags.add(t);
 	}
 
 	public Card(String cardId, Integer dbfId, String name, String set, String faction, CLASS classe, String type,

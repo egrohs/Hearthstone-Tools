@@ -29,7 +29,7 @@ public class HearthstoneToolsApplication implements CommandLineRunner {
 
 	@Autowired
 	private ArtificialNeuralNetwork annComp;
-	
+
 	@Autowired
 	private CardRepository cRepo;
 
@@ -48,14 +48,20 @@ public class HearthstoneToolsApplication implements CommandLineRunner {
 //	}
 
 	@Override
-	public void run(String... args) throws Exception
-	{
-		deckComp.decodeDecksFromFile("commonHSTopDecks.txt");
-		annComp.generateTrainFile();
-		
-//		Deck deck = deckComp.decodeDeckString(
-//		"AAEBAR8CxQiG0wIOqAK1A+sH2wntCf4Mzq4CubQC6rsC7LsCicMCjsMCps4Cxs4CAA==");
-//		annComp.classifyDeck(deck);
+	public void run(String... args) throws Exception {
+//		deckComp.decodeDecksFromFile("commonHSTopDecks.txt");
+//		annComp.generateTrainFile();
+
+		Deck deck = deckComp.decodeDeckString(
+				// https://www.hearthstonetopdecks.com/decks/deathrattle-hunter-deck-list-guide-standard/
+				// "AAEBAR8CxQiG0wIOqAK1A+sH2wntCf4Mzq4CubQC6rsC7LsCicMCjsMCps4Cxs4CAA==");
+				// https://www.hearthstonetopdecks.com/decks/witchwood-tempo-mage-deck-list-guide-standard/
+				// "AAEBAf0EBHGi0wLu9gLvgAMNuwKVA6sEtATmBJYF7AXBwQKYxAKP0wL77AKV/wK5/wIA");
+				// https://www.hearthstonetopdecks.com/decks/cube-warlock-deck-list-guide-standard/
+				// "AAEBAf0GBsnCApfTAurmAtvpApz4Arf9AgyKAfcEtgfhB5vCAufLAvLQAvjQAojSAovhAvzlAujnAgA=");
+				// https://www.hearthstonetopdecks.com/decks/dogs-1-legend-kingsbane-mill-rogue/
+				"AAEBAaIHCLICqAipzQKxzgKA0wLQ4wLf4wK77wILigG0AcQB7QLLA80D+AeGCamvAuXRAtvjAgA=");
+		annComp.classifyDeck(deck);
 
 		// ss.tagsAffin();
 //		cb.hearthstonetopdecksCardRank();
