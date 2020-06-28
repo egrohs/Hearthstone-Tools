@@ -1,6 +1,7 @@
 /target/
 /bin/
 /build/
+/databases/
 /output/
 /dbms/
 /logs/

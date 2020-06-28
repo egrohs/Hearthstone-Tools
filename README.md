@@ -1,3 +1,22 @@
+CURRENT FEATURES
+get hs cards from web json
+generate cards tags and mechanics from googlesheets
+load deck from deck string
+deck archtype inffer
+cards that synergies? with the choosen card
+
+get pre-calculated synergy graph between tags from googlesheets
+
+generate played cards graph from matchs file from Hearthsim
+load hs combos from file
+-inffer future plays by opponent
+
+get decks from h
+generate deck tags and mechanics?
+-get set, enums, from web
+? calculate decks similarity
+
+
 # Getting Started
 
 ### Reference Documentation

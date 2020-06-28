@@ -7,7 +7,7 @@ plugins {
 group = 'hstools'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility ='12'
-//targetCompatibility ='12'
+//targetCompatibility ='8'
 
 repositories {
 	mavenCentral()
@@ -15,12 +15,23 @@ repositories {
 	maven { url 'https://repo.spring.io/snapshot' }
 }
 
-dependencies {
-	//implementation 'org.springframework.boot:spring-boot-starter'
-	implementation ('org.springframework.boot:spring-boot-starter-web') {
-		// tomcat conflict with google-oauth-client-jetty
-		exclude module :'spring-boot-starter-tomcat' 
+ext {
+	set('vaadinVersion', "14.2.2")
+}
+
+/*dependencyManagement {
+	imports {
+		mavenBom "com.vaadin:vaadin-bom:${vaadinVersion}"
 	}
+}*/
+
+dependencies {
+//implementation 'com.vaadin:vaadin-spring-boot-starter'
+	implementation 'org.springframework.boot:spring-boot-starter'
+	//implementation ('org.springframework.boot:spring-boot-starter-web') {
+		// tomcat conflict with google-oauth-client-jetty
+		//exclude module :'spring-boot-starter-tomcat' 
+	//}
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 //	testImplementation('org.springframework.boot:spring-boot-starter-test')	{
 //		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
