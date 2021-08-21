@@ -2,14 +2,9 @@ package hstools.domain.components;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
@@ -19,8 +14,6 @@ import hstools.Constants.CLASS;
 import hstools.domain.entities.Card;
 import hstools.domain.entities.Deck;
 import hstools.domain.entities.Player;
-import hstools.domain.entities.SynergyEdge;
-import hstools.playaid.PowerLogReader;
 import hstools.playaid.ZoneLogReader;
 
 /**

@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import javax.annotation.PostConstruct;
 //import javax.annotation.PostConstruct;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -53,26 +52,64 @@ public class CardComponent {
 	@Getter
 	private static Map<String, Tag> tags = new HashMap<String, Tag>();
 
+//	@Autowired
+//	private CardRepository cRepo;
+
 	@Autowired
-	private CardRepository cRepo;
+	private SynergyBuilder synn;
 
-	@PostConstruct
-	public void init() {
-//		Iterable<Card> iterable = () -> cRepo.findAll().iterator();
-//		cards = StreamSupport.stream(iterable.spliterator(), false).collect(Collectors.toList());
-//		System.out.println(cards.size() + " cards loaded.");
-
-		// expansions = web.wikipediaExpansions();
-		// importCards();
-		buildCards();
-		tags = WebScrap.importTags();
-	//	buildAllCardTags();
-		// importCardRanks();
-
-//		for (Card card : cards) {
-//			cRepo.save(card);
-//		}
+	public void importTags() {
+		if (tags.size() == 0) {
+			JSONObject jo = (JSONObject) Util.file2JSONObject("src/main/resources/synergy/tag-synergies.json");
+			JSONArray nodes = (JSONArray) jo.get("nodes"), links = (JSONArray) jo.get("links");
+			if (nodes == null || nodes.isEmpty()) {
+				System.out.println("No data found.");
+			} else {
+				Iterator<JSONObject> iterator = nodes.iterator();
+				while (iterator.hasNext()) {
+					JSONObject o = iterator.next();
+					try {
+						String name = (String) o.get("id");
+						String regex = (String) o.get("regex");
+						String expr = (String) o.get("expr");
+						// "group":1
+						// (Integer) o.get("group");
+						tags.put(name, new Tag(name, regex, expr, ""));
+					} catch (RuntimeException e) {
+						// TODO: handle exception
+					}
+				}
+			}
+			synn.loadTagsSynergies(links);
+			System.out.println(tags.size() + " tags imported.");
+		}
 	}
+
+	public void printNodesJson() {
+		System.out.println("{\r\n" + "  \"nodes\":  [");
+		for (Tag t : tags.values()) {
+			System.out.println("{ \"name\": \"" + t.getName() + "\",     \"group\":  1 },");
+		}
+		System.out.println(" ],");
+	}
+
+//	@PostConstruct
+//	public void init() {
+////		Iterable<Card> iterable = () -> cRepo.findAll().iterator();
+////		cards = StreamSupport.stream(iterable.spliterator(), false).collect(Collectors.toList());
+////		System.out.println(cards.size() + " cards loaded.");
+//
+//		// expansions = web.wikipediaExpansions();
+//		// importCards();
+//		buildCards();
+//		WebScrap.importTags(tags);
+//		buildAllCardTags();
+//		// importCardRanks();
+//
+////		for (Card card : cards) {
+////			cRepo.save(card);
+////		}
+//	}
 
 	/**
 	 * Import all card ranks form google sheet
@@ -190,9 +227,12 @@ public class CardComponent {
 	 * @return Card.
 	 */
 	public Card getCard(String idsORname) {
+		idsORname = idsORname.trim().replaceAll("’", "'");
 		if (idsORname != null && !"".equals(idsORname)) {
 			for (Card c : cards) {
-				if (c.getName().equalsIgnoreCase(idsORname.trim().replaceAll("’", "'"))) {
+				if (c.getName().equalsIgnoreCase(idsORname)
+						|| c.getName().replaceAll("'|\\.|\\,", "").equalsIgnoreCase(idsORname)
+						|| c.getName().replaceAll("'|\\.|\\,", "").equalsIgnoreCase(idsORname.replaceAll("-", " "))) {
 					return c;
 				}
 				if (c.getDbfId().toString().equalsIgnoreCase(idsORname)) {
@@ -208,32 +248,51 @@ public class CardComponent {
 		}
 		// TODO CS2_013t excess mana not found..
 		throw new RuntimeException("Card not found: " + idsORname);
-		// return null;
+		// System.err.println("Card not found: " + idsORname);
+		// return getCard("The Coin");
 	}
 
 	/**
 	 * Generate all cards Tags.
 	 */
 	public void buildAllCardTags() {
+		int acum = 0;
 		for (Card c : getCards()) {
-			buildCardTags(c);
+			acum += buildCardTags(c);
 		}
-		System.out.println(tags.keySet().size() + " tags created.");
+		System.out.println(acum + " tags created.");
 	}
 
-	public static void buildCardTags(Card c) {
-		for (Tag tag : tags.values()) {
-			String expr = c.replaceVars(tag.getExpr());
-			try {
-				if ((expr == null || expr.equals("") || (boolean) jsEngine.eval(expr) == true)
-						&& Pattern.compile(tag.getRegex()).matcher(c.getText()).find()) {
-					c.addTag(tag);
-					//System.out.println(c + "\thas\t" + tag);
+	public static int buildCardTags(Card c) {
+		int acum = 0;
+		if (c.getTags().size() == 0) {
+			for (Tag tag : tags.values()) {
+				String expr = c.replaceVars(tag.getExpr());//.replaceAll("\\'", "\"");
+				try {
+					if (
+							//(expr == null || expr.equals("") || (boolean) jsEngine.eval(expr) == true)&&
+							tag.getRegex() != null && !tag.getRegex().equals("")
+							&& Pattern.compile(tag.getRegex()).matcher(c.getText()).find()
+							) {
+						c.addTag(tag);
+						acum++;
+						// System.out.println(c + "\thas\t" + tag);
+					}
+				} catch (Exception e) {
+					// e.printStackTrace();
+					System.err.println("FAIL: " + c + "\thas?\t" + tag + " EXPR: " + expr);
 				}
-			} catch (ScriptException e) {
-				// e.printStackTrace();
-				//System.err.println("FAIL: " + c + "\thas?\t" + tag + " EXPR: " + expr);
 			}
+		}
+		return acum;
+	}
+
+	public void buildCardRanks() {
+		Map<String, Float> ranks = WebScrap.hearthstonetopdecksCardRank();
+		for (String url : ranks.keySet()) {
+			String[] tks = url.split("/");
+			String cname = tks[tks.length - 1];
+			System.out.println(getCard(cname));
 		}
 	}
 }

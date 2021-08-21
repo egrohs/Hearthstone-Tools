@@ -35,12 +35,12 @@ public class WebScrap {
 	private Format format;
 	private Map<Integer, Deck> decks = new LinkedHashMap<>();
 
-	//@PostConstruct
+	// @PostConstruct
 	public void init() {
 
 	}
 
-	private Document getDocument(String url) {
+	private static Document getDocument(String url) {
 		Document doc = null;
 		try {
 			doc = Jsoup.connect(url).data("query", "Java").userAgent("Mozilla").cookie("auth", "token").timeout(30000)
@@ -75,7 +75,30 @@ public class WebScrap {
 		return exps;
 	}
 
-	public void hearthstonetopdecksCardRank() {
+	public static void main(String[] args) {
+		// WebScrap.hearthstonetopdecksCardRank();
+		WebScrap.hearthstonefandomcom();
+	}
+	
+	public static void hearthstonefandomcom() {
+		try {
+			String url = "https://hearthstone.fandom.com/wiki/Kirin_Tor_Tricaster";
+			//do {
+				Document docRanks = getDocument(url);
+				//class="to_hasTooltip"
+				Elements cards = docRanks.getElementsByClass("to_hasTooltip");
+				for (Element c : cards) {
+					String title = c.select("a").attr("title");
+					System.out.println(title);
+				}
+			//} while (page <= pages);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static Map<String, Float> hearthstonetopdecksCardRank() {
+		Map<String, Float> ranks = new HashMap<String, Float>();
 		try {
 			String url = "https://www.hearthstonetopdecks.com/cards/page/";
 			int page = 1;
@@ -88,8 +111,11 @@ public class WebScrap {
 				if (docRanks != null) {
 					Elements cards = docRanks.select("div.card-item");
 					for (Element c : cards) {
-						System.out.print(c.select("a").attr("href") + "\t");
-						System.out.println(c.select("strong").text());
+						String key = c.select("a").attr("href");
+						Float rank = Float.parseFloat(c.select("strong").text());
+						ranks.put(key, rank);
+						System.out.print(key + "\t");
+						System.out.println(rank);
 					}
 				}
 				page++;
@@ -97,6 +123,7 @@ public class WebScrap {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return ranks;
 	}
 
 	/**
@@ -142,32 +169,30 @@ public class WebScrap {
 		Elements tempostormDecks = docMeta.select("hs-snapshot-body div div div div div div div div a");
 	}
 
-	public static void main(String[] args) {
-		new WebScrap().hearthstonetopdecksDecks();
-	}
-
-	public void hearthstonetopdecksDecks() {
-		try {
-			//for (int i = 2; i < 6; i++)
-			{
-//				String url = "https://www.hearthstonetopdecks.com/decks/page/" + i
-//						+ "?st&class_id&style_id&t_id&f_id=716&pt_id=1&sort=top-all";
-				String url = "https://www.hearthstonetopdecks.com/decks/?st=&class_id=&style_id=&t_id=1260&f_id=716&pt_id=2&sort=top-all";
+	public static void hearthstonetopdecksDecks() {
+		for (int i = 1; i < 3; i++) {
+			try {
+//				String url = "https://www.hearthstonetopdecks.com/decks/page/" + i + "/?st&class_id&style_id&t_id&f_id=716&pt_id=1&sort=top-all";
+String url = "https://www.hearthstonetopdecks.com/decks/page/" + i + "/?st=&class_id=&style_id=&t_id=270&f_id=716&pt_id=1&sort=top-all";
 				Document docDecks = getDocument(url);
 				Elements decks = docDecks.select("tbody tr td h4 a");
-	//			System.out.println("-------------PAGE" + i + "-----------");
+				System.out.println("-------------PAGE " + i + " -----------");
 				for (Element deck : decks) {
-					String deckLink = deck.attr("href");
-					Document docDeck = Jsoup.connect(deckLink).data("query", "Java").userAgent("Mozilla")
-							.cookie("auth", "token").timeout(3000).post();
-					Element deckType = docDeck.select("strong:contains(type)").first();
-					Elements deckstring = docDeck.select("input[type=text]");
-					System.out.println(deckstring.val() + "\t"
-							+ (deckType != null ? deckType.nextElementSibling().text().toUpperCase() : ""));
+					try {
+						String deckLink = deck.attr("href");
+						Document docDeck = Jsoup.connect(deckLink).data("query", "Java").userAgent("Mozilla")
+								.cookie("auth", "token").timeout(3000).post();
+						Element deckType = docDeck.select("strong:contains(type)").first();
+						Elements deckstring = docDeck.select("input[type=text]");
+						System.out.println(deckstring.val() + "\t"
+								+ (deckType != null ? deckType.nextElementSibling().text().toUpperCase() : ""));
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 	}
 
@@ -192,25 +217,27 @@ public class WebScrap {
 	// TODO armazenar localmente as tags evitando buscar se mesma versao ou sem
 	// internet.
 	/** Import tags from google spreadsheet. */
-	public static Map<String, Tag> importTags() {
-		Map<String, Tag> tags = new HashMap<String, Tag>();
-		List<List<Object>> values = GoogleSheets.getDados("1WNcRrDzxyoy_TRm9v15VSGwEiRPqJhUhReq0Wh8Jp14", "TAGS!A2:C");
+	public static void importTags(Map<String, Tag> tags) {
+		if (tags.size() == 0) {
+			// Map<String, Tag> tags = new HashMap<String, Tag>();
+			List<List<Object>> values = GoogleSheets.getDados("1WNcRrDzxyoy_TRm9v15VSGwEiRPqJhUhReq0Wh8Jp14",
+					"TAGS!A2:C");
 //TODO remover linha vazias vazias null
-		if (values == null || values.isEmpty()) {
-			System.out.println("No data found.");
-		} else {
-			for (List<Object> row : values) {
-				String name = (String) row.get(0);
-				String regex = row.size() > 1 ? (String) row.get(1) : "";
-				String expr = row.size() > 2 ? (String) row.get(2) : "";
-				String desc = row.size() > 3 ? (String) row.get(3) : "";
-				Tag t = tags.get(name);
-				if (t == null) {
-					tags.put(name, new Tag(name, regex, expr, desc));
+			if (values == null || values.isEmpty()) {
+				System.out.println("No data found.");
+			} else {
+				for (List<Object> row : values) {
+					String name = (String) row.get(0);
+					String regex = row.size() > 1 ? (String) row.get(1) : "";
+					String expr = row.size() > 2 ? (String) row.get(2) : "";
+					String desc = row.size() > 3 ? (String) row.get(3) : "";
+					Tag t = tags.get(name);
+					if (t == null) {
+						tags.put(name, new Tag(name, regex, expr, desc));
+					}
 				}
 			}
 		}
 		System.out.println(tags.size() + " tags imported.");
-		return tags;
 	}
 }

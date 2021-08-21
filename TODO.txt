@@ -1,0 +1,86 @@
+DAMAGE_ENEMIES damage to .+ enem(y|ies)
+DORMANT	dormant   ???
+GIVE_DIVINE_SHIELD	give (it|a (random )?friendly|your( other)?|adjacent) (minions?)?.*divine shield
+GIVE_STEALTH	give (a friendly|your) minions? stealth
+REMOVE_TOP_DECK	remove the top ... of your (oppo?) deck
+SHUFFLE	shuffle
+SIDEQUEST	sidequest
+START_GAME	start (the|of) game
+
+FINISHER	"expr = 
+type == ""minion"" &&
+(cost > 3 && WINDFURY || 
+cost >= 5 && CHARGE)"
+HARD_REMOVE	control|destroy|shuffle (all|it) |transform
+SOFT_REMOVE	(deal \d+ damage|silence|return to)
+
+
+give your opponent|
+
+opponent draw == FADIGUE
+
+ The Caverns Below ===> CAVERNS BELLOW, como detectar sinegia de cards gerados??? talvez adicionar todas possiveis cartas geradas no deck
+
+SHUFFLE KEYWORD
+========================================
+shuffle 'murgurgle prime' into your deck.
+shuffle 'reliquary prime' into your deck.
+shuffle 'kargath prime' into your deck.
+shuffle 'zixor prime' into your deck.
+shuffle 'solarian prime' into your deck.
+shuffle 'vashj prime' into your deck.
+shuffle 'akama prime' into your deck.
+shuffle 'msshi'fn prime' into your deck.
+shuffle 'kanrethad prime' into your deck.
+shuffle this into your deck.
+shuffle a copy into your deck.
+shuffle a copy into your deck.
+shuffle it into your deck.
+shuffle it into your deck.
+shuffle 3 ambushes into your deck. when drawn, summon a 4/4 spider.
+shuffle 3 copies of a friendly minion into your deck.
+shuffle 3 portals into your deck. when drawn, summon a 2/2 demon with rush.
+shuffle 3 portals into your deck. when drawn, summon a 2/2 demon with rush.
+shuffle 7 dream portals into your deck. when drawn, summon a random dragon.
+shuffle a sealed un'goro pack into your deck.
+shuffle an 'ancient curse' into your deck that deals 7 damage to you when drawn.
+shuffle the 'map to the golden monkey' into your deck.
+shuffle 1 copy of it into your deck. (upgrades each turn!)
+shuffle 3 copies of it into your deck.
+shuffle 3 'shadows' into your deck that summon a copy when draw.
+shuffle it into your deck.
+shuffle 3 copies of this card into your deck.
+shuffle a 'roaring torch' into your deck that deals 6 damage.
+shuffle a 4/3 raptor into your deck.
+shuffle a candle into your deck that resummons waxdread when drawn.
+shuffle a copy of this minion into your deck.
+shuffle this into your deck. it keeps any enchantments.
+shuffle this minion into your deck.
+shuffle 3 worthless imps into your deck.
+shuffle 3 copies into your deck with +3/+3.
+shuffle a copy of your opponent's deck into your deck.		<===========
+shuffle 10 cards from your opponent's class into your deck. they cost (1).		<===========
+shuffle 5 scrolls into your deck. when drawn, cast a random spell.
+shuffle a copy of your hand into your deck.
+shuffle your hand into your deck. draw that many cards.
+shuffle a 1-cost copy of it into your deck.
+shuffle this minion into your deck.
+shuffle 'the storm guardian' into your deck.
+shuffle a 6/9 direhorn with taunt into your deck.
+
+whenever you shuffle a card into your deck, add a copy to your hand.
+shuffle in an extra copy.
+
+shuffle a corrupted blood into each player's deck.
+
+shuffle a bomb into your opponent's deck.
+shuffle a bomb into your opponent's deck. when drawn, it explodes for 5 damage.
+shuffle a bomb into your opponent's deck. when drawn, it explodes for 5 damage.
+shuffle a mine into your opponent's deck. when drawn, it explodes for 10 damage.
+shuffle this card into your opponent's deck.
+shuffle this minion into your opponent's deck.
+shuffle two 1/1 albatross into your opponent's deck.
+shuffle 3 ambushes into your opponent's deck. when drawn, you summon a 4/4 nerubian.
+shuffle all minions into your opponent's deck.
+shuffle an enemy minion into your opponent's deck.
+shuffle 3 candles into the enemy deck. when drawn, this awakens. <============

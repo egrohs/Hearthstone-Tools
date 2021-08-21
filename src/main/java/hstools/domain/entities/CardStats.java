@@ -1,13 +1,11 @@
 package hstools.domain.entities;
 
-import org.neo4j.ogm.annotation.NodeEntity;
-
 import lombok.Data;
 
 @Data
-@NodeEntity
+//@NodeEntity
 public class CardStats extends Node {
-	private float rank;
+	private float rank, stats_cost = 0;
 	private Integer popularity, combats, wins, draws, loses;
 	private boolean aggro/* , visited */;
 	private String function;

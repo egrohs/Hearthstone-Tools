@@ -3,35 +3,28 @@ package hstools.domain.entities;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Relationship;
-
 import hstools.Constants.CLASS;
 import hstools.Constants.Format;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
-@NodeEntity
+//@NodeEntity
 @EqualsAndHashCode(callSuper = true)
 public class Deck extends Node {
 	private String deckstring;
 	private Format format;
 	private CLASS classe = CLASS.NEUTRAL;
-	@Relationship
+	//@Relationship
 	private Expansion expansion;
-	@Relationship
-	private DeckStats stats;
-	@Relationship
-	// private Map<Card, Integer> cards = new HashMap<>();
+	//@Relationship
+	private DeckStats stats = new DeckStats();;
+	//@Relationship
 	private Set<SynergyEdge<Deck, Card>> cards = new HashSet<SynergyEdge<Deck, Card>>();
-	@Relationship
-	// private Map<Tag, Integer> tags = new HashMap<>();
+	//@Relationship
 	private Set<SynergyEdge<Deck, Tag>> tags = new HashSet<SynergyEdge<Deck, Tag>>();
 
-	public Deck() {
-		this.stats = new DeckStats();
-	}
+	public Deck() {}
 
 	public Deck(String nome, Set<SynergyEdge<Deck, Card>> cards) {
 		this.name = nome;
@@ -42,8 +35,11 @@ public class Deck extends Node {
 				break;
 			}
 		}
-		this.stats = new DeckStats();
 		calcSet();
+	}
+
+	public Deck(String encodedString) {
+		this.deckstring = encodedString;
 	}
 
 	public void acumTagSynergy(Tag tag, int f) {

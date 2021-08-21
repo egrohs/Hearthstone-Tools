@@ -42,44 +42,43 @@ public class DeckComponent {
 
 	public void calcStats(Deck deck) {
 		// Build deck tags
-//		for (SynergyEdge<Deck, Card> s : deck.getCards()) {
-//			Card c = s.getTarget();
+		for (SynergyEdge<Deck, Card> s : deck.getCards()) {
+			List<String> tags = s.getTarget().getTags().stream().map(t -> t.getName()).collect(Collectors.toList());
+			Card c = s.getTarget();
+			deck.getStats().incStats_cost(c.getStats().getStats_cost());
+			if ("MINION".equalsIgnoreCase(c.getType())) {
+				if (c.getCost() < 3) {
+					deck.getStats().incLow_cost_minions(1);
+				} else if (c.getCost() < 6 || tags.stream().anyMatch(List.of("COST_MODIFY")::contains)) {// TODO nao someente minions
+					deck.getStats().incMed_cost_minions(1);
+				}
+			}
+			if (c.getCost() > 5) {
+				deck.getStats().incHigh_cost(1);
+			}
 //			for (Tag t : c.getTags()) {
 //				// System.out.print("caard " + c+" ");
 //				deck.acumTagSynergy(t, s.getFreq());
 //			}
-//		}
-		for (SynergyEdge<Deck, Card> ss : deck.getCards()) {
-			List<String> tags = ss.getTarget().getTags().stream().map(t -> t.getName()).collect(Collectors.toList());
-			if (tags.stream().anyMatch(List.of("HARD_REMOVE")::contains)) {
-				deck.getStats().incHard_remove(ss.getFreq());
-			}
-			if (tags.stream().anyMatch(List.of("SOFT_REMOVE")::contains)) {// TODO rever, reduce attack...
-				deck.getStats().incSoft_remove(ss.getFreq());
-			}
+//			if (tags.stream().anyMatch(List.of("DD", "")::contains)) {
+//				// DD
+//				deck.getStats().incDd(s.getFreq());
+//			}
 			if (tags.stream().anyMatch(List.of("DRAW", "GENERATE")::contains)) {
 				// CARD_ADV
-				deck.getStats().incCard_adv(ss.getFreq());
+				deck.getStats().incCard_adv(s.getFreq());
 			}
-			if (tags.stream().anyMatch(List.of("LOW_COST_MINION")::contains)) {
-				// AGGRO
-				deck.getStats().incLow_cost_minions(ss.getFreq());
-			}
-			if (tags.stream().anyMatch(List.of("DAMAGE_ALL", "DAMAGE_ENEMIES", "DEAL_DAMAGE")::contains)) {
-				// BOARD
-				deck.getStats().incBoard_control(ss.getFreq());
-			}
-			if (tags.stream().anyMatch(List.of("HIGH_COST")::contains)) {
-				// HIGH_COST
-				deck.getStats().incHigh_cost(ss.getFreq());
+			if (tags.stream().anyMatch(List.of("REMOVALS", "DAMAGE_ALL", "DAMAGE_ENEMIES", "DEAL_DAMAGE")::contains)) {
+				// BOARD CONTROL
+				deck.getStats().incBoard_control(s.getFreq());
 			}
 			if (tags.stream().anyMatch(List.of("TAUNT", "LIFESTEAL", "ARMOR", "HEALTH_RESTORE")::contains)) {
 				// SURVIVABILITY
-				deck.getStats().incSurv(ss.getFreq());
+				deck.getStats().incSurv(s.getFreq());
 			}
 		}
 		// TODO FINISHER, spells
-		//System.out.println(deck.getStats());
+		// System.out.println(deck.getStats());
 	}
 
 	public void unloadDeck(String deckString) {
@@ -177,47 +176,51 @@ public class DeckComponent {
 	 */
 	// TODO calcular a expansao e epoca do deck pelas suas cartas mais recentes
 	public Deck decodeDeckString(String encodedString) {
-		byte[] data = Base64.getDecoder().decode(encodedString);
-		// String decodedString = new String(data);
-		ByteBuffer byteBuffer = ByteBuffer.wrap(data);
-		byteBuffer.get(); // reserverd
-		int version = byteBuffer.get();
-		if (version != 1) {
-			// throw new ParseException("bad version: " + version);
-		}
-		Deck deck = new Deck();
-		Format formato = Format.getByValor(VarInt.getVarInt(byteBuffer));
-		// Map<Card, Integer> cards = new HashMap<>();
-		Set<SynergyEdge<Deck, Card>> cards = new HashSet<SynergyEdge<Deck, Card>>();
+		if (encodedString.startsWith("AAEB")) {
+			byte[] data = Base64.getDecoder().decode(encodedString);
+			// String decodedString = new String(data);
+			ByteBuffer byteBuffer = ByteBuffer.wrap(data);
+			byteBuffer.get(); // reserverd
+			int version = byteBuffer.get();
+			if (version != 1) {
+				// throw new ParseException("bad version: " + version);
+			}
+			Deck deck = new Deck(encodedString);
+			Format formato = Format.getByValor(VarInt.getVarInt(byteBuffer));
+			// Map<Card, Integer> cards = new HashMap<>();
+			Set<SynergyEdge<Deck, Card>> cards = new HashSet<SynergyEdge<Deck, Card>>();
 //		if (result.format != FT_STANDARD && result.format != FT_WILD) {
 //           throw new ParseException("bad format: " + result.format);
 //		}
 
-		int heroCount = VarInt.getVarInt(byteBuffer);
-		// result.heroes = new ArrayList<>();
-		for (int i = 0; i < heroCount; i++) {
-			int cInt = VarInt.getVarInt(byteBuffer);
+			int heroCount = VarInt.getVarInt(byteBuffer);
+			// result.heroes = new ArrayList<>();
+			for (int i = 0; i < heroCount; i++) {
+				int cInt = VarInt.getVarInt(byteBuffer);
 //			cards.add(new SynergyEdge<Deck, Card>(deck, cardComp.getCard(String.valueOf(cInt)),
 //					1));
-		}
-
-		for (int i = 1; i <= 3; i++) {
-			int c = VarInt.getVarInt(byteBuffer);
-			for (int j = 0; j < c; j++) {
-				int dbfId = VarInt.getVarInt(byteBuffer);
-				int count;
-				if (i == 3) {
-					count = VarInt.getVarInt(byteBuffer);
-				} else {
-					count = i;
-				}
-				cards.add(new SynergyEdge<Deck, Card>(deck, cardComp.getCard(String.valueOf(dbfId)), count));
 			}
+
+			for (int i = 1; i <= 3; i++) {
+				int c = VarInt.getVarInt(byteBuffer);
+				for (int j = 0; j < c; j++) {
+					int dbfId = VarInt.getVarInt(byteBuffer);
+					int count;
+					if (i == 3) {
+						count = VarInt.getVarInt(byteBuffer);
+					} else {
+						count = i;
+					}
+					cards.add(new SynergyEdge<Deck, Card>(deck, cardComp.getCard(String.valueOf(dbfId)), count));
+				}
+			}
+			deck.setCards(cards);
+			deck.setFormat(formato);
+			System.out.println(encodedString);
+			System.out.println("Deck decoded: " + deck);
+			return deck;
 		}
-		deck.setCards(cards);
-		deck.setFormat(formato);
-		System.out.println("Deck decoded: " + deck);
-		return deck;
+		return null;
 	}
 }
 

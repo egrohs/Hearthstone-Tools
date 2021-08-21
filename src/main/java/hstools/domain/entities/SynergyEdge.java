@@ -1,9 +1,5 @@
 package hstools.domain.entities;
 
-import org.neo4j.ogm.annotation.EndNode;
-import org.neo4j.ogm.annotation.RelationshipEntity;
-import org.neo4j.ogm.annotation.StartNode;
-
 import lombok.Data;
 
 /**
@@ -14,12 +10,11 @@ import lombok.Data;
  * @param <T>
  */
 @Data
-@RelationshipEntity(type = "SYNERGY")
-//@EqualsAndHashCode(callSuper=true)
+//@RelationshipEntity(type = "SYNERGY")
 public class SynergyEdge<S extends Node, T extends Node> extends Node {// implements Comparable<SynergyEdge<S, T>> {
-	@StartNode
+	//@StartNode
 	private S source;
-	@EndNode
+	//@EndNode
 	private T target;
 	private int freq;
 	private Float weight = 0f;

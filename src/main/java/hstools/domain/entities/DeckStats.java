@@ -1,18 +1,17 @@
 package hstools.domain.entities;
 
-import org.neo4j.ogm.annotation.NodeEntity;
-
 import hstools.Constants.Archtype;
 import lombok.Data;
 
 @Data
-@NodeEntity
+//@NodeEntity
 public class DeckStats {
 	private Archtype archtype;
 	private int hard_removals;// hard 1 e 2 control|destroy|shuffle|transform
 	private int soft_removals;// soft 4 e 8 deal \d+ damage|silence|return to
+	private int removals;
 	// private int ones = 0, twos = 0, threes = 0, fours = 0, fives = 0, sixes = 0;
-	private double avg_mana;// avgmana 2,10 aggro < 3; midrange; control > 4; =SUMPRODUCT(MANA;QNT)/SUM(QNT)
+	private double avg_mana, stats_cost;// avgmana 2,10 aggro < 3; midrange; control > 4; =SUMPRODUCT(MANA;QNT)/SUM(QNT)
 	// TODO private archtype usar NN reconhecemento padroes, mana curve, finishers,
 	// removals...
 	private int card_adv;// card =-2,4*avgmana+12 draw|GENERATE
@@ -24,7 +23,7 @@ public class DeckStats {
 	private int low_cost_minions;
 	private int survs;
 	private int board_control;
-
+	private int med_cost_minions;
 	// TODO Techs depende do meta
 	private int high_cost;// high cost cards > 5
 
@@ -34,6 +33,10 @@ public class DeckStats {
 
 	public void incSoft_remove(int integer) {
 		soft_removals += integer;
+	}
+
+	public void incRemoval(int integer) {
+		removals += integer;
 	}
 
 	public void incCard_adv(int integer) {
@@ -54,5 +57,19 @@ public class DeckStats {
 
 	public void incBoard_control(int integer) {
 		board_control += integer;
+	}
+
+	public void incMed_cost_minions(int integer) {
+		med_cost_minions += integer;
+	}
+
+	public void incStats_cost(double d) {
+		stats_cost += d;
+	}
+
+	@Override
+	public String toString() {
+		return card_adv + "\t" + low_cost_minions + "\t" + med_cost_minions + "\t" + high_cost + "\t" + survs + "\t"
+				+ board_control + "\t" + stats_cost + "\t" + archtype;
 	}
 }

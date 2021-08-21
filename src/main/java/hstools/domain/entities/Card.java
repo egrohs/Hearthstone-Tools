@@ -4,11 +4,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.jsoup.Jsoup;
-import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Relationship;
 
 import hstools.Constants.CLASS;
-import hstools.domain.components.CardComponent;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -16,7 +13,7 @@ import lombok.EqualsAndHashCode;
  * Objeto carta.
  */
 @Data
-@NodeEntity
+//@NodeEntity
 @EqualsAndHashCode(callSuper = true)
 public class Card extends Node {
 	private boolean calculada;
@@ -25,10 +22,9 @@ public class Card extends Node {
 	private String cardId, race, type, rarity, mechs, refTags;
 	private Expansion expansion;
 	private Integer dbfId, cost, attack, health, dur;
-
-	@Relationship
+	//@Relationship
 	private CardStats stats;
-	@Relationship(type = "TAG")
+	//@Relationship(type = "TAG")
 	private Set<Tag> tags = new HashSet<Tag>();
 
 	// private Set<SynergyEdge<Card, Tag>> tags = new HashSet<SynergyEdge<Card,
@@ -36,12 +32,12 @@ public class Card extends Node {
 	public Card() {
 	}
 
-	public Set<Tag> getTags() {
-		if (text.toString() != null && !"".equals(text.toString())) {
-			CardComponent.buildCardTags(this);
-		}
-		return tags;
-	}
+//	public Set<Tag> getTags() {
+//		if (text.toString() != null && !"".equals(text.toString())) {
+//			CardComponent.buildCardTags(this);
+//		}
+//		return tags;
+//	}
 	
 	public void addTag(Tag t) {
 		tags.add(t);
@@ -71,6 +67,9 @@ public class Card extends Node {
 		this.mechs = mechs;
 		trim();
 		this.stats = new CardStats();
+		if("MINION".equalsIgnoreCase(this.type)) {
+			this.stats.setStats_cost((float)(this.attack+this.health)/(this.cost+1));
+		}
 	}
 
 	/*
@@ -83,7 +82,7 @@ public class Card extends Node {
 			// StringEscapeUtils.escapeHtml4(text).toLowerCase().replaceAll("\\$",
 			// "").replaceAll("\\#", "").trim();
 			text.append(" - " + race);
-			if ("WEAPON".equals(type))
+			//if ("WEAPON".equals(type))
 				text.append(" - " + type);
 			text = new StringBuilder(Jsoup.parse(text.toString()).text().toLowerCase().replaceAll("\\$", "")
 					.replaceAll("\\#", "").replaceAll("�", " ").trim());

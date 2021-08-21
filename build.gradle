@@ -15,42 +15,25 @@ repositories {
 	maven { url 'https://repo.spring.io/snapshot' }
 }
 
-ext {
-	set('vaadinVersion', "14.2.2")
-}
-
-/*dependencyManagement {
-	imports {
-		mavenBom "com.vaadin:vaadin-bom:${vaadinVersion}"
-	}
-}*/
-
 dependencies {
 //implementation 'com.vaadin:vaadin-spring-boot-starter'
 	implementation 'org.springframework.boot:spring-boot-starter'
-	//implementation ('org.springframework.boot:spring-boot-starter-web') {
-		// tomcat conflict with google-oauth-client-jetty
-		//exclude module :'spring-boot-starter-tomcat' 
-	//}
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-//	testImplementation('org.springframework.boot:spring-boot-starter-test')	{
+//implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation ('org.springframework.boot:spring-boot-starter-web')
+	// {
+	// 	// tomcat conflict with google-oauth-client-jetty
+	// 	exclude module :'spring-boot-starter-tomcat' 
+	// }
+	testImplementation('org.springframework.boot:spring-boot-starter-test')
+//	{
 //		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 //	}
 
-implementation 'org.springframework.boot:spring-boot-starter-data-neo4j'
+//implementation 'org.springframework.boot:spring-boot-starter-data-neo4j'
 //  Only add if you're using the Embedded driver
-implementation 'org.neo4j:neo4j:3.5.14'//4.0.6'//3.4.16'//3.2.12'//
-	//runtime 'org.neo4j:neo4j-ogm-bolt-driver:3.1.6' // Only add if you're using the Bolt driver
-    //runtime 'org.neo4j:neo4j-ogm-http-driver:3.1.6' // Only add if you're using the HTTP driver
-implementation 'org.neo4j:neo4j-ogm-embedded-driver:3.2.4' // Only add if you're using the Embedded driver
+//implementation 'org.neo4j:neo4j:3.5.14'//4.0.6'//3.4.16'//3.2.12'//
+//implementation 'org.neo4j:neo4j-ogm-embedded-driver:3.2.4' // Only add if you're using the Embedded driver
 	
-	// Use JUnit test framework
-//testCompile group: 'junit', name: 'junit', version: '4.13'
-//testRuntime("org.junit.jupiter:junit-jupiter-engine:5.5.2")
-//testRuntime("org.junit.platform:junit-platform-runner:1.5.2")
-	// This dependency is exported to consumers, that is to say found on their compile classpath.
-    //api 'org.apache.commons:commons-math3:3.6.1'
-
     // This dependency is used internally, and not exposed to consumers on their own compile classpath.
     implementation 'com.google.guava:guava:23.0'
     implementation 'net.sf.supercsv:super-csv:2.2.0'
