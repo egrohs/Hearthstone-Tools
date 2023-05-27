@@ -5,32 +5,47 @@ import java.util.Set;
 
 import org.jsoup.Jsoup;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import hstools.Constants.CLASS;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 /**
  * Objeto carta.
  */
 @Data
 //@NodeEntity
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(of = { "cardId" }, callSuper = true)
+@JsonIgnoreProperties(ignoreUnknown = true)
+@NoArgsConstructor
+@AllArgsConstructor
 public class Card extends Node {
 	private boolean calculada;
+	//TODO @JsonProperty("playerClass")
+//	"multiClassGroup": "Hunter Demon Hunter",
+//    "classes": [
+//      "Hunter",
+//      "Demon Hunter"
+//    ],
 	private CLASS classe;
 	private StringBuilder text = new StringBuilder();
 	private String cardId, race, type, rarity, mechs, refTags;
+	@JsonProperty("cardSet")
 	private Expansion expansion;
-	private Integer dbfId, cost, attack, health, dur;
-	//@Relationship
+	private Integer dbfId, cost, attack, health;
+	@JsonProperty("durability")
+	private Integer dur;
+	// @Relationship
 	private CardStats stats;
-	//@Relationship(type = "TAG")
+	// @Relationship(type = "TAG")
 	private Set<Tag> tags = new HashSet<Tag>();
 
 	// private Set<SynergyEdge<Card, Tag>> tags = new HashSet<SynergyEdge<Card,
 	// Tag>>();
-	public Card() {
-	}
 
 //	public Set<Tag> getTags() {
 //		if (text.toString() != null && !"".equals(text.toString())) {
@@ -38,7 +53,7 @@ public class Card extends Node {
 //		}
 //		return tags;
 //	}
-	
+
 	public void addTag(Tag t) {
 		tags.add(t);
 	}
@@ -67,8 +82,8 @@ public class Card extends Node {
 		this.mechs = mechs;
 		trim();
 		this.stats = new CardStats();
-		if("MINION".equalsIgnoreCase(this.type)) {
-			this.stats.setStats_cost((float)(this.attack+this.health)/(this.cost+1));
+		if ("MINION".equalsIgnoreCase(this.type)) {
+			this.stats.setStats_cost((float) (this.attack + this.health) / (this.cost + 1));
 		}
 	}
 
@@ -82,8 +97,8 @@ public class Card extends Node {
 			// StringEscapeUtils.escapeHtml4(text).toLowerCase().replaceAll("\\$",
 			// "").replaceAll("\\#", "").trim();
 			text.append(" - " + race);
-			//if ("WEAPON".equals(type))
-				text.append(" - " + type);
+			// if ("WEAPON".equals(type))
+			text.append(" - " + type);
 			text = new StringBuilder(Jsoup.parse(text.toString()).text().toLowerCase().replaceAll("\\$", "")
 					.replaceAll("\\#", "").replaceAll("�", " ").trim());
 		}

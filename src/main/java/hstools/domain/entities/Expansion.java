@@ -3,14 +3,22 @@ package hstools.domain.entities;
 import java.time.LocalDate;
 
 import hstools.Constants.Format;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Expansion extends Node {
 	private String shortname;
 	private Format format;
 	private LocalDate release;
 	private int qntCards;
+
+	public Expansion(String name) {
+		this.shortname = name;
+	}
 
 	public Expansion(String name, String release, String endStd) {
 		// name = name.replaceAll("\\[\\w+\\]", "");

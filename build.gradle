@@ -2,6 +2,7 @@ plugins {
 	id 'org.springframework.boot' version '2.4.0-SNAPSHOT'
 	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
 	id 'java'
+	//id 'eclipse'
 }
 
 group = 'hstools'
@@ -25,6 +26,7 @@ dependencies {
 	// 	exclude module :'spring-boot-starter-tomcat' 
 	// }
 	testImplementation('org.springframework.boot:spring-boot-starter-test')
+//		implementation 'org.modelmapper:modelmapper:3.0.0'
 //	{
 //		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 //	}

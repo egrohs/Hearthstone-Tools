@@ -25,7 +25,6 @@ import hstools.domain.entities.Card;
 import hstools.domain.entities.SynergyEdge;
 import hstools.domain.entities.Tag;
 import hstools.util.GoogleSheets;
-import hstools.util.Util;
 import lombok.Getter;
 
 /**
@@ -45,6 +44,9 @@ public class SynergyBuilder {
 	@Getter
 	private List<SynergyEdge<Tag, Tag>> tagsSynergies = new ArrayList<SynergyEdge<Tag, Tag>>();
 	private ClassLoader clsLoader = this.getClass().getClassLoader();
+	
+	@Autowired
+	private FilesComponent files;
 
 	public void loadTagsSynergies(JSONArray links) {
 		// JSONObject jo = (JSONObject)
@@ -88,7 +90,7 @@ public class SynergyBuilder {
 	}
 
 	public void loadCombos() {
-		List<String[]> syns = Util.csv2CardSyns();
+		List<String[]> syns = files.csv2CardSyns();
 		for (String[] combo : syns) {
 			for (int i = 0; i < combo.length; i++) {
 				String cName1 = combo[i];
@@ -236,7 +238,7 @@ public class SynergyBuilder {
 	 * Read synergy cached file.
 	 */
 	private void readSynergies() {
-		JSONArray sets = (JSONArray) Util.file2JSONObject("src/main/resources/synergy/synergy.json");
+		JSONArray sets = (JSONArray) files.file2JSONObject("src/main/resources/synergy/synergy.json");
 		System.out.println(sets.size() + " synergies imported");
 		generateNumIds(sets);
 	}
@@ -290,7 +292,7 @@ public class SynergyBuilder {
 	}
 
 	public List<SynergyEdge<Card, Card>> generateMatchesCardsSim() {
-		JSONObject jo = (JSONObject) Util.file2JSONObject("src/main/resources/synergy/matchesCardHerthSim.json");
+		JSONObject jo = (JSONObject) files.file2JSONObject("src/main/resources/synergy/matchesCardHerthSim.json");
 		JSONArray nodes = (JSONArray) jo.get("nodes"), links = (JSONArray) jo.get("links");
 		List<SynergyEdge<Card, Card>> cardSins = new ArrayList<SynergyEdge<Card, Card>>();
 		Iterator<JSONObject> iterator = links.iterator();

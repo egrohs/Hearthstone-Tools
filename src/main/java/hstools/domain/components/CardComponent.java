@@ -1,11 +1,9 @@
 package hstools.domain.components;
 
-import java.io.File;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.URL;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -17,20 +15,22 @@ import java.util.regex.Pattern;
 //import javax.annotation.PostConstruct;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+
 import hstools.Constants.CLASS;
 import hstools.domain.entities.Card;
 import hstools.domain.entities.Expansion;
 import hstools.domain.entities.Tag;
-import hstools.repositories.CardRepository;
 import hstools.util.GoogleSheets;
-import hstools.util.Util;
 import hstools.util.WebScrap;
 import lombok.Getter;
 
@@ -57,10 +57,13 @@ public class CardComponent {
 
 	@Autowired
 	private SynergyBuilder synn;
+	
+	@Autowired
+	private FilesComponent files;
 
 	public void importTags() {
 		if (tags.size() == 0) {
-			JSONObject jo = (JSONObject) Util.file2JSONObject("src/main/resources/synergy/tag-synergies.json");
+			JSONObject jo = (JSONObject) files.file2JSONObject("src/main/resources/synergy/tag-synergies.json");
 			JSONArray nodes = (JSONArray) jo.get("nodes"), links = (JSONArray) jo.get("links");
 			if (nodes == null || nodes.isEmpty()) {
 				System.out.println("No data found.");
@@ -147,19 +150,52 @@ public class CardComponent {
 	 * separated db file of only colletionable cards.
 	 */
 	public List<Card> buildCards() {
-		final String api = "https://api.hearthstonejson.com/v1/latest/enUS/cards.collectible.json";
+		// TODO nao usar mais essa api e sim
+		// https://rapidapi.com/omgvamp/api/hearthstone
+		// final String api =
+		// "https://api.hearthstonejson.com/v1/latest/enUS/cards.collectible.json";
 		if (cards.size() == 0) {
 			try {
-				File file = new File("cards.collectible.json");
-				if (!file.exists()) {
-					// file.delete();
-					Files.copy(new URL(api).openStream(), Paths.get("cards.collectible.json"));
+				ObjectMapper om = new ObjectMapper();
+				String jsonCards = Files.readString(Path.of("cards.collectible.json"), Charset.defaultCharset());
+				JsonNode rootNode = om.readTree(jsonCards);
+				Iterator<JsonNode> iter = rootNode.elements();
+				while (iter.hasNext()) {
+					ArrayNode ja = (ArrayNode) iter.next();
+					List<Card> pojos = om.readValue(ja.toString(), new TypeReference<List<Card>>() {
+					});
+					cards.addAll(pojos);
 				}
-				JSONArray sets = (JSONArray) Util.file2JSONObject(file.getName());
-				generateCards(sets);
-			} catch (IOException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
+//			try {
+//				File file = new File("cards.collectible.json");
+//				if (!file.exists()) {
+//					// file.delete();
+//					Files.copy(new URL(api).openStream(), Paths.get("cards.collectible.json"));
+//				}
+			// JSONArray sets = (JSONArray) Util.file2JSONObject(file.getName());
+			// generateCards(sets);
+//				List<String> w = HearthstoneToolsApplication.rapidApiInfo.getWild();
+
+//				ObjectMapper objectMapper = new ObjectMapper();
+//for (String set : w) 
+			{
+//	JsonNode rootNode = objectMapper.readTree("jsonString");
+//	JsonNode nset = rootNode.get(set);
+				// HearthstoneToolsApplication.cs.
+//				CardSets cs = Util.file2Cards("cards.collectible.json");
+				// ModelMapper mm = new ModelMapper();
+				// mm.i
+				// Card[] cass = mm.map(cs, Card[].class);
+			}
+			// for... info.getSets()){
+			//
+			// TODO juntar todas listas e jogar em cards
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
 			System.out.println(cards.size() + " cards created.");
 		}
 		return cards;
@@ -170,8 +206,8 @@ public class CardComponent {
 	 * 
 	 * @param array JSONObject with cards data.
 	 */
-	private final void generateCards(JSONArray array) {
-		Iterator<JSONObject> iterator = array.iterator();
+	private final void generateCards(JSONObject array) {
+		Iterator<JSONObject> iterator = null;// array.iterator();
 		while (iterator.hasNext()) {
 			JSONObject o = iterator.next();
 			Boolean col = (Boolean) o.get("collectible");
@@ -267,13 +303,12 @@ public class CardComponent {
 		int acum = 0;
 		if (c.getTags().size() == 0) {
 			for (Tag tag : tags.values()) {
-				String expr = c.replaceVars(tag.getExpr());//.replaceAll("\\'", "\"");
+				String expr = c.replaceVars(tag.getExpr());// .replaceAll("\\'", "\"");
 				try {
 					if (
-							//(expr == null || expr.equals("") || (boolean) jsEngine.eval(expr) == true)&&
-							tag.getRegex() != null && !tag.getRegex().equals("")
-							&& Pattern.compile(tag.getRegex()).matcher(c.getText()).find()
-							) {
+					// (expr == null || expr.equals("") || (boolean) jsEngine.eval(expr) == true)&&
+					tag.getRegex() != null && !tag.getRegex().equals("")
+							&& Pattern.compile(tag.getRegex()).matcher(c.getText()).find()) {
 						c.addTag(tag);
 						acum++;
 						// System.out.println(c + "\thas\t" + tag);

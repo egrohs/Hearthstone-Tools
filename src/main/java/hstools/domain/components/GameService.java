@@ -20,7 +20,6 @@ import hstools.domain.entities.Card;
 import hstools.domain.entities.Player;
 import hstools.playaid.PowerLogReader;
 import hstools.playaid.ZoneLogReader;
-import hstools.util.Util;
 
 /**
  * Main service...
@@ -37,6 +36,9 @@ public class GameService extends Thread {
 	// CardBuilder cb;
 	int lastSize;
 	private DeckComponent deckComp;
+	
+	@Autowired
+	private FilesComponent files;
 
 	public GameService() {
 		// cb = new CardBuilder();
@@ -156,7 +158,7 @@ public class GameService extends Thread {
 		for (File file : listOfFiles) {
 			System.out.println("Reading " + file.getName() + "...");
 //			try {
-			jo = (JSONObject) Util.file2JSONObject(file.getName());
+			jo = (JSONObject) files.file2JSONObject(file.getName());
 			games.addAll((JSONArray) jo.get("games"));
 			System.out.println(games.size() + " games caregados.");
 //			} catch (ParseException e1) {
