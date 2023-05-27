@@ -1,11 +1,9 @@
 package hstools.domain.components;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -26,7 +24,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
-import hstools.Constants.CLASS;
 import hstools.domain.entities.Card;
 import hstools.domain.entities.Expansion;
 import hstools.domain.entities.Tag;
@@ -57,7 +54,7 @@ public class CardComponent {
 
 	@Autowired
 	private SynergyBuilder synn;
-	
+
 	@Autowired
 	private FilesComponent files;
 
@@ -166,6 +163,15 @@ public class CardComponent {
 					});
 					cards.addAll(pojos);
 				}
+				cards.add(new Card("GAME_005", 1746, "the coin", "CORE", "ALLIANCE", "Neutral", "SPELL",
+						"Add 1 mana this turn...", 0L, null, null, null, "COMMON", "", ""));
+
+				cards.forEach(c -> {
+					if ("Minion".equalsIgnoreCase(c.getType())) {
+						c.getStats().setStats_cost((float) (c.getAttack() + c.getHealth()) / (c.getCost() + 1));
+					}
+				});
+
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -199,61 +205,6 @@ public class CardComponent {
 			System.out.println(cards.size() + " cards created.");
 		}
 		return cards;
-	}
-
-	/**
-	 * Parse json array and create card objects.
-	 * 
-	 * @param array JSONObject with cards data.
-	 */
-	private final void generateCards(JSONObject array) {
-		Iterator<JSONObject> iterator = null;// array.iterator();
-		while (iterator.hasNext()) {
-			JSONObject o = iterator.next();
-			Boolean col = (Boolean) o.get("collectible");
-			if (col != null && col == true /*
-											 * && !"HERO".equals((String) o.get("type"))
-											 */) {
-				CLASS classe;
-				String c = (String) o.get("multiClassGroup");
-				if (c == null) {
-					c = (String) o.get("cardClass");
-				}
-				if (c == null) {
-					c = (String) o.get("playerClass");
-				}
-				classe = CLASS.valueOf(c);
-
-				// TODO card mechanics??
-				// List<String> mechs = (List<String>) o.get("mechanics");
-
-				String text = (String) o.get("text");
-				try {
-					if (text != null) {
-						text = new String(text.getBytes("ISO-8859-1"), "UTF-8");
-					}
-				} catch (UnsupportedEncodingException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				JSONArray reftags = (JSONArray) o.get("referencedTags");
-				JSONArray mechanics = (JSONArray) o.get("mechanics");
-
-				Card card = new Card((String) o.get("id"), ((Long) o.get("dbfId")).intValue(), (String) o.get("name"),
-						(String) o.get("set"), (String) o.get("race"), classe, (String) o.get("type"), text,
-						(Long) o.get("cost"), (Long) o.get("attack"), (Long) o.get("health"),
-						(Long) o.get("durability"), (String) o.get("rarity"), reftags == null ? "" : reftags.toString(),
-						mechanics == null ? "" : mechanics.toString());
-				cards.add(card);
-			}
-		}
-		// if (getCard("The Coin") == null)
-		{
-			// TODO adiciona a moeda
-			cards.add(new Card("GAME_005", 1746, "the coin", "CORE", "ALLIANCE", CLASS.NEUTRAL, "SPELL",
-					"Add 1 mana this turn...", 0L, null, null, null, "COMMON", "", ""));
-		}
-		Collections.sort(cards);
 	}
 
 	/**

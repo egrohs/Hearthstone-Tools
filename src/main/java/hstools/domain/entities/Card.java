@@ -8,7 +8,6 @@ import org.jsoup.Jsoup;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import hstools.Constants.CLASS;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -25,13 +24,21 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Card extends Node {
 	private boolean calculada;
-	//TODO @JsonProperty("playerClass")
+//	"playerClass": "Demon Hunter",
 //	"multiClassGroup": "Hunter Demon Hunter",
 //    "classes": [
 //      "Hunter",
 //      "Demon Hunter"
 //    ],
-	private CLASS classe;
+	private String playerClass;
+
+	// @Override
+	public void setPlayerClass(String playerClass) {
+		this.playerClass = playerClass;
+		classes.add(playerClass);
+	}
+
+	private Set<String> classes = new HashSet<>();
 	private StringBuilder text = new StringBuilder();
 	private String cardId, race, type, rarity, mechs, refTags;
 	@JsonProperty("cardSet")
@@ -40,7 +47,7 @@ public class Card extends Node {
 	@JsonProperty("durability")
 	private Integer dur;
 	// @Relationship
-	private CardStats stats;
+	private CardStats stats = new CardStats();
 	// @Relationship(type = "TAG")
 	private Set<Tag> tags = new HashSet<Tag>();
 
@@ -58,7 +65,7 @@ public class Card extends Node {
 		tags.add(t);
 	}
 
-	public Card(String cardId, Integer dbfId, String name, String set, String faction, CLASS classe, String type,
+	public Card(String cardId, Integer dbfId, String name, String set, String faction, String classe, String type,
 			String text, Long cos, Long atta, Long health, Long dur, String rarity, String refTags, String mechs) {
 		this.cardId = cardId;
 		this.dbfId = dbfId;
@@ -67,7 +74,7 @@ public class Card extends Node {
 		this.name = name.toLowerCase();
 		this.expansion = null;
 		this.race = faction == null ? "" : faction;
-		this.classe = classe;
+		// this.classe = classe;
 		this.type = type.toLowerCase();
 		if (text != null) {
 			this.getText().append(Jsoup.parse(text).text().replaceAll(String.valueOf((char) 160), " "));

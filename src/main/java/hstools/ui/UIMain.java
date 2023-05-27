@@ -63,6 +63,7 @@ public class UIMain extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				deckComp.decodeDecksFromFile("127_pro.txt");
 				// annComp.generateTrainFile();
+				System.out.println(deckComp.getDecks().size() + " decks loaded.");
 				System.out.println("deckstring" + "\t" + "card_adv" + "\t" + "low_cost_minions" + "\t"
 						+ "mid_cost_minions" + "\t" + "high_cost" + "\t" + "survs" + "\t" + "board_control" + "\t"
 						+ "stats_cost" + "\t" + "archtype");

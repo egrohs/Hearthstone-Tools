@@ -3,7 +3,6 @@ package hstools.domain.entities;
 import java.util.HashSet;
 import java.util.Set;
 
-import hstools.Constants.CLASS;
 import hstools.Constants.Format;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -14,11 +13,11 @@ import lombok.EqualsAndHashCode;
 public class Deck extends Node {
 	private String deckstring;
 	private Format format;
-	private CLASS classe = CLASS.NEUTRAL;
+	private String classe = "Neutral";
 	//@Relationship
 	private Expansion expansion;
 	//@Relationship
-	private DeckStats stats = new DeckStats();;
+	private DeckStats stats = new DeckStats();
 	//@Relationship
 	private Set<SynergyEdge<Deck, Card>> cards = new HashSet<SynergyEdge<Deck, Card>>();
 	//@Relationship
@@ -29,12 +28,13 @@ public class Deck extends Node {
 	public Deck(String nome, Set<SynergyEdge<Deck, Card>> cards) {
 		this.name = nome;
 		this.cards = cards;
-		for (SynergyEdge<Deck, Card> s : cards) {
-			this.classe = s.getTarget().getClasse();
-			if (this.classe != CLASS.NEUTRAL) {
-				break;
-			}
-		}
+		//TODO pq isso?
+//		for (SynergyEdge<Deck, Card> s : cards) {
+//			this.classe = s.getTarget().getClasse();
+//			if (this.classe != CLASS.NEUTRAL) {
+//				break;
+//			}
+//		}
 		calcSet();
 	}
 

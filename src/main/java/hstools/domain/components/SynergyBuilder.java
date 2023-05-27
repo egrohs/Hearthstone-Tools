@@ -20,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
-import hstools.Constants.CLASS;
 import hstools.domain.entities.Card;
 import hstools.domain.entities.SynergyEdge;
 import hstools.domain.entities.Tag;
@@ -44,7 +43,7 @@ public class SynergyBuilder {
 	@Getter
 	private List<SynergyEdge<Tag, Tag>> tagsSynergies = new ArrayList<SynergyEdge<Tag, Tag>>();
 	private ClassLoader clsLoader = this.getClass().getClassLoader();
-	
+
 	@Autowired
 	private FilesComponent files;
 
@@ -122,9 +121,9 @@ public class SynergyBuilder {
 			}
 		}
 		tags3.addAll(tags);
-		//System.out.println(tags3);
+		// System.out.println(tags3);
 		for (Card c : cardComp.getCards()) {
-			if ((c1.getClasse() == c.getClasse() || c1.getClasse() == CLASS.NEUTRAL)
+			if ((c1.getClasses().retainAll(c.getClasses()) || c1.getClasses().contains("Neutral"))
 					&& !c.getTags().stream().filter(tags::contains).collect(Collectors.toList()).isEmpty()) {
 				cards.add(c);
 				System.out.println(c.getName() + "\t\t" + c.getText());
@@ -147,7 +146,7 @@ public class SynergyBuilder {
 			}
 			if (tag != null) {
 				for (Card c2 : cardComp.getCards()) {
-					if ((everyCard || c2.getClasse() == CLASS.NEUTRAL || c1.getClasse() == c2.getClasse())
+					if ((everyCard || c1.getClasses().retainAll(c2.getClasses()) || c2.getClasses().contains("Neutral"))
 							&& c2.getTags().contains(tag)) {
 						SynergyEdge<Card, Card> cs = new SynergyEdge<Card, Card>(c1, c2,
 								c2.getText() + "\t" + tag1.getRegex() + " + " + tag2.getRegex(), ts.getWeight());
@@ -395,7 +394,7 @@ public class SynergyBuilder {
 	 * @return Set of Cards with synergy.
 	 */
 	// TODO here or in DeckBuilder?
-	public Set<Card> myPlays(Card c, int currentMana, CLASS hsClass) {
+	public Set<Card> myPlays(Card c, int currentMana, String hsClass) {
 		// Set<Sinergia> sub = new LinkedHashSet<Sinergia>();
 		Set<Card> sub = new LinkedHashSet<Card>();
 		if (c != null) {
@@ -406,7 +405,7 @@ public class SynergyBuilder {
 						c = (Card) s.getSource();
 					}
 					// cartas com sinergia com custo provavel no turno
-					if (CLASS.contem(hsClass, c2.getClasse()) && c2.getCost() <= currentMana) {
+					if (c2.getClasses().contains(hsClass) && c2.getCost() <= currentMana) {
 						sub.add(c2);
 						System.out.println(c2 + "\t" + s.getWeight() + "\t" + s.getMechs());
 					}
@@ -423,7 +422,7 @@ public class SynergyBuilder {
 	 * @param manaRestante Mana restante no turno atual.
 	 * @return
 	 */
-	public Set<SynergyEdge<Card, Card>> opponentPlays(Card c, int manaRestante, CLASS opo) {
+	public Set<SynergyEdge<Card, Card>> opponentPlays(Card c, int manaRestante, String opo) {
 		Set<SynergyEdge<Card, Card>> sub = new LinkedHashSet<SynergyEdge<Card, Card>>();
 		// Set<Carta> sub = new LinkedHashSet<Carta>();
 		if (c != null) {
@@ -434,7 +433,7 @@ public class SynergyBuilder {
 						c = (Card) s.getSource();
 					}
 					// cartas com sinergia com custo provavel no turno
-					if (CLASS.contem(opo, c2.getClasse()) && c2.getCost() <= manaRestante) {
+					if (c2.getClasses().contains(opo) && c2.getCost() <= manaRestante) {
 						sub.add(s);
 						System.out.println(c2 + "\t" + s.getWeight() + "\t" + s.getMechs());
 					}
@@ -453,7 +452,7 @@ public class SynergyBuilder {
 	 * @param depth        Limita profundidade de busca no grafo das sinergias.
 	 * @return Lista de cartas com sinergia às informadas.
 	 */
-	private Set<Card> buildDeck(CLASS classe, String[] initialCards, Set<Card> deck, int depth) {
+	private Set<Card> buildDeck(String classe, String[] initialCards, Set<Card> deck, int depth) {
 		System.out.println("Sinergias para " + initialCards[0]);
 		for (String cardname : initialCards) {
 			Card c = cardComp.getCard(cardname);
@@ -461,7 +460,7 @@ public class SynergyBuilder {
 				Card c1 = (Card) s.getSource();
 				Card c2 = (Card) s.getTarget();
 				if (c == c1 || c == c2) {
-					if (CLASS.contem(classe, c1.getClasse()) || CLASS.contem(classe, c2.getClasse())) {
+					if (c1.getClasses().contains(classe) || c2.getClasses().contains(classe)) {
 						deck.add(c1);
 						deck.add(c2);
 					}

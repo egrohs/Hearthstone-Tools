@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
 
-import hstools.Constants.CLASS;
 import hstools.domain.entities.Card;
 import hstools.domain.entities.Deck;
 import hstools.domain.entities.Player;
@@ -111,7 +110,7 @@ public class DataScienceComponent {
 	 * @param card
 	 * @return
 	 */
-	private Map<Card, String> possiveis(Card card, CLASS opo) {
+	private Map<Card, String> possiveis(Card card, String opoClass) {
 		// calcula possiveis jogadas.
 		// TODO deve considerar todas cartas ja jogadas
 		// CardBuilder.generateCardSynergies(card);

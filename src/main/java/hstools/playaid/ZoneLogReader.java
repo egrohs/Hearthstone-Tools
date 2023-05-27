@@ -51,7 +51,7 @@ public class ZoneLogReader extends Thread {
 		    if (matcher.find()) {
 			//TODO setar o oponente do jogo
 			//GameBuilder.opponent.setClasse(CardBuilder.getCard(matcher.group(1)).getClasse());
-			System.out.println(cb.getCard(matcher.group(1)).getClasse());
+			System.out.println(cb.getCard(matcher.group(1)).getClasses());
 		    } else {
 			matcher = playCard.matcher(line);
 			if (matcher.find() || matcher.matches()) {
