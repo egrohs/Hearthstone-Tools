@@ -126,6 +126,7 @@ public class UIMain extends JPanel {
 		b5.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				//TODO
 				String idsORname = (String) cbCards.getSelectedItem();
 				Card c = cardComp.getCard("carnivorous cube");
 				synComp.sinergias(c);

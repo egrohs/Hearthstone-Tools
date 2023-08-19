@@ -21,9 +21,9 @@ public class SemanticParser {
 	public static void main(String[] args) {
 		Token state = null;
 		for (Card c : cb.getCards()) {
-			String tokens[] = c.getText().toString().replaceAll("\\:", " \\:").replaceAll("\\.", " \\.")
-					.replaceAll("\\-(\\w)", " $1")// "6-cost minion"
-					.replaceAll("\\[x\\]", "").split("\\s");// [x] deathrattle
+			String tokens[] = c.getText().toString().replace("\\:", " \\:").replace("\\.", " \\.")
+					.replace("\\-(\\w)", " $1")// "6-cost minion"
+					.replace("\\[x\\]", "").split("\\s");// [x] deathrattle
 			for (int i = 0; i < tokens.length; i++) {
 				String t = tokens[i];
 				if (".".equals(t) || ":".equals(t)) {

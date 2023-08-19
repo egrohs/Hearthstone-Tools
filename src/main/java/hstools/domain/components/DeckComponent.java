@@ -93,9 +93,8 @@ public class DeckComponent {
 	public void decodeDecksFromFile(String fname) {
 		log.debug("decodificando decks...");
 		long ini = System.currentTimeMillis();
-		Scanner sc = null;
-		try {
-			sc = new Scanner(new File("src/main/resources/decks/deckStrings/" + fname));
+		// Scanner sc = null;
+		try (Scanner sc = new Scanner(new File("src/main/resources/decks/deckStrings/" + fname))) {
 			while (sc.hasNextLine()) {
 				String[] line = sc.nextLine().split("\t");
 				// System.out.println(deckstr);
@@ -107,8 +106,6 @@ public class DeckComponent {
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} finally {
-			sc.close();
 		}
 		log.debug("decodificados, milis " + (System.currentTimeMillis() - ini));
 	}
@@ -116,7 +113,7 @@ public class DeckComponent {
 	/**
 	 * Load meta decks.
 	 */
-	public void loadDecks(File dir) {
+	public void loadDecksRecursive(File dir) {
 		File listOfFiles[] = dir.listFiles();
 //		Arrays.sort(listOfFiles, new Comparator<File>() {
 //			@Override
@@ -126,50 +123,54 @@ public class DeckComponent {
 //		});
 		for (File file : listOfFiles) {
 			if (file.isDirectory()) {
-				loadDecks(file);
+				loadDecksRecursive(file);
 			} else {
-				Set<SynergyEdge<Deck, Card>> cards = new HashSet<SynergyEdge<Deck, Card>>();
-				// Map<Card, Integer> cartas = new LinkedHashMap<Card, Integer>();
-				try {
-					Scanner sc = new Scanner(file);
-					String obs = null;
-					Deck deck = new Deck();
-					while (sc.hasNextLine()) {
-						// Apenas para ceitar ctrl-c-v do
-						// http://www.hearthstonetopdecks.com
-						String line = sc.nextLine().replaceAll("﻿", "").replaceAll("�", "'")
-								.replaceFirst("^(\\d+)(\\w)", "$1\t$2").replaceFirst("(\\w)(\\d+)$", "$1\t$2");// .toLowerCase();
-						if (line.startsWith("#")) {
-							obs = line.substring(1, line.length());
-						} else {
-							String[] vals = line.split("\t");
-							int i = 0;
-							if (vals.length == 1)
-								vals = line.split(";");
-							if (vals.length > 2)
-								i = 1;
-							if (vals.length > 1 && !"".equals(vals[i]) && !"".equals(vals[i + 1])) {
-								try {
-									cards.add(new SynergyEdge<Deck, Card>(deck, cardComp.getCard(vals[i]),
-											Integer.parseInt(vals[i + 1])));
-								} catch (Exception rt) {
-									cards.add(new SynergyEdge<Deck, Card>(deck, cardComp.getCard(vals[i + 1]),
-											Integer.parseInt(vals[i])));
-								}
-							}
-						}
-					}
-
-					deck.setCards(cards);
-					deck.getStats().setArchtype(Archtype.values()[Integer.parseInt(obs)]);
-					decks.add(deck);
-					sc.close();
-				} catch (FileNotFoundException e) {
-					e.printStackTrace();
-				}
+				parseDeckTGF(file);
 			}
 		}
 		System.out.println(decks.size() + " decks loaded.");
+	}
+
+	private void parseDeckTGF(File file) {
+		Set<SynergyEdge<Deck, Card>> cards = new HashSet<>();
+		// Map<Card, Integer> cartas = new LinkedHashMap<Card, Integer>();
+		try {
+			Scanner sc = new Scanner(file);
+			String obs = null;
+			Deck deck = new Deck();
+			while (sc.hasNextLine()) {
+				// Apenas para ceitar ctrl-c-v do
+				// http://www.hearthstonetopdecks.com
+				String line = sc.nextLine().replace("�", "'").replaceFirst("^(\\d+)(\\w)", "$1\t$2")
+						.replaceFirst("(\\w)(\\d+)$", "$1\t$2");// .toLowerCase();
+				if (line.startsWith("#")) {
+					obs = line.substring(1, line.length());
+				} else {
+					String[] vals = line.split("\t");
+					int i = 0;
+					if (vals.length == 1)
+						vals = line.split(";");
+					if (vals.length > 2)
+						i = 1;
+					if (vals.length > 1 && !"".equals(vals[i]) && !"".equals(vals[i + 1])) {
+						try {
+							cards.add(
+									new SynergyEdge<>(deck, cardComp.getCard(vals[i]), Integer.parseInt(vals[i + 1])));
+						} catch (Exception rt) {
+							cards.add(
+									new SynergyEdge<>(deck, cardComp.getCard(vals[i + 1]), Integer.parseInt(vals[i])));
+						}
+					}
+				}
+			}
+
+			deck.setCards(cards);
+			deck.getStats().setArchtype(Archtype.values()[Integer.parseInt(obs)]);
+			decks.add(deck);
+			sc.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**

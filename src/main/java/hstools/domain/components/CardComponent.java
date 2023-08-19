@@ -68,7 +68,7 @@ public class CardComponent {
 			// Map<String, Tag> tags = new HashMap<String, Tag>();
 			List<List<Object>> values = GoogleSheets.getDados("1WNcRrDzxyoy_TRm9v15VSGwEiRPqJhUhReq0Wh8Jp14",
 					"TAGS!A2:C");
-			// TODO remover linha vazias vazias null
+			// TODO remover linha vazias null
 			if (values == null || values.isEmpty()) {
 				System.out.println("No data found.");
 			} else {
@@ -150,7 +150,7 @@ public class CardComponent {
 		// TODO buscar pelo nome do header da coluna
 		for (List<Object> row : values) {
 			String cardName = (String) row.get(0);
-			Float rank = (Float) row.get(3);
+			Float rank = (Float) row.get(2);
 			Card c1 = getCard(cardName);
 			if (c1 != null) {
 				c1.getStats().setRank(rank);
@@ -191,19 +191,7 @@ public class CardComponent {
 				for (JsonNode sets : root) {
 					for (JsonNode n : sets) {
 						Card card = om.readValue(n.toString(), Card.class);
-						card.trimText(card.getText().toString());
-						if ("enUS".equals(card.getLocale())) {
-//						locale enUS, set wild, 
-//						"cardSet":"Basic"
-							String cn = card.getName().toLowerCase();
-							if (!cardNames.contains(cn)) {
-								cards.add(card);
-								cardNames.add(cn);
-							} else {
-								// System.out.println(card.getName());
-								card.getDbfIds().add(card.getDbfId());
-							}
-						}
+						addNonRepeatedCard(cardNames, card);
 					}
 				}
 
@@ -225,6 +213,22 @@ public class CardComponent {
 		return cards;
 	}
 
+	private void addNonRepeatedCard(Set<String> cardNames, Card card) {
+		card.trimText(card.getText().toString());
+		if ("enUS".equals(card.getLocale())) {
+//						locale enUS, set wild, 
+//						"cardSet":"Basic"
+			String cn = card.getName().toLowerCase();
+			if (!cardNames.contains(cn)) {
+				cards.add(card);
+				cardNames.add(cn);
+			} else {
+				// System.out.println(card.getName());
+				card.getDbfIds().add(card.getDbfId());
+			}
+		}
+	}
+
 	/**
 	 * Find a card by name or id.
 	 * 
@@ -232,12 +236,12 @@ public class CardComponent {
 	 * @return Card.
 	 */
 	public Card getCard(String idsORname) {
-		idsORname = idsORname.trim().replaceAll("’", "'");
+		idsORname = idsORname.trim().replace("’", "'");
 		if (idsORname != null && !"".equals(idsORname)) {
 			for (Card c : cards) {
 				if (c.getName().equalsIgnoreCase(idsORname)
-						|| c.getName().replaceAll("'|\\.|\\,", "").equalsIgnoreCase(idsORname)
-						|| c.getName().replaceAll("'|\\.|\\,", "").equalsIgnoreCase(idsORname.replaceAll("-", " "))) {
+						|| c.getName().replace("'|\\.|\\,", "").equalsIgnoreCase(idsORname)
+						|| c.getName().replace("'|\\.|\\,", "").equalsIgnoreCase(idsORname.replace("-", " "))) {
 					return c;
 				}
 				try {
@@ -245,7 +249,7 @@ public class CardComponent {
 						return c;
 					}
 				} catch (NumberFormatException e) {
-					// deve ser busca por nome
+					// deve ser busca por id
 				}
 				if (c.getId() != null && c.getId().toString().equalsIgnoreCase(idsORname)) {
 					return c;

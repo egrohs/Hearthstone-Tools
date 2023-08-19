@@ -26,14 +26,14 @@ import hstools.ui.UIMain;
 //@ComponentScan("hstools.domain.components")
 //@EnableNeo4jRepositories("hstools.repositories")
 public class HearthstoneToolsApplication extends JFrame implements CommandLineRunner {
-	@Autowired
-	private CardComponent cardComp;
-
-	@Autowired
-	private DeckComponent deckComp;
-
-	@Autowired
-	private SynergyBuilder synComp;
+//	@Autowired
+//	private CardComponent cardComp;
+//
+//	@Autowired
+//	private DeckComponent deckComp;
+//
+//	@Autowired
+//	private SynergyBuilder synComp;
 
 //	@Autowired
 //	private DataScienceComponent scienceComp;
@@ -44,7 +44,7 @@ public class HearthstoneToolsApplication extends JFrame implements CommandLineRu
 //	@Autowired
 //	private CardRepository cRepo;
 
-	public static RapidApiInfo rapidApiInfo;
+	public RapidApiInfo rapidApiInfo;
 
 	@Autowired
 	private NetworkComponent net;
@@ -77,7 +77,7 @@ public class HearthstoneToolsApplication extends JFrame implements CommandLineRu
 //		annComp.classifyDeck(deck);
 	}
 
-	private void updateData() throws JsonProcessingException {
+	private void updateData() {
 		rapidApiInfo = files.loadRapidApiInfoFile();
 		RapidApiInfo rapidApiInfoNew = net.rapidApiInfo();
 		if (!rapidApiInfoNew.getPatch().equals(rapidApiInfo.getPatch())) {

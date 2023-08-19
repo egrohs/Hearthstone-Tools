@@ -25,8 +25,8 @@ public class PowerLogReader extends Thread {
 	// value=(\\d+)");
 	// static Pattern turn = Pattern.compile("TAG_CHANGE Entity=(\\w+)
 	// tag=CURRENT_PLAYER value=1");
-	private static Matcher matcher;
-	static RandomAccessFile power;
+	private Matcher matcher;
+	private RandomAccessFile power;
 	// public static Map<LocalTime, Integer> manaMap = new TreeMap<LocalTime,
 	// Integer>();
 	public static LocalTime lastManaTime, lastOverTime;

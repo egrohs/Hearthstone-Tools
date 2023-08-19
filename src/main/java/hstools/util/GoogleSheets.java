@@ -12,7 +12,6 @@ import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInsta
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
@@ -31,11 +30,12 @@ import com.google.api.services.sheets.v4.model.ValueRange;
 public class GoogleSheets {
 	private static final String APPLICATION_NAME = "Google Sheets API Java Quickstart";
 	private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
+	private static Sheets service;
 	// private static final String TOKENS_DIRECTORY_PATH = "tokens";
 
 	public static void main(String[] args) throws IOException, GeneralSecurityException {
-		NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport(); 
-		/*Google*/Credential credentials = GoogleSheets.getCredentials(HTTP_TRANSPORT);
+		NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+		/* Google */Credential credentials = GoogleSheets.getCredentials(HTTP_TRANSPORT);
 		// Create a Sheets service object.
 		Sheets sheets = new Sheets.Builder(HTTP_TRANSPORT, new JacksonFactory(), credentials).build();
 
@@ -105,18 +105,24 @@ public class GoogleSheets {
 	 */
 	public static List<List<Object>> getDados(String spreadsheetId, String range) {
 		ValueRange response = null;
+		loadGSheetService();
 		try {
-			NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-			Sheets service = new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
-					.setApplicationName(APPLICATION_NAME).build();
 			response = service.spreadsheets().values().get(spreadsheetId, range).execute();
-		} catch (GeneralSecurityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return response.getValues();
+	}
+
+	private static void loadGSheetService() {
+		if (service == null) {
+			try {
+				NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+				service = new Sheets.Builder(httpTransport, JSON_FACTORY, getCredentials(httpTransport))
+						.setApplicationName(APPLICATION_NAME).build();
+			} catch (GeneralSecurityException | IOException e) {
+				e.printStackTrace();
+			} 
+		}
 	}
 }
