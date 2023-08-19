@@ -24,6 +24,7 @@ import hstools.domain.entities.Card;
 import hstools.domain.entities.Deck;
 import hstools.domain.entities.SynergyEdge;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Load/unload downloaded decks from local files.
@@ -31,6 +32,7 @@ import lombok.Getter;
  * @author egrohs
  *
  */
+@Slf4j
 @Service
 @DependsOn(value = { "Cards" })
 public class DeckComponent {
@@ -49,7 +51,9 @@ public class DeckComponent {
 			if ("MINION".equalsIgnoreCase(c.getType())) {
 				if (c.getCost() < 3) {
 					deck.getStats().incLow_cost_minions(1);
-				} else if (c.getCost() < 6 || tags.stream().anyMatch(List.of("COST_MODIFY")::contains)) {// TODO nao someente minions
+				} else if (c.getCost() < 6 || tags.stream().anyMatch(List.of("COST_MODIFY")::contains)) {// TODO nao
+																											// someente
+																											// minions
 					deck.getStats().incMed_cost_minions(1);
 				}
 			}
@@ -87,6 +91,8 @@ public class DeckComponent {
 	}
 
 	public void decodeDecksFromFile(String fname) {
+		log.debug("decodificando decks...");
+		long ini = System.currentTimeMillis();
 		Scanner sc = null;
 		try {
 			sc = new Scanner(new File("src/main/resources/decks/deckStrings/" + fname));
@@ -104,6 +110,7 @@ public class DeckComponent {
 		} finally {
 			sc.close();
 		}
+		log.debug("decodificados, milis " + (System.currentTimeMillis() - ini));
 	}
 
 	/**
@@ -176,51 +183,52 @@ public class DeckComponent {
 	 */
 	// TODO calcular a expansao e epoca do deck pelas suas cartas mais recentes
 	public Deck decodeDeckString(String encodedString) {
-		if (encodedString.startsWith("AAEB")) {
-			byte[] data = Base64.getDecoder().decode(encodedString);
-			// String decodedString = new String(data);
-			ByteBuffer byteBuffer = ByteBuffer.wrap(data);
-			byteBuffer.get(); // reserverd
-			int version = byteBuffer.get();
-			if (version != 1) {
-				// throw new ParseException("bad version: " + version);
-			}
-			Deck deck = new Deck(encodedString);
-			Format formato = Format.getByValor(VarInt.getVarInt(byteBuffer));
-			// Map<Card, Integer> cards = new HashMap<>();
-			Set<SynergyEdge<Deck, Card>> cards = new HashSet<SynergyEdge<Deck, Card>>();
+		if (!encodedString.startsWith("AAE")) {
+			log.error("deck inválido: " + encodedString);
+			return null;
+		}
+		byte[] data = Base64.getDecoder().decode(encodedString);
+		// String decodedString = new String(data);
+		ByteBuffer byteBuffer = ByteBuffer.wrap(data);
+		byteBuffer.get(); // reserverd
+		int version = byteBuffer.get();
+		if (version != 1) {
+			// throw new ParseException("bad version: " + version);
+		}
+		Deck deck = new Deck(encodedString);
+		Format formato = Format.getByValor(VarInt.getVarInt(byteBuffer));
+		// Map<Card, Integer> cards = new HashMap<>();
+		Set<SynergyEdge<Deck, Card>> cards = new HashSet<SynergyEdge<Deck, Card>>();
 //		if (result.format != FT_STANDARD && result.format != FT_WILD) {
 //           throw new ParseException("bad format: " + result.format);
 //		}
 
-			int heroCount = VarInt.getVarInt(byteBuffer);
-			// result.heroes = new ArrayList<>();
-			for (int i = 0; i < heroCount; i++) {
-				int cInt = VarInt.getVarInt(byteBuffer);
+		int heroCount = VarInt.getVarInt(byteBuffer);
+		// result.heroes = new ArrayList<>();
+		for (int i = 0; i < heroCount; i++) {
+			int cInt = VarInt.getVarInt(byteBuffer);
 //			cards.add(new SynergyEdge<Deck, Card>(deck, cardComp.getCard(String.valueOf(cInt)),
 //					1));
-			}
-
-			for (int i = 1; i <= 3; i++) {
-				int c = VarInt.getVarInt(byteBuffer);
-				for (int j = 0; j < c; j++) {
-					int dbfId = VarInt.getVarInt(byteBuffer);
-					int count;
-					if (i == 3) {
-						count = VarInt.getVarInt(byteBuffer);
-					} else {
-						count = i;
-					}
-					cards.add(new SynergyEdge<Deck, Card>(deck, cardComp.getCard(String.valueOf(dbfId)), count));
-				}
-			}
-			deck.setCards(cards);
-			deck.setFormat(formato);
-			System.out.println(encodedString);
-			System.out.println("Deck decoded: " + deck);
-			return deck;
 		}
-		return null;
+
+		for (int i = 1; i <= 3; i++) {
+			int c = VarInt.getVarInt(byteBuffer);
+			for (int j = 0; j < c; j++) {
+				int dbfId = VarInt.getVarInt(byteBuffer);
+				int count;
+				if (i == 3) {
+					count = VarInt.getVarInt(byteBuffer);
+				} else {
+					count = i;
+				}
+				cards.add(new SynergyEdge<Deck, Card>(deck, cardComp.getCard(String.valueOf(dbfId)), count));
+			}
+		}
+		deck.setCards(cards);
+		deck.setFormat(formato);
+		// System.out.println(encodedString);
+		// System.out.println("Deck decoded: " + deck);
+		return deck;
 	}
 }
 

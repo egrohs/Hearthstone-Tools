@@ -6,10 +6,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -58,8 +60,8 @@ public class SynergyBuilder {
 		while (iterator.hasNext()) {
 			JSONObject o = iterator.next();
 			try {
-				Tag source = CardComponent.getTags().get((String) o.get("source"));
-				Tag target = CardComponent.getTags().get((String) o.get("target"));
+				Tag source = cardComp.getTags().get((String) o.get("source"));
+				Tag target = cardComp.getTags().get((String) o.get("target"));
 				tagsSynergies.add(new SynergyEdge<Tag, Tag>(source, target, 1));
 			} catch (RuntimeException e) {
 				// TODO: handle exception
@@ -473,7 +475,7 @@ public class SynergyBuilder {
 	/**
 	 * Import all card tags form google sheet
 	 */
-	public void importLoadTagSinergies() {
+	public void loadTagSinergies() {
 		if (tagsSynergies.size() == 0) {
 			List<List<Object>> values = GoogleSheets.getDados("1WNcRrDzxyoy_TRm9v15VSGwEiRPqJhUhReq0Wh8Jp14",
 					"TAG_EDGES!A2:D");

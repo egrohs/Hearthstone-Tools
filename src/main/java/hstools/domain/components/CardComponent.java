@@ -5,9 +5,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 //import javax.annotation.PostConstruct;
@@ -19,10 +21,8 @@ import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 
 import hstools.domain.entities.Card;
 import hstools.domain.entities.Expansion;
@@ -43,11 +43,11 @@ import lombok.Getter;
 public class CardComponent {
 	static ScriptEngine jsEngine = new ScriptEngineManager().getEngineByName("JavaScript");
 	@Getter
-	private List<Expansion> expansions = new ArrayList<Expansion>();
+	private List<Expansion> expansions = new ArrayList<>();
 	@Getter
-	private List<Card> cards = new ArrayList<Card>();
+	private List<Card> cards = new ArrayList<>();
 	@Getter
-	private static Map<String, Tag> tags = new HashMap<String, Tag>();
+	private Map<String, Tag> tags = new HashMap<>();
 
 //	@Autowired
 //	private CardRepository cRepo;
@@ -57,6 +57,36 @@ public class CardComponent {
 
 	@Autowired
 	private FilesComponent files;
+
+	// TODO armazenar localmente as tags evitando buscar se mesma versao ou sem
+	// internet.
+	/** Import tags from google spreadsheet. */
+	public Map<String, Tag> loadTags() {
+		// Map<String, Tag> tags = new HashMap<>();
+		// if (tags.size() == 0)
+		{
+			// Map<String, Tag> tags = new HashMap<String, Tag>();
+			List<List<Object>> values = GoogleSheets.getDados("1WNcRrDzxyoy_TRm9v15VSGwEiRPqJhUhReq0Wh8Jp14",
+					"TAGS!A2:C");
+			// TODO remover linha vazias vazias null
+			if (values == null || values.isEmpty()) {
+				System.out.println("No data found.");
+			} else {
+				for (List<Object> row : values) {
+					String name = (String) row.get(0);
+					String regex = row.size() > 1 ? (String) row.get(1) : "";
+					String expr = row.size() > 2 ? (String) row.get(2) : "";
+					String desc = row.size() > 3 ? (String) row.get(3) : "";
+					Tag t = tags.get(name);
+					if (t == null) {
+						tags.put(name, new Tag(name, regex, expr, desc));
+					}
+				}
+			}
+		}
+		System.out.println(tags.size() + " tags imported.");
+		return tags;
+	}
 
 	public void importTags() {
 		if (tags.size() == 0) {
@@ -115,7 +145,7 @@ public class CardComponent {
 	 * Import all card ranks form google sheet
 	 */
 	public void importCardRanks() {
-		List<List<Object>> values = GoogleSheets.getDados("1WNcRrDzxyoy_TRm9v15VSGwEiRPqJhUhReq0Wh8Jp14", "CARDS!A2:E");
+		List<List<Object>> values = GoogleSheets.getDados("1WNcRrDzxyoy_TRm9v15VSGwEiRPqJhUhReq0Wh8Jp14", "CARDS!A2:F");
 		int count = 0;
 		// TODO buscar pelo nome do header da coluna
 		for (List<Object> row : values) {
@@ -155,19 +185,34 @@ public class CardComponent {
 			try {
 				ObjectMapper om = new ObjectMapper();
 				String jsonCards = Files.readString(Path.of("cards.collectible.json"), Charset.defaultCharset());
-				JsonNode rootNode = om.readTree(jsonCards);
-				Iterator<JsonNode> iter = rootNode.elements();
-				while (iter.hasNext()) {
-					ArrayNode ja = (ArrayNode) iter.next();
-					List<Card> pojos = om.readValue(ja.toString(), new TypeReference<List<Card>>() {
-					});
-					cards.addAll(pojos);
+				JsonNode root = om.readTree(jsonCards);
+				// Iterate over the nodes.
+				Set<String> cardNames = new HashSet<>();
+				for (JsonNode sets : root) {
+					for (JsonNode n : sets) {
+						Card card = om.readValue(n.toString(), Card.class);
+						card.trimText(card.getText().toString());
+						if ("enUS".equals(card.getLocale())) {
+//						locale enUS, set wild, 
+//						"cardSet":"Basic"
+							String cn = card.getName().toLowerCase();
+							if (!cardNames.contains(cn)) {
+								cards.add(card);
+								cardNames.add(cn);
+							} else {
+								// System.out.println(card.getName());
+								card.getDbfIds().add(card.getDbfId());
+							}
+						}
+					}
 				}
+
 				cards.add(new Card("GAME_005", 1746, "the coin", "CORE", "ALLIANCE", "Neutral", "SPELL",
 						"Add 1 mana this turn...", 0L, null, null, null, "COMMON", "", ""));
 
 				cards.forEach(c -> {
-					if ("Minion".equalsIgnoreCase(c.getType())) {
+					if ("Minion".equalsIgnoreCase(c.getType()) && c.getAttack() != null && c.getHealth() != null
+							&& c.getCost() != null) {
 						c.getStats().setStats_cost((float) (c.getAttack() + c.getHealth()) / (c.getCost() + 1));
 					}
 				});
@@ -175,33 +220,6 @@ public class CardComponent {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-//			try {
-//				File file = new File("cards.collectible.json");
-//				if (!file.exists()) {
-//					// file.delete();
-//					Files.copy(new URL(api).openStream(), Paths.get("cards.collectible.json"));
-//				}
-			// JSONArray sets = (JSONArray) Util.file2JSONObject(file.getName());
-			// generateCards(sets);
-//				List<String> w = HearthstoneToolsApplication.rapidApiInfo.getWild();
-
-//				ObjectMapper objectMapper = new ObjectMapper();
-//for (String set : w) 
-			{
-//	JsonNode rootNode = objectMapper.readTree("jsonString");
-//	JsonNode nset = rootNode.get(set);
-				// HearthstoneToolsApplication.cs.
-//				CardSets cs = Util.file2Cards("cards.collectible.json");
-				// ModelMapper mm = new ModelMapper();
-				// mm.i
-				// Card[] cass = mm.map(cs, Card[].class);
-			}
-			// for... info.getSets()){
-			//
-			// TODO juntar todas listas e jogar em cards
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			}
 			System.out.println(cards.size() + " cards created.");
 		}
 		return cards;
@@ -222,8 +240,12 @@ public class CardComponent {
 						|| c.getName().replaceAll("'|\\.|\\,", "").equalsIgnoreCase(idsORname.replaceAll("-", " "))) {
 					return c;
 				}
-				if (c.getDbfId().toString().equalsIgnoreCase(idsORname)) {
-					return c;
+				try {
+					if (c.getDbfIds().contains(Integer.parseInt(idsORname))) {
+						return c;
+					}
+				} catch (NumberFormatException e) {
+					// deve ser busca por nome
 				}
 				if (c.getId() != null && c.getId().toString().equalsIgnoreCase(idsORname)) {
 					return c;
@@ -243,16 +265,17 @@ public class CardComponent {
 	 * Generate all cards Tags.
 	 */
 	public void buildAllCardTags() {
+		long time = System.currentTimeMillis();
 		int acum = 0;
 		for (Card c : getCards()) {
 			acum += buildCardTags(c);
 		}
-		System.out.println(acum + " tags created.");
+		System.out.println(acum + " tags built in " + (System.currentTimeMillis() - time) + " milisecs.");
 	}
 
-	public static int buildCardTags(Card c) {
+	public int buildCardTags(Card c) {
 		int acum = 0;
-		if (c.getTags().size() == 0) {
+		if (c.getTags().isEmpty()) {
 			for (Tag tag : tags.values()) {
 				String expr = c.replaceVars(tag.getExpr());// .replaceAll("\\'", "\"");
 				try {
@@ -271,14 +294,5 @@ public class CardComponent {
 			}
 		}
 		return acum;
-	}
-
-	public void buildCardRanks() {
-		Map<String, Float> ranks = WebScrap.hearthstonetopdecksCardRank();
-		for (String url : ranks.keySet()) {
-			String[] tks = url.split("/");
-			String cname = tks[tks.length - 1];
-			System.out.println(getCard(cname));
-		}
 	}
 }

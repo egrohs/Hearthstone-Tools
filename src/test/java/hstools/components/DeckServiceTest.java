@@ -1,5 +1,8 @@
 package hstools.components;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,5 +32,6 @@ public class DeckServiceTest {
 			e.printStackTrace();
 		}
 		System.out.println(d);
+		assertNotNull(d);
 	}
 }

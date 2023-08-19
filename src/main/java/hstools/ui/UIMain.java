@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Component;
 
 import hstools.domain.components.ArtificialNeuralNetwork;
 import hstools.domain.components.CardComponent;
+import hstools.domain.components.CountDeckWords;
 import hstools.domain.components.DeckComponent;
 import hstools.domain.components.SynergyBuilder;
 import hstools.domain.entities.Card;
@@ -43,6 +46,16 @@ public class UIMain extends JPanel {
 		setLayout(new FlowLayout());
 
 		JComboBox<String> cbCards = new JComboBox<String>();
+		cbCards.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JComboBox<String> combo = (JComboBox<String>) e.getSource();
+                String selectedValue = (String) combo.getSelectedItem();
+                System.out.println(cardComp.getCard(selectedValue));
+            }
+        });
+		
+		add(cbCards);
 
 		JButton b1 = new JButton("LOAD CARDS");
 		b1.addActionListener(new ActionListener() {
@@ -61,28 +74,28 @@ public class UIMain extends JPanel {
 		b6.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				deckComp.decodeDecksFromFile("127_pro.txt");
+				deckComp.decodeDecksFromFile("400_Pro_Decks.txt");
 				// annComp.generateTrainFile();
 				System.out.println(deckComp.getDecks().size() + " decks loaded.");
-				System.out.println("deckstring" + "\t" + "card_adv" + "\t" + "low_cost_minions" + "\t"
-						+ "mid_cost_minions" + "\t" + "high_cost" + "\t" + "survs" + "\t" + "board_control" + "\t"
-						+ "stats_cost" + "\t" + "archtype");
+//				System.out.println("deckstring" + "\t" + "card_adv" + "\t" + "low_cost_minions" + "\t"
+//						+ "mid_cost_minions" + "\t" + "high_cost" + "\t" + "survs" + "\t" + "board_control" + "\t"
+//						+ "stats_cost" + "\t" + "archtype");
 				for (Deck deck : deckComp.getDecks()) {
 					// annComp.classifyDeck(deck);
 					deckComp.calcStats(deck);
-					System.out.println(deck.getDeckstring() + "\t" + deck.getStats());
+					// System.out.println(deck.getDeckstring() + "\t" + deck.getStats());
 				}
 			}
 		});
 		add(b6);
 
-		add(cbCards);
-
 		JButton b2 = new JButton("IMPORT & BUILD CARD TAGS");
 		b2.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				cardComp.importTags();
+				//TODO melhor buscar da planilha online 
+				//cardComp.importTags();
+				cardComp.loadTags();
 				cardComp.buildAllCardTags();
 			}
 		});
@@ -92,7 +105,8 @@ public class UIMain extends JPanel {
 		b3.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				cardComp.buildCardRanks();
+				//cardComp.scrapCardRanks();
+				cardComp.importCardRanks();
 			}
 		});
 		add(b3);
@@ -101,7 +115,8 @@ public class UIMain extends JPanel {
 		b4.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				synComp.importLoadTagSinergies();
+				//synComp.loadTags();
+				synComp.loadTagSinergies();
 				synComp.printTagsSynergiesGraphViz();
 			}
 		});
@@ -130,8 +145,19 @@ public class UIMain extends JPanel {
 		b.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Deck deck = deckComp.decodeDeckString(t.getText());
-				annComp.classifyDeck(deck);
+				// Deck deck = deckComp.decodeDeckString(t.getText());
+//				annComp.classifyDeck(deck);
+				System.out.println(CountDeckWords.keyWords);
+				//List<Integer> results = new ArrayList<>();
+				for (Deck ds : deckComp.getDecks()) {
+					Map<String, Integer> map = new LinkedHashMap<String, Integer>();
+					CountDeckWords.keyWords.forEach(k -> map.put(k, 0));
+					CountDeckWords.wordsMap(ds, map);
+					//results.forEach(m -> results.addAll(map.values()));
+					System.out.println(map.values());
+				}
+				
+				//results.forEach(l->System.out.println(l));
 			}
 		});
 		add(b);

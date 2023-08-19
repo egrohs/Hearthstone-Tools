@@ -12,11 +12,11 @@ import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInsta
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.SheetsScopes;
 import com.google.api.services.sheets.v4.model.ValueRange;
@@ -31,14 +31,32 @@ import com.google.api.services.sheets.v4.model.ValueRange;
 public class GoogleSheets {
 	private static final String APPLICATION_NAME = "Google Sheets API Java Quickstart";
 	private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
-	private static final String TOKENS_DIRECTORY_PATH = "tokens";
+	// private static final String TOKENS_DIRECTORY_PATH = "tokens";
+
+	public static void main(String[] args) throws IOException, GeneralSecurityException {
+		NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport(); 
+		/*Google*/Credential credentials = GoogleSheets.getCredentials(HTTP_TRANSPORT);
+		// Create a Sheets service object.
+		Sheets sheets = new Sheets.Builder(HTTP_TRANSPORT, new JacksonFactory(), credentials).build();
+
+		ValueRange response = sheets.spreadsheets().values()
+				.get("1WNcRrDzxyoy_TRm9v15VSGwEiRPqJhUhReq0Wh8Jp14", "TAGS!A2:C").execute();
+//	} catch (GeneralSecurityException e) {
+//		// TODO Auto-generated catch block
+//		e.printStackTrace();
+//	} catch (IOException e) {
+//		// TODO Auto-generated catch block
+//		e.printStackTrace();
+//	}
+		System.out.println(response.getValues());
+	}
 
 	/**
 	 * Global instance of the scopes required by this quickstart. If modifying these
 	 * scopes, delete your previously saved tokens/ folder.
 	 */
 	private static final List<String> SCOPES = Collections.singletonList(SheetsScopes.SPREADSHEETS_READONLY);
-	private static final String CREDENTIALS_FILE_PATH = "/credentials.json";
+	private static final String CREDENTIALS_FILE_PATH = "/client_secret.json";
 
 	/**
 	 * Creates an authorized Credential object.
@@ -51,15 +69,32 @@ public class GoogleSheets {
 		// Load client secrets.
 		InputStream in = GoogleSheets.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
 		GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
-
+		System.out.println(clientSecrets);
 		// Build flow and trigger user authorization request.
 		GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(HTTP_TRANSPORT, JSON_FACTORY,
 				clientSecrets, SCOPES)
-						.setDataStoreFactory(new FileDataStoreFactory(new java.io.File(TOKENS_DIRECTORY_PATH)))
-						.setAccessType("offline").build();
+				// .setDataStoreFactory(new FileDataStoreFactory(new
+				// java.io.File(TOKENS_DIRECTORY_PATH)))
+				.setAccessType("offline").build();
 		LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
 		return new AuthorizationCodeInstalledApp(flow, receiver).authorize("me");
 	}
+
+//	public static List<List<Object>> getDados3(String spreadsheetId, String range) {
+//		NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+//		// Create a GoogleCredentials object.
+//		GoogleCredentials credentials = GoogleCredentials.getApplicationDefault();
+//
+//		// Create a Sheets service object.
+//		Sheets sheets = new Sheets.Builder(HTTP_TRANSPORT, new JacksonFactory(), credentials).build();
+//
+//		// Do something with the Sheets service object.
+//		// For example, you can get a list of all the sheets in a spreadsheet.
+//		Sheets.Spreadsheets.List request = sheets.spreadsheets().list(/* spreadsheetId */ "YOUR_SPREADSHEET_ID");
+//		request.setFields("*");
+//		Sheets.Spreadsheets.ListResponse response = request.execute();
+//		System.out.println(response.getSheets());
+//	}
 
 	/**
 	 * Prints the names and majors of students in a sample spreadsheet:

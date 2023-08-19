@@ -39,7 +39,7 @@ public class CardRest {
 		List<Card> cards = cardComp.buildCards();
 		cardComp.importTags();
 		cardComp.buildAllCardTags();
-		synComp.importLoadTagSinergies();
+		synComp.loadTagSinergies();
 		return ResponseEntity.ok(cards);
 	}
 

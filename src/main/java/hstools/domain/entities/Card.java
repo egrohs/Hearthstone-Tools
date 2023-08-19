@@ -40,17 +40,20 @@ public class Card extends Node {
 
 	private Set<String> classes = new HashSet<>();
 	private StringBuilder text = new StringBuilder();
-	private String cardId, race, type, rarity, mechs, refTags;
+	private String cardId, race, type, rarity, mechs, refTags, locale;
 	@JsonProperty("cardSet")
 	private Expansion expansion;
-	private Integer dbfId, cost, attack, health;
+	private Set<Integer> dbfIds = new HashSet<>();
 	@JsonProperty("durability")
 	private Integer dur;
+	private Integer dbfId, cost, attack, health;
 	// @Relationship
 	private CardStats stats = new CardStats();
 	// @Relationship(type = "TAG")
 	private Set<Tag> tags = new HashSet<Tag>();
-
+	// @JsonProperty("mechanics.name")
+	// private Set<String> mechanics;
+	private Set<Mechanic> mechanics = new HashSet<>();
 	// private Set<SynergyEdge<Card, Tag>> tags = new HashSet<SynergyEdge<Card,
 	// Tag>>();
 
@@ -68,7 +71,7 @@ public class Card extends Node {
 	public Card(String cardId, Integer dbfId, String name, String set, String faction, String classe, String type,
 			String text, Long cos, Long atta, Long health, Long dur, String rarity, String refTags, String mechs) {
 		this.cardId = cardId;
-		this.dbfId = dbfId;
+		this.dbfIds.add(dbfId);
 //		this.getChildren().add(new ImageView(new Image("file:res/cards/" + this.id + ".png")));
 //		StackPane.setAlignment(this, Pos.CENTER_LEFT);
 		this.name = name.toLowerCase();
@@ -76,9 +79,6 @@ public class Card extends Node {
 		this.race = faction == null ? "" : faction;
 		// this.classe = classe;
 		this.type = type.toLowerCase();
-		if (text != null) {
-			this.getText().append(Jsoup.parse(text).text().replaceAll(String.valueOf((char) 160), " "));
-		}
 		this.cost = (cos == null ? -1 : Integer.parseInt(cos.toString()));
 		this.attack = (atta == null ? -1 : Integer.parseInt(atta.toString()));
 		this.health = (health == null ? null : Integer.parseInt(health.toString()));
@@ -87,7 +87,7 @@ public class Card extends Node {
 
 		this.refTags = refTags;
 		this.mechs = mechs;
-		trim();
+		trimText(text);
 		this.stats = new CardStats();
 		if ("MINION".equalsIgnoreCase(this.type)) {
 			this.stats.setStats_cost((float) (this.attack + this.health) / (this.cost + 1));
@@ -98,16 +98,17 @@ public class Card extends Node {
 	 * TODO talvez os textos não devem ir pra lowercase, pois palavras curtas como
 	 * "all" podem ser dificeis de identificar.
 	 */
-	private void trim() {
-		if (text != null) {
+	public void trimText(String t) {
+		if (t != null) {
+			t = Jsoup.parse(t).text().replaceAll(String.valueOf((char) 160), " ");
 			// text =
 			// StringEscapeUtils.escapeHtml4(text).toLowerCase().replaceAll("\\$",
 			// "").replaceAll("\\#", "").trim();
-			text.append(" - " + race);
+			t += " - " + race;
 			// if ("WEAPON".equals(type))
-			text.append(" - " + type);
-			text = new StringBuilder(Jsoup.parse(text.toString()).text().toLowerCase().replaceAll("\\$", "")
-					.replaceAll("\\#", "").replaceAll("�", " ").trim());
+			t += " - " + type;
+			this.text = new StringBuilder(Jsoup.parse(t).text().toLowerCase().replace("\\$", "")
+					.replace("\\#", "").replace("�", " ").replace("_", " ").trim());
 		}
 	}
 
@@ -136,7 +137,7 @@ public class Card extends Node {
 		return expr;
 	}
 
-	public String toString() {
-		return name;
-	}
+//	public String toString() {
+//		return name;
+//	}
 }

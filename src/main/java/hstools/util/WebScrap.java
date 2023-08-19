@@ -14,11 +14,13 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import hstools.Constants.Format;
+import hstools.domain.components.CardComponent;
 import hstools.domain.entities.Deck;
 import hstools.domain.entities.Expansion;
-import hstools.domain.entities.Tag;
 
 /**
  * Scrap all online info about hs.
@@ -26,7 +28,7 @@ import hstools.domain.entities.Tag;
  * @author EGrohs
  *
  */
-//@Component("WebScrap")
+@Component("WebScrap")
 public class WebScrap {
 	// TODO download do meta atual wild
 	// https://tempostorm.com/hearthstone/meta-snapshot/wild
@@ -34,10 +36,22 @@ public class WebScrap {
 	private LocalDate date;
 	private Format format;
 	private Map<Integer, Deck> decks = new LinkedHashMap<>();
+	
+	@Autowired
+	private CardComponent ccomp;
 
 	// @PostConstruct
 	public void init() {
 
+	}
+	
+	public void scrapCardRanks() {
+		Map<String, Float> ranks = WebScrap.hearthstonetopdecksCardRank();
+		for (String url : ranks.keySet()) {
+			String[] tks = url.split("/");
+			String cname = tks[tks.length - 1];
+			System.out.println(ccomp.getCard(cname));
+		}
 	}
 
 	private static Document getDocument(String url) {
@@ -212,32 +226,5 @@ String url = "https://www.hearthstonetopdecks.com/decks/page/" + i + "/?st=&clas
 				.get();
 
 		System.out.println("Title : " + doc.title());
-	}
-
-	// TODO armazenar localmente as tags evitando buscar se mesma versao ou sem
-	// internet.
-	/** Import tags from google spreadsheet. */
-	public static void importTags(Map<String, Tag> tags) {
-		if (tags.size() == 0) {
-			// Map<String, Tag> tags = new HashMap<String, Tag>();
-			List<List<Object>> values = GoogleSheets.getDados("1WNcRrDzxyoy_TRm9v15VSGwEiRPqJhUhReq0Wh8Jp14",
-					"TAGS!A2:C");
-//TODO remover linha vazias vazias null
-			if (values == null || values.isEmpty()) {
-				System.out.println("No data found.");
-			} else {
-				for (List<Object> row : values) {
-					String name = (String) row.get(0);
-					String regex = row.size() > 1 ? (String) row.get(1) : "";
-					String expr = row.size() > 2 ? (String) row.get(2) : "";
-					String desc = row.size() > 3 ? (String) row.get(3) : "";
-					Tag t = tags.get(name);
-					if (t == null) {
-						tags.put(name, new Tag(name, regex, expr, desc));
-					}
-				}
-			}
-		}
-		System.out.println(tags.size() + " tags imported.");
 	}
 }
