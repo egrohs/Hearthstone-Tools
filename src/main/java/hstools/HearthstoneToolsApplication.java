@@ -1,7 +1,5 @@
 package hstools;
 
-import java.io.File;
-
 import javax.swing.JFrame;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,18 +7,12 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import hstools.domain.components.ArtificialNeuralNetwork;
-import hstools.domain.components.CardComponent;
-import hstools.domain.components.DeckComponent;
 import hstools.domain.components.FilesComponent;
 import hstools.domain.components.NetworkComponent;
-import hstools.domain.components.SynergyBuilder;
 import hstools.domain.entities.RapidApiInfo;
 import hstools.ui.UIMain;
+import hstools.ui.UITabs;
 
 @SpringBootApplication // (scanBasePackages = { "hstools.components" })
 //@ComponentScan("hstools.domain.components")
@@ -94,9 +86,9 @@ public class HearthstoneToolsApplication extends JFrame implements CommandLineRu
 
 	private void init() {
 		setTitle("Hearthstone Tools");
-		setSize(1300, 300);
+		setSize(500, 300);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		// UIMain ui = new UIMain();
+//		ui = new UIMain();
 		ui.init();
 //		ui.add(new UITabs().getTabbedPane());
 		this.setContentPane(ui);

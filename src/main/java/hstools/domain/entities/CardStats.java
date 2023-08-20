@@ -1,8 +1,10 @@
 package hstools.domain.entities;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
+@EqualsAndHashCode(callSuper = true)
 //@NodeEntity
 public class CardStats extends Node {
 	private float rank, stats_cost = 0;

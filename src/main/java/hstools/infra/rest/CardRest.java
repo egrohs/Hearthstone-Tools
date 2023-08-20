@@ -14,7 +14,6 @@ import hstools.domain.components.CardComponent;
 import hstools.domain.components.SynergyBuilder;
 import hstools.domain.dtos.GraphJson;
 import hstools.domain.entities.Card;
-import hstools.domain.entities.SynergyEdge;
 
 @RequestMapping(value = "/api/v1")
 ////@Transactional(rollbackOn = { Exception.class })

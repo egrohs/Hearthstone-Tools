@@ -8,8 +8,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jsoup.Connection;
-import org.jsoup.Connection.Method;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -33,9 +31,9 @@ public class WebScrap {
 	// TODO download do meta atual wild
 	// https://tempostorm.com/hearthstone/meta-snapshot/wild
 	// https://www.vicioussyndicate.com/wild-drr
-	private LocalDate date;
-	private Format format;
-	private Map<Integer, Deck> decks = new LinkedHashMap<>();
+//	private LocalDate date;
+//	private Format format;
+//	private Map<Integer, Deck> decks = new LinkedHashMap<>();
 	
 	@Autowired
 	private CardComponent ccomp;
@@ -181,6 +179,7 @@ public class WebScrap {
 		String url = "https://tempostorm.com/hearthstone/meta-snapshot/wild/2019-12-17";
 		Document docMeta = getDocument(url);
 		Elements tempostormDecks = docMeta.select("hs-snapshot-body div div div div div div div div a");
+		System.out.println(tempostormDecks);
 	}
 
 	public static void hearthstonetopdecksDecks() {
@@ -208,23 +207,5 @@ String url = "https://www.hearthstonetopdecks.com/decks/page/" + i + "/?st=&clas
 				e.printStackTrace();
 			}
 		}
-	}
-
-	private void login(String loginUrl, String url) throws IOException {
-		// First login. Take the cookies
-		Connection.Response res = Jsoup.connect(loginUrl).data("eid", "i110013").data("pw", "001")
-				.referrer("http://www.google.com")
-				.userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
-				.method(Method.POST).timeout(0).execute();
-
-		Map<String, String> loginCookies = res.cookies();
-
-		// Now you can parse any page you want, as long as you pass the
-		// cookies
-		Document doc = Jsoup.connect(url).timeout(0).cookies(loginCookies).referrer("http://www.google.com")
-				.userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
-				.get();
-
-		System.out.println("Title : " + doc.title());
 	}
 }

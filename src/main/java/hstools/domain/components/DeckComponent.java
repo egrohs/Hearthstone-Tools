@@ -22,6 +22,7 @@ import hstools.Constants.Archtype;
 import hstools.Constants.Format;
 import hstools.domain.entities.Card;
 import hstools.domain.entities.Deck;
+import hstools.domain.entities.Node;
 import hstools.domain.entities.SynergyEdge;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -40,12 +41,12 @@ public class DeckComponent {
 	private CardComponent cardComp;
 
 	@Getter
-	private Set<Deck> decks = new LinkedHashSet<Deck>();
+	private Set<Deck> decks = new LinkedHashSet<>();
 
 	public void calcStats(Deck deck) {
 		// Build deck tags
 		for (SynergyEdge<Deck, Card> s : deck.getCards()) {
-			List<String> tags = s.getTarget().getTags().stream().map(t -> t.getName()).collect(Collectors.toList());
+			List<String> tags = s.getTarget().getTags().stream().map(Node::getName).collect(Collectors.toList());
 			Card c = s.getTarget();
 			deck.getStats().incStats_cost(c.getStats().getStats_cost());
 			if ("MINION".equalsIgnoreCase(c.getType())) {
@@ -207,6 +208,7 @@ public class DeckComponent {
 		int heroCount = VarInt.getVarInt(byteBuffer);
 		// result.heroes = new ArrayList<>();
 		for (int i = 0; i < heroCount; i++) {
+			//TODO should not bypass heroes
 			int cInt = VarInt.getVarInt(byteBuffer);
 //			cards.add(new SynergyEdge<Deck, Card>(deck, cardComp.getCard(String.valueOf(cInt)),
 //					1));
@@ -222,7 +224,7 @@ public class DeckComponent {
 				} else {
 					count = i;
 				}
-				cards.add(new SynergyEdge<Deck, Card>(deck, cardComp.getCard(String.valueOf(dbfId)), count));
+				cards.add(new SynergyEdge<>(deck, cardComp.getCard(String.valueOf(dbfId)), count));
 			}
 		}
 		deck.setCards(cards);

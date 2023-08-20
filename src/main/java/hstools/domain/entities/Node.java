@@ -3,6 +3,7 @@ package hstools.domain.entities;
 import com.sun.istack.NotNull;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * Abstract Entity for neo4j graph visualization. You should write your equals
@@ -14,6 +15,7 @@ import lombok.Data;
  *
  */
 @Data
+@EqualsAndHashCode(of = "id")
 public abstract class Node implements Comparable<Node> {
 //	@Id
 //	@GeneratedValue

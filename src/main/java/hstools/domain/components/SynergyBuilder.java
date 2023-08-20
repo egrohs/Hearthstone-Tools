@@ -284,8 +284,9 @@ public class SynergyBuilder {
 
 	public List<SynergyEdge<Card, Card>> generateMatchesCardsSim() {
 		JSONObject jo = (JSONObject) files.file2JSONObject("src/main/resources/synergy/matchesCardHerthSim.json");
-		JSONArray nodes = (JSONArray) jo.get("nodes"), links = (JSONArray) jo.get("links");
-		List<SynergyEdge<Card, Card>> cardSins = new ArrayList<SynergyEdge<Card, Card>>();
+		//JSONArray nodes = (JSONArray) jo.get("nodes");
+		JSONArray links = (JSONArray) jo.get("links");
+		List<SynergyEdge<Card, Card>> cardSins = new ArrayList<>();
 		Iterator<JSONObject> iterator = links.iterator();
 		while (iterator.hasNext()) {
 			JSONObject o = iterator.next();
@@ -416,9 +417,9 @@ public class SynergyBuilder {
 		if (c != null) {
 			for (SynergyEdge<Card, Card> s : cardsSynergies) {
 				if (s.getSource() == c || s.getTarget() == c) {
-					Card c2 = (Card) s.getTarget();
+					Card c2 = s.getTarget();
 					if (c == c2) {
-						c = (Card) s.getSource();
+						c = s.getSource();
 					}
 					// cartas com sinergia com custo provavel no turno
 					if (c2.getClasses().contains(opo) && c2.getCost() <= manaRestante) {

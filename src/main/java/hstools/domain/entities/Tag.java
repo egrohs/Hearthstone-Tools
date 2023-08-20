@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * Graph Node Keyword derived from card text and specs.
@@ -11,6 +12,7 @@ import lombok.Data;
  *
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 //@NodeEntity
 //@EqualsAndHashCode(callSuper=true)
 public class Tag extends Node {

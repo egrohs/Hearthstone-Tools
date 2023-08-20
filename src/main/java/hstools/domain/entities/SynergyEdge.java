@@ -1,6 +1,7 @@
 package hstools.domain.entities;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * Keeps a sinergy relationship between any two game entities.
@@ -10,6 +11,7 @@ import lombok.Data;
  * @param <T>
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 //@RelationshipEntity(type = "SYNERGY")
 public class SynergyEdge<S extends Node, T extends Node> extends Node {// implements Comparable<SynergyEdge<S, T>> {
 	//@StartNode
@@ -52,18 +54,18 @@ public class SynergyEdge<S extends Node, T extends Node> extends Node {// implem
 
 	// TODO verificar se esse equals n�o esta duplicando os resultados e
 	// deixando mais lento.
-	@Override
-	public boolean equals(Object obj) {
-		if (obj == null || !(obj instanceof SynergyEdge))
-			return false;
-		SynergyEdge<S, T> s2 = (SynergyEdge<S, T>) obj;
-		// from here, must not test for nulls.
-		if (weight != s2.getWeight())
-			return false;
-		if ((source != s2.getSource() || target != s2.getTarget()) && source != s2.getTarget())
-			return false;
-		return true;
-	}
+//	@Override
+//	public boolean equals(Object obj) {
+//		if (obj == null || !(obj instanceof SynergyEdge))
+//			return false;
+//		SynergyEdge<S, T> s2 = (SynergyEdge<S, T>) obj;
+//		// from here, must not test for nulls.
+//		if (weight != s2.getWeight())
+//			return false;
+//		if ((source != s2.getSource() || target != s2.getTarget()) && source != s2.getTarget())
+//			return false;
+//		return true;
+//	}
 //	@Override
 //	public int compareTo(Node o) {
 //		// TODO Auto-generated method stub

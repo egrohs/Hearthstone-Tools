@@ -28,7 +28,6 @@ import hstools.domain.entities.Card;
 import hstools.domain.entities.Expansion;
 import hstools.domain.entities.Tag;
 import hstools.util.GoogleSheets;
-import hstools.util.WebScrap;
 import lombok.Getter;
 
 /**
@@ -160,17 +159,17 @@ public class CardComponent {
 		System.out.println(count + " card ranks imported.");
 	}
 
-	private int containsTag(Tag tag) {
-		int i = 0;
-		for (Card card : cards) {
-			if (card.getTags().contains(tag)) {
-				i++;
-				System.out.println(card.getName());
-			}
-		}
-		System.out.println(i);
-		return i;
-	}
+//	private int containsTag(Tag tag) {
+//		int i = 0;
+//		for (Card card : cards) {
+//			if (card.getTags().contains(tag)) {
+//				i++;
+//				System.out.println(card.getName());
+//			}
+//		}
+//		System.out.println(i);
+//		return i;
+//	}
 
 	/**
 	 * Load json card db api in memory. Using hearthstonejson cause it has a
@@ -181,7 +180,7 @@ public class CardComponent {
 		// https://rapidapi.com/omgvamp/api/hearthstone
 		// final String api =
 		// "https://api.hearthstonejson.com/v1/latest/enUS/cards.collectible.json";
-		if (cards.size() == 0) {
+		if (cards.isEmpty()) {
 			try {
 				ObjectMapper om = new ObjectMapper();
 				String jsonCards = Files.readString(Path.of("cards.collectible.json"), Charset.defaultCharset());

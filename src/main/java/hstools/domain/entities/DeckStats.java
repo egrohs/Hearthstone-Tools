@@ -1,5 +1,8 @@
 package hstools.domain.entities;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import hstools.Constants.Archtype;
 import lombok.Data;
 
@@ -24,6 +27,7 @@ public class DeckStats {
 	private int survs;
 	private int board_control;
 	private int med_cost_minions;
+	private Map<String, Float> syns = new HashMap<>();
 	// TODO Techs depende do meta
 	private int high_cost;// high cost cards > 5
 
