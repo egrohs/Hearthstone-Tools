@@ -1,5 +1,8 @@
 package hstools;
 
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+
 import javax.swing.JFrame;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +15,6 @@ import hstools.domain.components.FilesComponent;
 import hstools.domain.components.NetworkComponent;
 import hstools.domain.entities.RapidApiInfo;
 import hstools.ui.UIMain;
-import hstools.ui.UITabs;
 
 @SpringBootApplication // (scanBasePackages = { "hstools.components" })
 //@ComponentScan("hstools.domain.components")
@@ -85,12 +87,15 @@ public class HearthstoneToolsApplication extends JFrame implements CommandLineRu
 	UIMain ui;
 
 	private void init() {
-		setTitle("Hearthstone Tools");
-		setSize(500, 300);
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		this.setLayout(new FlowLayout());
+		this.setTitle("Hearthstone Tools");
+		//this.setSize(500, 300);
+		this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 //		ui = new UIMain();
 		ui.init();
 //		ui.add(new UITabs().getTabbedPane());
+//		this.getContentPane().add(ui, BorderLayout.CENTER);
 		this.setContentPane(ui);
 		setVisible(true);
 	}

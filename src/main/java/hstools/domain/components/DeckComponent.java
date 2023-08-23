@@ -7,9 +7,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.util.Base64;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -24,6 +27,7 @@ import hstools.domain.entities.Card;
 import hstools.domain.entities.Deck;
 import hstools.domain.entities.Node;
 import hstools.domain.entities.SynergyEdge;
+import hstools.domain.entities.Tag;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -42,6 +46,53 @@ public class DeckComponent {
 
 	@Getter
 	private Set<Deck> decks = new LinkedHashSet<>();
+
+	public void calcSuggestions(Deck d) {
+		Map<Tag, Integer> ff = d.getStats().getSuggests();// TODO ordenado por freq?
+		for (SynergyEdge<Deck, Card> deckTags : d.getCards()) {
+			Card c = deckTags.getTarget();
+			for (Tag t : c.getTags()) {
+				if (ff.get(t) == null) {
+					ff.put(t, 1);
+				} else {
+					ff.put(t, ff.get(t) + 1);
+				}
+			}
+		}
+		List<Card> possibles = cardComp.getCards().stream()
+				.filter(c -> c.getClasses().contains(d.getClasse()) || c.getClasses().contains("Neutral"))
+				.collect(Collectors.toList());
+		for (Card card : possibles) {
+			card.getStats().setTempDeckFreq(0);
+			for (Tag t : ff.keySet()) {
+				if (card.getTags().contains(t)) {
+					card.getStats().setTempDeckFreq(card.getStats().getTempDeckFreq() + 1);
+				}
+			}
+		}
+
+		Map<Tag, Integer> topTen = ff.entrySet().stream().sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+				.limit(10)
+				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+
+		for (Tag t : topTen.keySet()) {
+			System.out.println(t.getName() + " - " + topTen.get(t));
+		}
+		//topTen.entrySet().stream().sorted(Map.Entry.comparingByValue()).forEach(System.out::println);
+
+		// Obtém uma coleção de entradas do map.
+//		Set<Map.Entry<Tag, Integer>> entries = ff.entrySet();
+//
+//		// Converte a coleção em um fluxo.
+//		Stream<Map.Entry<Tag, Integer>> stream = entries.stream();
+//
+//		// Ordena o fluxo pelo value.
+//		stream.sorted(Map.Entry.comparingByValue());
+//
+//		// Itera sobre o fluxo ordenado.
+//		stream.forEach(entry -> System.out.println(entry.getKey() + " = " + entry.getValue()));
+
+	}
 
 	public void calcStats(Deck deck) {
 		// Build deck tags
@@ -138,7 +189,7 @@ public class DeckComponent {
 		try {
 			Scanner sc = new Scanner(file);
 			String obs = null;
-			Deck deck = new Deck();
+			Deck deck = new Deck(file.getName(), "");
 			while (sc.hasNextLine()) {
 				// Apenas para ceitar ctrl-c-v do
 				// http://www.hearthstonetopdecks.com
@@ -197,7 +248,7 @@ public class DeckComponent {
 		if (version != 1) {
 			// throw new ParseException("bad version: " + version);
 		}
-		Deck deck = new Deck(encodedString);
+		Deck deck = new Deck("decoded deck", encodedString);
 		Format formato = Format.getByValor(VarInt.getVarInt(byteBuffer));
 		// Map<Card, Integer> cards = new HashMap<>();
 		Set<SynergyEdge<Deck, Card>> cards = new HashSet<SynergyEdge<Deck, Card>>();
@@ -208,7 +259,7 @@ public class DeckComponent {
 		int heroCount = VarInt.getVarInt(byteBuffer);
 		// result.heroes = new ArrayList<>();
 		for (int i = 0; i < heroCount; i++) {
-			//TODO should not bypass heroes
+			// TODO should not bypass heroes
 			int cInt = VarInt.getVarInt(byteBuffer);
 //			cards.add(new SynergyEdge<Deck, Card>(deck, cardComp.getCard(String.valueOf(cInt)),
 //					1));

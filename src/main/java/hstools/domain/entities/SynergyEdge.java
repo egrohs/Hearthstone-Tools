@@ -11,12 +11,12 @@ import lombok.EqualsAndHashCode;
  * @param <T>
  */
 @Data
-@EqualsAndHashCode(callSuper = true)
+//@EqualsAndHashCode(of = {"source", "target", "freq"}, callSuper = false)
 //@RelationshipEntity(type = "SYNERGY")
 public class SynergyEdge<S extends Node, T extends Node> extends Node {// implements Comparable<SynergyEdge<S, T>> {
-	//@StartNode
+	// @StartNode
 	private S source;
-	//@EndNode
+	// @EndNode
 	private T target;
 	private int freq;
 	private Float weight = 0f;
@@ -28,6 +28,7 @@ public class SynergyEdge<S extends Node, T extends Node> extends Node {// implem
 		this.freq = freq;
 		this.weight = v;
 		this.mechs = mm;
+		this.name = e1.getName() + v + e2.getName();
 	}
 
 	public SynergyEdge(S e1, T e2, String label, Float v) {
@@ -35,6 +36,7 @@ public class SynergyEdge<S extends Node, T extends Node> extends Node {// implem
 		this.target = e2;
 		this.label = label;
 		this.weight = v;
+		this.name = e1.getName() + v + e2.getName();
 	}
 
 	public SynergyEdge(S e1, T e2, float v, String mm) {
@@ -42,14 +44,16 @@ public class SynergyEdge<S extends Node, T extends Node> extends Node {// implem
 		this.target = e2;
 		this.weight = v;
 		this.mechs = mm;
+		this.name = e1.getName() + v + e2.getName();
 	}
 
-	public SynergyEdge(S e1, T e2, int freq) {
+	public SynergyEdge(S e1, T e2, int v) {
 		if (e1 == null || e2 == null)
 			throw new RuntimeException("Null nodes");
 		this.source = e1;
 		this.target = e2;
-		this.freq = freq;
+		this.freq = v;
+		this.name = e1.getName() + v + e2.getName();
 	}
 
 	// TODO verificar se esse equals n�o esta duplicando os resultados e
@@ -88,6 +92,6 @@ public class SynergyEdge<S extends Node, T extends Node> extends Node {// implem
 
 	@Override
 	public String toString() {
-		return source + "\t" + target + "\t" + label;
+		return source.getName() + "\t" + target.getName() + "\t" + label;
 	}
 }

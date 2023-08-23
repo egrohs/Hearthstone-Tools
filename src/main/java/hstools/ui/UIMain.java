@@ -2,7 +2,6 @@ package hstools.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -12,11 +11,11 @@ import java.util.EventObject;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
+import java.util.stream.Collectors;
 
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -42,6 +41,7 @@ import hstools.domain.components.DeckComponent;
 import hstools.domain.components.SynergyBuilder;
 import hstools.domain.entities.Card;
 import hstools.domain.entities.Deck;
+import hstools.domain.entities.Node;
 
 @Component
 public class UIMain extends JPanel {
@@ -56,16 +56,18 @@ public class UIMain extends JPanel {
 
 	@Autowired
 	private ArtificialNeuralNetwork annComp;
-	
+
 	private DefaultTableModel topTableModel, bottomTableModel;
 	private JTable topTable, bottomTable;
 	private JButton copyButton, deleteButton;
 	private List<ColumnFilter> columnFilters;
-	private JList<DataDTO> dataDTOJList;
-	private List<DataDTO> cardList=new ArrayList<>(); // Lista de objetos DTO
+	private JList<String> dataDTOJList;
+	private List<Card> cardList;
+	private Deck deck = new Deck("temp", "");
 
 	public UIMain() {
-		cardList.add(new DataDTO("name", "text"));
+
+		// cardList.add(new Card("name", "text"));
 //		setTitle("Dual Table Example");
 //		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 //		setSize(800, 600);
@@ -74,20 +76,28 @@ public class UIMain extends JPanel {
 		setPreferredSize(new Dimension(800, 600));
 
 		columnFilters = new ArrayList<>();
-		columnFilters.add(new ColumnFilter("Column 1"));
-		columnFilters.add(new ColumnFilter("Column 2"));
+		columnFilters.add(new ColumnFilter("Name"));
+		columnFilters.add(new ColumnFilter("Text"));
 
-		topTableModel = new DefaultTableModel();
-		topTableModel.setColumnIdentifiers(new Object[] { "Column 1", "Column 2" });
+		topTableModel = new DefaultTableModel() {
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				return false; // Torna todas as células não editáveis
+			}
+		};
+
 		// Adicione esta linha após a inicialização do topTableModel
-		topTableModel.addRow(new Object[] { "Exemplo Valor 1", "Exemplo Valor 2" });
-		topTableModel.addRow(new Object[] { "Exemplo Valor 2", "Exemplo Valor 2" });
-		topTableModel.addRow(new Object[] { "Exemplo Valor 1", "Exemplo Valor 1" });
+		// Preencha o topTableModel com os dados da dataList
 
+//		topTableModel.addRow(new Object[] { "Exemplo Valor 1", "Exemplo Valor 2" });
+//		topTableModel.addRow(new Object[] { "Exemplo Valor 2", "Exemplo Valor 2" });
+//		topTableModel.addRow(new Object[] { "Exemplo Valor 1", "Exemplo Valor 1" });
+
+		topTableModel.setColumnIdentifiers(new Object[] { "Has", "Name", "Rank", "Text" });
 		topTable = new JTable(topTableModel);
+
 		TableRowSorter<DefaultTableModel> topSorter = new TableRowSorter<>(topTableModel);
 		topTable.setRowSorter(topSorter);
-		setupTableEditable(topTable, false); // Define a coluna "Column 2" como não editável
 
 		topTable.addMouseListener(new MouseAdapter() {
 			@Override
@@ -95,16 +105,31 @@ public class UIMain extends JPanel {
 				if (e.getClickCount() == 2) { // Detecta um duplo clique
 					int selectedRow = topTable.getSelectedRow();
 					if (selectedRow != -1) {
-						Object[] rowData = new Object[] { topTableModel.getValueAt(selectedRow, 0),
-								topTableModel.getValueAt(selectedRow, 1) };
-						bottomTableModel.addRow(rowData); // Copia a linha para a tabela de baixo
+						Object cardName = topTableModel.getValueAt(selectedRow, 1);
+						Object[] rowData = new Object[] { 1, cardName, topTableModel.getValueAt(selectedRow, 2),
+								topTableModel.getValueAt(selectedRow, 3) };
+						int foundRow = findStringInColumn(bottomTable, (String) cardName, 1);
+						if (foundRow == -1) {
+							bottomTableModel.addRow(rowData);
+						} else {
+							bottomTableModel.setValueAt(((int) bottomTableModel.getValueAt(foundRow, 0) + 1), foundRow,
+									0);
+						}
+
+						deck.addCard(cardComp.getCard((String) cardName));
+						deckComp.calcSuggestions(deck);
 					}
 				}
 			}
 		});
 
-		bottomTableModel = new DefaultTableModel();
-		bottomTableModel.setColumnIdentifiers(new Object[] { "Column 1", "Column 2" });
+		bottomTableModel = new DefaultTableModel() {
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				return false; // Torna todas as células não editáveis
+			}
+		};
+		bottomTableModel.setColumnIdentifiers(new Object[] { "Qnt", "Name", "Rank", "Text" });
 		bottomTable = new JTable(bottomTableModel);
 		TableRowSorter<DefaultTableModel> bottomSorter = new TableRowSorter<>(bottomTableModel);
 		bottomTable.setRowSorter(bottomSorter);
@@ -114,7 +139,14 @@ public class UIMain extends JPanel {
 				if (e.getClickCount() == 2) { // Detecta um duplo clique
 					int selectedRow = bottomTable.getSelectedRow();
 					if (selectedRow != -1) {
-						bottomTableModel.removeRow(selectedRow); // Remove a linha da tabela de baixo
+						int val = (int) bottomTableModel.getValueAt(selectedRow, 0);
+						// int foundRow = findStringInColumn(bottomTable, (String) cardName, 1);
+						if (val > 1) {
+							bottomTableModel.setValueAt(--val, selectedRow, 0);
+						} else {
+							bottomTableModel.removeRow(selectedRow); // Remove a linha da tabela de baixo
+						}
+
 					}
 				}
 			}
@@ -124,17 +156,19 @@ public class UIMain extends JPanel {
 		JScrollPane bottomScrollPane = new JScrollPane(bottomTable);
 
 		// Adicione seus próprios itens aqui
-		dataDTOJList = new JList<>(cardList.toArray(new DataDTO[0])); // Converte a lista em um array de DataDTO
+		// Converte a lista em um array de DataDTO
+		dataDTOJList = new JList<>();
 		dataDTOJList.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() == 2) { // Detecta um duplo clique
 					int selectedIndex = dataDTOJList.getSelectedIndex();
 					if (selectedIndex != -1) {
-						Object valueToCopy = topTableModel.getValueAt(selectedIndex, 0); // Você pode ajustar a coluna
-																							// de onde deseja copiar o
-																							// valor
-						bottomTableModel.addRow(new Object[] { valueToCopy, "" }); // Adicione o valor à tabela de baixo
+						Object name = topTableModel.getValueAt(selectedIndex, 1);
+						Object rank = topTableModel.getValueAt(selectedIndex, 2);
+						Object text = topTableModel.getValueAt(selectedIndex, 3);
+						bottomTableModel.addRow(new Object[] { "", name, rank, text }); // Adicione o valor à tabela de
+																						// baixo
 					}
 				}
 			}
@@ -143,7 +177,7 @@ public class UIMain extends JPanel {
 		JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, topScrollPane, bottomScrollPane);
 		splitPane.setResizeWeight(0.5);
 
-		JPanel filterPanel = topButtonsPanel();//new JPanel(new FlowLayout(FlowLayout.LEFT));
+		JPanel filterPanel = topButtonsPanel();// new JPanel(new FlowLayout(FlowLayout.LEFT));
 		for (ColumnFilter columnFilter : columnFilters) {
 			JPanel columnFilterPanel = new JPanel(new BorderLayout());
 			columnFilterPanel.add(new JLabel(columnFilter.getLabel()), BorderLayout.NORTH);
@@ -152,23 +186,24 @@ public class UIMain extends JPanel {
 		}
 
 		JPanel eastPanel = new JPanel(new BorderLayout());
-		eastPanel.add(new JLabel("String List"), BorderLayout.NORTH);
+		eastPanel.add(new JLabel("Suggestions"), BorderLayout.NORTH);
 		eastPanel.add(new JScrollPane(dataDTOJList), BorderLayout.CENTER);
 
 		JPanel buttonPanel = new JPanel();
-		copyButton = new JButton("Copy Selected Row");
+		copyButton = new JButton("Add to deck");
 		copyButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int selectedRow = topTable.getSelectedRow();
 				if (selectedRow != -1) {
 					Object[] rowData = new Object[] { topTableModel.getValueAt(selectedRow, 0),
-							topTableModel.getValueAt(selectedRow, 1) };
+							topTableModel.getValueAt(selectedRow, 1), topTableModel.getValueAt(selectedRow, 2),
+							topTableModel.getValueAt(selectedRow, 3) };
 					bottomTableModel.addRow(rowData);
 				}
 			}
 		});
-		deleteButton = new JButton("Delete Selected Row");
+		deleteButton = new JButton("Delete from deck");
 		deleteButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -191,22 +226,33 @@ public class UIMain extends JPanel {
 
 		setVisible(true);
 	}
-	
-	JComboBox<String> cbCards = new JComboBox<>();
+
+	private int findStringInColumn(JTable table, String searchString, int columnIndex) {
+		for (int row = 0; row < table.getModel().getRowCount(); row++) {
+			String cellValue = table.getModel().getValueAt(row, columnIndex).toString();
+			if (cellValue.contains(searchString))
+				// table.setRowHeight(row, containsString ? table.getRowHeight() : 0);
+				return row;
+		}
+		return -1;
+	}
+
+//	JComboBox<String> cbCards = new JComboBox<>();
+
 	public JPanel topButtonsPanel() {
 		JPanel panel = new JPanel();
-		//panel.setLayout(new FlowLayout());
+		// panel.setLayout(new FlowLayout());
 
-		cbCards.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JComboBox<String> combo = (JComboBox<String>) e.getSource();
-                String selectedValue = (String) combo.getSelectedItem();
-                System.out.println(cardComp.getCard(selectedValue));
-            }
-        });
-		
-		panel.add(cbCards);
+//		cbCards.addActionListener(new ActionListener() {
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				JComboBox<String> combo = (JComboBox<String>) e.getSource();
+//				String selectedValue = (String) combo.getSelectedItem();
+//				System.out.println(cardComp.getCard(selectedValue));
+//			}
+//		});
+//
+//		panel.add(cbCards);
 
 		JButton b6 = new JButton("LOAD PRO DECKS");
 		b6.addActionListener(new ActionListener() {
@@ -225,39 +271,103 @@ public class UIMain extends JPanel {
 				}
 			}
 		});
-		panel.add(b6);
-
-		JButton b2 = new JButton("IMPORT & BUILD CARD TAGS");
-		b2.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				//TODO melhor buscar da planilha online 
-				//cardComp.importTags();
-				cardComp.loadTags();
-				cardComp.buildAllCardTags();
-			}
-		});
-		panel.add(b2);
+		panel.add(b6, BorderLayout.NORTH);
 
 		JButton b3 = new JButton("IMPORT CARD RANKS");
 		b3.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				//cardComp.scrapCardRanks();
+				// cardComp.scrapCardRanks();
 				cardComp.importCardRanks();
+				refreshCards();
 			}
 		});
-		panel.add(b3);
+		panel.add(b3, BorderLayout.NORTH);
 
-		JButton b4 = new JButton("IMPORT TAGS SYNERGIES");
-		b4.addActionListener(new ActionListener() {
+		JTextField t = new JTextField(20);
+		panel.add(t, BorderLayout.NORTH);
+		JButton b = new JButton("CLASSIFY DECKSTRING");
+		b.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				//synComp.loadTags();
+				// Deck deck = deckComp.decodeDeckString(t.getText());
+//				annComp.classifyDeck(deck);
+				System.out.println(CountDeckWords.keyWords);
+				// List<Integer> results = new ArrayList<>();
+				for (Deck ds : deckComp.getDecks()) {
+					Map<String, Integer> map = new LinkedHashMap<String, Integer>();
+					CountDeckWords.keyWords.forEach(k -> map.put(k, 0));
+					CountDeckWords.wordsMap(ds, map);
+					// results.forEach(m -> results.addAll(map.values()));
+					System.out.println(map.values());
+				}
+
+				// results.forEach(l->System.out.println(l));
+			}
+		});
+		panel.add(b, BorderLayout.NORTH);
+
+		return panel;
+	}
+
+	public void init() {
+		cardComp.buildCards();
+		setupTableEditable(topTable, false);
+		setupTableEditable(bottomTable, false);
+		UITabs.updateModel(cardComp.getCards());
+		refreshCards();
+		dataDTOJList.setListData(new Vector<>(cardList.stream().map(Node::getName).collect(Collectors.toList())));
+
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				topTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+				topTable.getColumnModel().getColumn(0).setMinWidth(40);
+				topTable.getColumnModel().getColumn(0).setMaxWidth(40);
+				topTable.getColumnModel().getColumn(0).setPreferredWidth(40);
+
+				topTable.getColumnModel().getColumn(1).setMinWidth(120);
+				topTable.getColumnModel().getColumn(1).setMaxWidth(120);
+				topTable.getColumnModel().getColumn(1).setPreferredWidth(120);
+
+				topTable.getColumnModel().getColumn(2).setMinWidth(40);
+				topTable.getColumnModel().getColumn(2).setMaxWidth(40);
+				topTable.getColumnModel().getColumn(2).setPreferredWidth(40);
+
+				topTable.getColumnModel().getColumn(3).setMinWidth(800);
+				topTable.getColumnModel().getColumn(3).setMaxWidth(800);
+				topTable.getColumnModel().getColumn(3).setPreferredWidth(800);
+
+				bottomTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+				bottomTable.getColumnModel().getColumn(0).setMinWidth(40);
+				bottomTable.getColumnModel().getColumn(0).setMaxWidth(40);
+				bottomTable.getColumnModel().getColumn(0).setPreferredWidth(40);
+
+				bottomTable.getColumnModel().getColumn(1).setMinWidth(120);
+				bottomTable.getColumnModel().getColumn(1).setMaxWidth(120);
+				bottomTable.getColumnModel().getColumn(1).setPreferredWidth(120);
+
+				bottomTable.getColumnModel().getColumn(2).setMinWidth(40);
+				bottomTable.getColumnModel().getColumn(2).setMaxWidth(40);
+				bottomTable.getColumnModel().getColumn(2).setPreferredWidth(40);
+
+				bottomTable.getColumnModel().getColumn(3).setMinWidth(800);
+				bottomTable.getColumnModel().getColumn(3).setMaxWidth(800);
+				bottomTable.getColumnModel().getColumn(3).setPreferredWidth(800);
+			}
+		});
+
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				// cardComp.importTags();
+				cardComp.loadTags();
+				cardComp.buildAllCardTags();
+				// synComp.loadTags();
 				synComp.loadTagSinergies();
-				synComp.printTagsSynergiesGraphViz();
-				
-				//TODO calcula as sinergias
+				// synComp.printTagsSynergiesGraphViz();
+
+				// TODO calcula as sinergias
 //				String idsORname = (String) cbCards.getSelectedItem();
 //				Card c = cardComp.getCard("carnivorous cube");
 //				synComp.sinergias(c);
@@ -268,41 +378,16 @@ public class UIMain extends JPanel {
 //					}
 //				}
 			}
-		});
-		panel.add(b4);
-
-		JTextField t = new JTextField(1);
-		panel.add(t);
-		JButton b = new JButton("CLASSIFY DECKSTRING");
-		b.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// Deck deck = deckComp.decodeDeckString(t.getText());
-//				annComp.classifyDeck(deck);
-				System.out.println(CountDeckWords.keyWords);
-				//List<Integer> results = new ArrayList<>();
-				for (Deck ds : deckComp.getDecks()) {
-					Map<String, Integer> map = new LinkedHashMap<String, Integer>();
-					CountDeckWords.keyWords.forEach(k -> map.put(k, 0));
-					CountDeckWords.wordsMap(ds, map);
-					//results.forEach(m -> results.addAll(map.values()));
-					System.out.println(map.values());
-				}
-				
-				//results.forEach(l->System.out.println(l));
-			}
-		});
-		panel.add(b);
-		
-		return panel;
+		}).run();
 	}
-	
-	public void init(){
-		cardComp.buildCards();
-		for (Card c : cardComp.getCards()) {
-			cbCards.addItem(c.getName());
+
+	private void refreshCards() {
+		cardList = cardComp.getCards();// .subList(0, 10);
+		topTableModel.setDataVector(new Vector<>(), new Vector<>(List.of("Has", "Name", "Rank", "Text")));
+		for (Card dto : cardList) {
+			topTableModel
+					.addRow(new Object[] { "", dto.getName(), dto.getStats().getRank(), dto.getText().toString() });
 		}
-		UITabs.updateModel(cardComp.getCards());
 	}
 
 	private void setupTableEditable(JTable table, boolean isEditable) {
@@ -321,15 +406,6 @@ public class UIMain extends JPanel {
 		public boolean isCellEditable(EventObject e) {
 			return false;
 		}
-	}
-
-	public static void main(String[] args) {
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				new UIMain();
-			}
-		});
 	}
 
 	private class ColumnFilter {

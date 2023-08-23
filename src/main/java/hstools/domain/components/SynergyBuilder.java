@@ -107,12 +107,12 @@ public class SynergyBuilder {
 	}
 
 	public Set<Card> sinergias(Card c1) {
-		Set<Card> cards = new HashSet<Card>();
-		Set<Tag> tags = new HashSet<Tag>(c1.getTags());
-		Set<Tag> tags3 = new HashSet<Tag>();
+		Set<Card> cards = new HashSet<>();
+		Set<Tag> tags = new HashSet<>(c1.getTags());
+		Set<Tag> tags3 = new HashSet<>();
 		// add se c2.tags contem a uniao das subtrações de syns.tags - c1.tags
 		for (SynergyEdge<Tag, Tag> ts : tagsSynergies) {
-			Set<Tag> tags2 = new HashSet<Tag>();
+			Set<Tag> tags2 = new HashSet<>();
 			tags2.add(ts.getSource());
 			tags2.add(ts.getTarget());
 			if (!tags2.stream().filter(tags::contains).collect(Collectors.toList()).isEmpty()) {
@@ -482,12 +482,12 @@ public class SynergyBuilder {
 	private void addTagSynergy(List<Object> row) {
 		if (!row.isEmpty()) {
 			String source = (String) row.get(0);
-			String taget = row.size() > 1 ? (String) row.get(1) : "";
+			String target = row.size() > 1 ? (String) row.get(1) : "";
 			String label = row.size() > 2 ? (String) row.get(2) : "";
 			Float weight = row.size() > 3 ? (Float) row.get(3) : 0.0f;
 			Tag t1 = cardComp.getTags().get(source);
-			Tag t2 = cardComp.getTags().get(taget);
-			if (t2 != null) {
+			Tag t2 = cardComp.getTags().get(target);
+			if (t1 !=null && t2 != null) {
 				tagsSynergies.add(new SynergyEdge<>(t1, t2, label, weight));
 			}
 		}

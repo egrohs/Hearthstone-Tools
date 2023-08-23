@@ -15,7 +15,7 @@ import lombok.EqualsAndHashCode;
  *
  */
 @Data
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode(of = "name")//"id")
 public abstract class Node implements Comparable<Node> {
 //	@Id
 //	@GeneratedValue
@@ -24,17 +24,17 @@ public abstract class Node implements Comparable<Node> {
 	protected String name;
 	protected Double size;
 
-	public Node() {
+	protected Node() {
 		this.size = Double.valueOf("1");
 	}
-
-	@Override
-	public String toString() {
-		return name;
-	}
+// Se coloca, não funciona o toString dos filhos
+//	@Override
+//	public String toString() {
+//		return name;
+//	}
 
 	@Override
 	public int compareTo(Node o) {
-		return this.name.compareTo(((Node) o).name);
+		return this.name.compareTo((o).name);
 	}
 }

@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  * Objeto carta.
@@ -22,6 +23,7 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(callSuper = true)
 public class Card extends Node {
 	private boolean calculada;
 //	"playerClass": "Demon Hunter",
@@ -74,7 +76,7 @@ public class Card extends Node {
 		this.dbfIds.add(dbfId);
 //		this.getChildren().add(new ImageView(new Image("file:res/cards/" + this.id + ".png")));
 //		StackPane.setAlignment(this, Pos.CENTER_LEFT);
-		this.name = name.toLowerCase();
+		this.name = name.toLowerCase().trim();
 		this.expansion = null;
 		this.race = faction == null ? "" : faction;
 		// this.classe = classe;
@@ -136,6 +138,11 @@ public class Card extends Node {
 		}
 		return expr;
 	}
+//
+//	public Card(String string, String string2) {
+//		this.name = string;
+//		this.text.append(string2);
+//	}
 
 //	public String toString() {
 //		return name;

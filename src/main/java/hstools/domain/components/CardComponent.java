@@ -29,6 +29,7 @@ import hstools.domain.entities.Expansion;
 import hstools.domain.entities.Tag;
 import hstools.util.GoogleSheets;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * For load and build all hs cards, stores all synergies between two cards.
@@ -36,6 +37,7 @@ import lombok.Getter;
  * 
  * @author EGrohs
  */
+@Slf4j
 @Service("Cards")
 //TODO retrieve hearthstonetopdecksDecks cards rankings to salve in local file?
 //TODO https://hearthstoneapi.com/ retrieve GETInfo types, classes, patch, sets, std, wild, factions, rarity, races...
@@ -149,7 +151,7 @@ public class CardComponent {
 		// TODO buscar pelo nome do header da coluna
 		for (List<Object> row : values) {
 			String cardName = (String) row.get(0);
-			Float rank = (Float) row.get(2);
+			Float rank = Float.valueOf((String)row.get(2));
 			Card c1 = getCard(cardName);
 			if (c1 != null) {
 				c1.getStats().setRank(rank);
@@ -190,6 +192,7 @@ public class CardComponent {
 				for (JsonNode sets : root) {
 					for (JsonNode n : sets) {
 						Card card = om.readValue(n.toString(), Card.class);
+						card.setName(card.getName().trim());
 						addNonRepeatedCard(cardNames, card);
 					}
 				}
@@ -260,8 +263,8 @@ public class CardComponent {
 		}
 		// TODO CS2_013t excess mana not found..
 		throw new RuntimeException("Card not found: " + idsORname);
-		// System.err.println("Card not found: " + idsORname);
-		// return getCard("The Coin");
+		//System.err.println("Card not found: " + idsORname);
+		//return getCard("idsORname");
 	}
 
 	/**

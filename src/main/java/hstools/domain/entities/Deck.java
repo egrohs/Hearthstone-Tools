@@ -6,72 +6,51 @@ import java.util.Set;
 import hstools.Constants.Format;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 @Data
 //@NodeEntity
+//@NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class Deck extends Node {
 	private String deckstring;
 	private Format format;
 	private String classe = "Neutral";
-	//@Relationship
+	// @Relationship
 	private Expansion expansion;
-	//@Relationship
-	private DeckStats stats = new DeckStats();
-	//@Relationship
-	private Set<SynergyEdge<Deck, Card>> cards = new HashSet<SynergyEdge<Deck, Card>>();
-	//@Relationship
-	private Set<SynergyEdge<Deck, Tag>> tags = new HashSet<SynergyEdge<Deck, Tag>>();
-
-	public Deck() {}
+	// @Relationship
+	private DeckStats stats = new DeckStats(this.name+"-deckstats");
+	// @Relationship
+	private Set<SynergyEdge<Deck, Card>> cards = new HashSet<>();
+	// @Relationship
+	// private Set<SynergyEdge<Deck, Tag>> tags = new HashSet<>();
 
 	public Deck(String nome, Set<SynergyEdge<Deck, Card>> cards) {
 		this.name = nome;
 		this.cards = cards;
-		//TODO pq isso?
+		// TODO pq isso?
 //		for (SynergyEdge<Deck, Card> s : cards) {
 //			this.classe = s.getTarget().getClasse();
 //			if (this.classe != CLASS.NEUTRAL) {
 //				break;
 //			}
 //		}
-		calcSet();
+//		calcSet();
 	}
 
-	public Deck(String encodedString) {
+	public Deck(String nome, String encodedString) {
+		this.name = nome;
 		this.deckstring = encodedString;
 	}
 
-	public void acumTagSynergy(Tag tag, int f) {
-		SynergyEdge<Deck, Tag> syn = null;
-		for (SynergyEdge<Deck, Tag> s : tags) {
-			if (s.getTarget().equals(tag)) {
-				syn = s;
-				break;
+	public void addCard(Card c) {
+		for (SynergyEdge<Deck, Card> synergyEdge : cards) {
+			if (synergyEdge.getTarget().equals(c)) {
+				synergyEdge.setFreq(synergyEdge.getFreq() + 1);
+				return;
 			}
 		}
-		if (syn == null) {
-			syn = new SynergyEdge<>(this, tag, 0);
-		}
-		syn.setFreq(syn.getFreq() + f);
-		tags.add(syn);
-		System.out.println("taagg " + syn.getTarget() + ": " + syn.getFreq());
-	}
-
-	private void calcSet() {
-		// for (Card c : cards.keySet())
-		{
-
-		}
-	}
-
-	public Integer getQnt(String nome) {
-		// System.out.println("getQnt "+nome);
-//		Card c = cb.getCard(nome);
-//		if (cartas.containsKey(c)) {
-//			return cartas.get(c);
-//		}
-		return null;
+		cards.add(new SynergyEdge<>(this, c, 1));
 	}
 
 	@Override
@@ -80,7 +59,7 @@ public class Deck extends Node {
 		sb.append(name + "\r\n");
 		sb.append(classe + "\r\n");
 		for (SynergyEdge<Deck, Card> s : cards) {
-			sb.append(s.getTarget().toString() + "\t" + s.getFreq() + "\r\n");
+			sb.append(s.getTarget().getName() + "\t" + s.getFreq() + "\r\n");
 		}
 		return sb.toString();
 	}

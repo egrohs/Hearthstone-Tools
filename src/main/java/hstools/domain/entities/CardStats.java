@@ -11,6 +11,8 @@ public class CardStats extends Node {
 	private Integer popularity, combats, wins, draws, loses;
 	private boolean aggro/* , visited */;
 	private String function;
+	
+	private Integer tempDeckFreq;
 
 	public void calcAggro(Card c) {
 		if (c.getCost() > 0 && c.getAttack() != null && c.getAttack() > 2) {
