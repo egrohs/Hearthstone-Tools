@@ -33,7 +33,7 @@ public class DeckStats {
 	private int med_cost_minions;
 	
 	//private Set<SynergyEdge<Deck, Card>> cards = new HashSet<>();
-	private Map<Tag, Integer> suggests = new HashMap<>();
+	//private Map<Tag, Integer> suggests = new HashMap<>();
 	//private Set<SynergyEdge<Tag, Card>> suggests = new HashSet<>();
 	
 	// TODO Techs depende do meta

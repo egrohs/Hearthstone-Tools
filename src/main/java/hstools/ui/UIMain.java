@@ -41,7 +41,6 @@ import hstools.domain.components.DeckComponent;
 import hstools.domain.components.SynergyBuilder;
 import hstools.domain.entities.Card;
 import hstools.domain.entities.Deck;
-import hstools.domain.entities.Node;
 
 @Component
 public class UIMain extends JPanel {
@@ -63,7 +62,7 @@ public class UIMain extends JPanel {
 	private List<ColumnFilter> columnFilters;
 	private JList<String> dataDTOJList;
 	private List<Card> cardList;
-	private Deck deck = new Deck("temp", "");
+	private Deck deck = new Deck("temp", "Rogue");
 
 	public UIMain() {
 
@@ -105,9 +104,10 @@ public class UIMain extends JPanel {
 				if (e.getClickCount() == 2) { // Detecta um duplo clique
 					int selectedRow = topTable.getSelectedRow();
 					if (selectedRow != -1) {
-						Object cardName = topTableModel.getValueAt(selectedRow, 1);
-						Object[] rowData = new Object[] { 1, cardName, topTableModel.getValueAt(selectedRow, 2),
-								topTableModel.getValueAt(selectedRow, 3) };
+						int modelRowIndex = topTable.convertRowIndexToModel(selectedRow);
+						Object cardName = topTableModel.getValueAt(modelRowIndex, 1);
+						Object[] rowData = new Object[] { 1, cardName, topTableModel.getValueAt(modelRowIndex, 2),
+								topTableModel.getValueAt(modelRowIndex, 3) };
 						int foundRow = findStringInColumn(bottomTable, (String) cardName, 1);
 						if (foundRow == -1) {
 							bottomTableModel.addRow(rowData);
@@ -115,9 +115,15 @@ public class UIMain extends JPanel {
 							bottomTableModel.setValueAt(((int) bottomTableModel.getValueAt(foundRow, 0) + 1), foundRow,
 									0);
 						}
-
-						deck.addCard(cardComp.getCard((String) cardName));
-						deckComp.calcSuggestions(deck);
+						if (deck.getCards().get(cardName) == null) {
+							deck.getCards().put(cardComp.getCard((String) cardName), 1);
+						} else {
+							deck.getCards().put(cardComp.getCard((String) cardName), deck.getCards().get(cardName) + 1);
+						}
+						dataDTOJList.setListData(new Vector<>(deckComp.calcSuggestions(deck).stream().map(
+								// Node::getName
+								c -> c.getName() + "=" + c.getStats().getTempDeckFreq())
+								.collect(Collectors.toList())));
 					}
 				}
 			}
@@ -139,6 +145,8 @@ public class UIMain extends JPanel {
 				if (e.getClickCount() == 2) { // Detecta um duplo clique
 					int selectedRow = bottomTable.getSelectedRow();
 					if (selectedRow != -1) {
+						// int modelRowIndex = topTable.convertRowIndexToModel(selectedRow);
+						Card card = cardComp.getCard((String) bottomTableModel.getValueAt(selectedRow, 1));
 						int val = (int) bottomTableModel.getValueAt(selectedRow, 0);
 						// int foundRow = findStringInColumn(bottomTable, (String) cardName, 1);
 						if (val > 1) {
@@ -146,7 +154,15 @@ public class UIMain extends JPanel {
 						} else {
 							bottomTableModel.removeRow(selectedRow); // Remove a linha da tabela de baixo
 						}
-
+						if (deck.getCards().get(card) == 1) {
+							deck.getCards().remove(card);
+						} else {
+							deck.getCards().put(card, deck.getCards().get(card) - 1);
+						}
+						dataDTOJList.setListData(new Vector<>(deckComp.calcSuggestions(deck).stream().map(
+								// Node::getName
+								c -> c.getName() + "=" + c.getStats().getTempDeckFreq())
+								.collect(Collectors.toList())));
 					}
 				}
 			}
@@ -164,11 +180,28 @@ public class UIMain extends JPanel {
 				if (e.getClickCount() == 2) { // Detecta um duplo clique
 					int selectedIndex = dataDTOJList.getSelectedIndex();
 					if (selectedIndex != -1) {
-						Object name = topTableModel.getValueAt(selectedIndex, 1);
-						Object rank = topTableModel.getValueAt(selectedIndex, 2);
-						Object text = topTableModel.getValueAt(selectedIndex, 3);
-						bottomTableModel.addRow(new Object[] { "", name, rank, text }); // Adicione o valor à tabela de
-																						// baixo
+						Card c = cardComp.getCard(dataDTOJList.getSelectedValue().split("=")[0]);
+						Object name = c.getName();
+						Object rank = c.getStats().getRank();
+						Object text = c.getText();
+
+						int foundRow = findStringInColumn(bottomTable, (String) name, 1);
+						if (foundRow == -1) {
+							bottomTableModel.addRow(new Object[] { 1, name, rank, text });
+						} else {
+							bottomTableModel.setValueAt(((int) bottomTableModel.getValueAt(foundRow, 0) + 1), foundRow,
+									0);
+						}
+						if (deck.getCards().get(c) == null) {
+							deck.getCards().put(c, 1);
+						} else {
+							deck.getCards().put(c, deck.getCards().get(c) + 1);
+						}
+						
+						dataDTOJList.setListData(new Vector<>(deckComp.calcSuggestions(deck).stream().map(
+								// Node::getName
+								c1 -> c1.getName() + "=" + c1.getStats().getTempDeckFreq())
+								.collect(Collectors.toList())));
 					}
 				}
 			}
@@ -316,7 +349,6 @@ public class UIMain extends JPanel {
 		setupTableEditable(bottomTable, false);
 		UITabs.updateModel(cardComp.getCards());
 		refreshCards();
-		dataDTOJList.setListData(new Vector<>(cardList.stream().map(Node::getName).collect(Collectors.toList())));
 
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
@@ -378,11 +410,12 @@ public class UIMain extends JPanel {
 //					}
 //				}
 			}
-		}).run();
+		}).start();
 	}
 
 	private void refreshCards() {
-		cardList = cardComp.getCards();// .subList(0, 10);
+		cardList = cardComp.getCards().stream().filter(c -> c.getClasses().contains(deck.getClasse()))
+				.collect(Collectors.toList());// .subList(0, 10);
 		topTableModel.setDataVector(new Vector<>(), new Vector<>(List.of("Has", "Name", "Rank", "Text")));
 		for (Card dto : cardList) {
 			topTableModel
@@ -447,7 +480,7 @@ public class UIMain extends JPanel {
 		try {
 			List<RowFilter<Object, Object>> filters = new ArrayList<>();
 			for (ColumnFilter columnFilter : columnFilters) {
-				String text = columnFilter.getFilterTextField().getText();
+				String text = columnFilter.getFilterTextField().getText();	
 				int columnIndex = topTableModel.findColumn(columnFilter.getLabel());
 				filters.add(RowFilter.regexFilter(text, columnIndex));
 			}

@@ -13,13 +13,23 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import hstools.domain.entities.RapidApiInfo;
 
 @Component
 public class FilesComponent {
-	ObjectMapper om = new ObjectMapper();
+	ObjectMapper om;
+
+	public FilesComponent() {
+		om = new ObjectMapper();
+//		om.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+//		om.configure(SerializationFeature.INDENT_OUTPUT, true);
+//		om.configure(JsonWriteFeature.ESCAPE_NON_ASCII, false);
+	}
+
 	private static ClassLoader clsLoader = FilesComponent.class.getClassLoader();
 
 	public void updateRapidApiInfoFile(RapidApiInfo rapidApiInfo) {
@@ -32,9 +42,29 @@ public class FilesComponent {
 		}
 	}
 
-	public void updateCardsFile(String jsonCards) {
+	public static void main(String[] args) {
+		ObjectMapper mapper = new ObjectMapper();
+        String json = "{ \"name\": \"John \\\"kdfghdkjfh\\\" Doe\", \"age\": 30 }";
+        try {
+			Object user = mapper.readValue(json, Object.class);
+			System.out.println(user);
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+//		String jsonCards = "\"{\"Basic\":[{\"cardId\":\"RLK_Prologue_CS2_092e  \\\"   \\\"   \",\"dbfId\":100672..\"";
+//		System.out.println(jsonCards);
+//		jsonCards = jsonCards.substring(1, jsonCards.lastIndexOf("\""));
+//		System.out.println(jsonCards);
+//		jsonCards = jsonCards.replace("\\\"", "");
+//		System.out.println(jsonCards);
+	}
+
+	public void updateCardsFile(Object jsonCards) {
+		// jsonCards = jsonCards.replace("\\\"", "");;
 		try (PrintWriter out = new PrintWriter("cards.collectible.json")) {
-			String cards = om.writeValueAsString(jsonCards);
+			String cards = om.writerWithDefaultPrettyPrinter().writeValueAsString(jsonCards);
 			out.println(cards);
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -43,14 +73,12 @@ public class FilesComponent {
 	}
 
 	public RapidApiInfo loadRapidApiInfoFile() {
-		ObjectMapper om = new ObjectMapper();
 		try {
 			return om.readValue(new File("rapidApiInfo.json"), RapidApiInfo.class);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// e.printStackTrace();
+			return null;
 		}
-		return null;
 	}
 
 //	public static CardSets file2Cards(String fname) {

@@ -29,8 +29,7 @@ public class CountDeckWords {
 
 	public static Map<String, Integer> wordsMap(Deck deck, Map<String, Integer> map) {
 		// System.out.println(deck);
-		for (SynergyEdge<Deck, Card> e : deck.getCards()) {
-			Card card = e.getTarget();
+		for (Card card : deck.getCards().keySet()) {
 			String lower = (card.getText().toString() + card.getType() + (card.getRace() != null ? card.getRace() : ""))
 					.toLowerCase();
 

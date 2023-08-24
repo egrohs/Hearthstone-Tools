@@ -1,7 +1,10 @@
 package hstools;
 
-import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import javax.swing.JFrame;
 
@@ -9,6 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import hstools.domain.components.ArtificialNeuralNetwork;
 import hstools.domain.components.FilesComponent;
@@ -74,22 +80,39 @@ public class HearthstoneToolsApplication extends JFrame implements CommandLineRu
 	private void updateData() {
 		rapidApiInfo = files.loadRapidApiInfoFile();
 		RapidApiInfo rapidApiInfoNew = net.rapidApiInfo();
-		if (!rapidApiInfoNew.getPatch().equals(rapidApiInfo.getPatch())) {
-			rapidApiInfo = rapidApiInfoNew;
-			files.updateRapidApiInfoFile(rapidApiInfo);
-			String jsonCards = net.rapidApiAllCollectibleCards();
-			// TODO flat antes de salvar em file?
-			files.updateCardsFile(jsonCards);
-		}
+//		try {
+//			String cbase = Files.readString(Path.of("cards.collectible.json"), Charset.defaultCharset());
+
+			if (/*cbase == null ||*/ rapidApiInfo == null || !rapidApiInfoNew.getPatch().equals(rapidApiInfo.getPatch())) {
+				ObjectMapper om = new ObjectMapper();
+				rapidApiInfo = rapidApiInfoNew;
+				files.updateRapidApiInfoFile(rapidApiInfo);
+				String jsonCards = net.rapidApiAllCollectibleCards();
+				try {
+					Object cards = om.readValue(jsonCards, Object.class);
+					//jsonCards = jsonCards.substring(1, jsonCards.lastIndexOf("\""));
+					//System.out.println(jsonCards);
+					//			jsonCards = jsonCards.replace("\\\"", "");
+					// TODO flat antes de salvar em file?
+					files.updateCardsFile(cards);
+				} catch (JsonProcessingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 
 	@Autowired
-	UIMain ui;
+	private UIMain ui;
 
 	private void init() {
 		this.setLayout(new FlowLayout());
 		this.setTitle("Hearthstone Tools");
-		//this.setSize(500, 300);
+		// this.setSize(500, 300);
 		this.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 //		ui = new UIMain();

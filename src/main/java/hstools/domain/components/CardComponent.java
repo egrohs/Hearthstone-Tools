@@ -151,7 +151,7 @@ public class CardComponent {
 		// TODO buscar pelo nome do header da coluna
 		for (List<Object> row : values) {
 			String cardName = (String) row.get(0);
-			Float rank = Float.valueOf((String)row.get(2));
+			Float rank = Float.valueOf((String) row.get(2));
 			Card c1 = getCard(cardName);
 			if (c1 != null) {
 				c1.getStats().setRank(rank);
@@ -185,15 +185,29 @@ public class CardComponent {
 		if (cards.isEmpty()) {
 			try {
 				ObjectMapper om = new ObjectMapper();
+				// TODO esta lendo com aspas extras e cuidado com flavor: com aspas dentro
 				String jsonCards = Files.readString(Path.of("cards.collectible.json"), Charset.defaultCharset());
 				JsonNode root = om.readTree(jsonCards);
 				// Iterate over the nodes.
 				Set<String> cardNames = new HashSet<>();
+//				Set<String> notUsedSets = Set.of("Battlegrounds", "Mercenaries", "Missions", "Demo", "System", "Slush",
+//						"Hero Skins", "Tavern Brawl", "Credits", "Unknown");
+				//Set<String> notUsedTypes = Set.of("Enchantment", "Hero Power");
 				for (JsonNode sets : root) {
 					for (JsonNode n : sets) {
-						Card card = om.readValue(n.toString(), Card.class);
-						card.setName(card.getName().trim());
-						addNonRepeatedCard(cardNames, card);
+						// System.out.println(n.get("name").asText());
+						JsonNode coll = n.get("collectible");
+						if (coll != null && coll.asBoolean()) {
+							//if (!notUsedSets.contains(n.get("cardSet").asText()))
+							{
+								Card card = om.readValue(n.toString(), Card.class);
+								card.setName(card.getName().trim());
+								addNonRepeatedCard(cardNames, card);
+							}
+//							else {
+//								break;
+//							}
+						}
 					}
 				}
 
@@ -223,10 +237,11 @@ public class CardComponent {
 			String cn = card.getName().toLowerCase();
 			if (!cardNames.contains(cn)) {
 				cards.add(card);
+				// System.out.println(card);
 				cardNames.add(cn);
 			} else {
 				// System.out.println(card.getName());
-				card.getDbfIds().add(card.getDbfId());
+				getCard(card.getName()).getDbfIds().add(card.getDbfId());
 			}
 		}
 	}
@@ -263,8 +278,8 @@ public class CardComponent {
 		}
 		// TODO CS2_013t excess mana not found..
 		throw new RuntimeException("Card not found: " + idsORname);
-		//System.err.println("Card not found: " + idsORname);
-		//return getCard("idsORname");
+		// System.err.println("Card not found: " + idsORname);
+		// return getCard("idsORname");
 	}
 
 	/**

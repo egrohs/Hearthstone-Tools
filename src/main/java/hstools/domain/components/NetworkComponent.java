@@ -8,7 +8,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import hstools.domain.entities.RapidApiInfo;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Component
 public class NetworkComponent {
 	RestTemplate rest = new RestTemplate();
@@ -21,13 +23,16 @@ public class NetworkComponent {
 	}
 
 	public String rapidApiAllCollectibleCards() {
+		log.info("downloading card data, takes around 30 secs...");
+		long time = System.currentTimeMillis();
 		ResponseEntity<String> response = rest.exchange("https://omgvamp-hearthstone-v1.p.rapidapi.com/cards",
 				HttpMethod.GET, requestEntity, String.class, 1);
+		log.info("card data downloaded in " + (System.currentTimeMillis() - time));
 		return response.getBody();
 	}
 
 	public RapidApiInfo rapidApiInfo() {
-		HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
+		// HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
 		ResponseEntity<RapidApiInfo> response = rest.exchange("https://omgvamp-hearthstone-v1.p.rapidapi.com/info",
 				HttpMethod.GET, requestEntity, RapidApiInfo.class, (Object) null);
 		return response.getBody();
