@@ -54,6 +54,9 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok:1.18.6'
 
 	implementation group: 'nz.ac.waikato.cms.weka', name: 'weka-stable', version: '3.8.4'
+implementation 'edu.stanford.nlp:stanford-corenlp:4.5.4'
+implementation 'edu.stanford.nlp:stanford-corenlp:4.5.4:models'
+	
 }
 
 test {

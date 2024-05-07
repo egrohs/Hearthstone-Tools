@@ -1,6 +1,8 @@
 package hstools.util;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,16 +45,16 @@ public class WebScrap {
 	private static Document getDocument(String url) {
 		Document doc = null;
 		try {
-			doc = Jsoup.connect(url).data("query", "Java").userAgent("Mozilla").cookie("auth", "token").timeout(30000)
+			doc = Jsoup.connect(url).data("query", "Java").userAgent("Mozilla").cookie("auth", "token").timeout(10000)
 					.post();
 		} catch (IOException e) {
-			try {
-				Thread.sleep(2000);
-				return getDocument(url);
-			} catch (InterruptedException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+//			try {
+//				Thread.sleep(2000);
+//				return getDocument(url);
+//			} catch (InterruptedException e1) {
+//				e1.printStackTrace();
+//			}
+			System.err.println("ERRO " + url);
 		}
 		return doc;
 	}
@@ -76,22 +78,48 @@ public class WebScrap {
 	}
 
 	public static void main(String[] args) {
-		// WebScrap.hearthstonetopdecksCardRank();
-		WebScrap.hearthstonefandomcom();
+		WebScrap.hearthstonefandomArchetypes();
 	}
-	
-	public static void hearthstonefandomcom() {
+
+	public static void hearthstonefandomArchetypes() {
 		try {
-			String url = "https://hearthstone.fandom.com/wiki/Kirin_Tor_Tricaster";
-			//do {
-				Document docRanks = getDocument(url);
-				//class="to_hasTooltip"
-				Elements cards = docRanks.getElementsByClass("to_hasTooltip");
-				for (Element c : cards) {
-					String title = c.select("a").attr("title");
-					System.out.println(title);
+			try (BufferedReader br = new BufferedReader(
+					new InputStreamReader(WebScrap.class.getClassLoader().getResourceAsStream("urls.txt")))) {
+				String line;
+				while ((line = br.readLine()) != null) {
+					Document doc = getDocument(line);
+					if (doc == null)
+						continue;
+					Elements cards = doc.select("a");
+					for (Element c : cards) {
+						String title = c.select("a").attr("title");
+						System.out.println(line.substring(line.lastIndexOf("/") + 1) + "\t" + title);
+					}
 				}
-			//} while (page <= pages);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void hearthstonefandomStrategy() {
+		try {
+			try (BufferedReader br = new BufferedReader(
+					new InputStreamReader(WebScrap.class.getClassLoader().getResourceAsStream("urls.txt")))) {
+				String line;
+				// System.out.println("graph graphname {");
+				while ((line = br.readLine()) != null) {
+					Document doc = getDocument(line);
+					if (doc == null)
+						continue;
+					Elements cards = doc.getElementsByClass("to_hasTooltip");
+					for (Element c : cards) {
+						String title = c.select("a").attr("title");
+						System.out.println(line.substring(line.lastIndexOf("/") + 1) + " -- " + title);
+					}
+				}
+				System.out.println("}");
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -173,7 +201,8 @@ public class WebScrap {
 		for (int i = 1; i < 3; i++) {
 			try {
 //				String url = "https://www.hearthstonetopdecks.com/decks/page/" + i + "/?st&class_id&style_id&t_id&f_id=716&pt_id=1&sort=top-all";
-String url = "https://www.hearthstonetopdecks.com/decks/page/" + i + "/?st=&class_id=&style_id=&t_id=270&f_id=716&pt_id=1&sort=top-all";
+				String url = "https://www.hearthstonetopdecks.com/decks/page/" + i
+						+ "/?st=&class_id=&style_id=&t_id=270&f_id=716&pt_id=1&sort=top-all";
 				Document docDecks = getDocument(url);
 				Elements decks = docDecks.select("tbody tr td h4 a");
 				System.out.println("-------------PAGE " + i + " -----------");
