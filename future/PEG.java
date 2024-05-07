@@ -326,9 +326,9 @@ public class PEG {
 		String line = null;
 		if (file.hasNextLine()) {
 			// add espaço no inicio e final da linha para contemplar " tag ".
-			line = " " + file.nextLine().toLowerCase().replaceAll("\\)", "").replaceAll("\\(", "").replaceAll("\"", "")
-					.replaceAll("\\’", "").replaceAll("\\'", "").replaceAll("\\;", "").replaceAll("\\:", "")
-					.replaceAll("\\.", "").replaceAll(",", "") + " ";
+			line = " " + file.nextLine().toLowerCase().replace("\\)", "").replace("\\(", "").replace("\"", "")
+					.replace("\\’", "").replace("\\'", "").replace("\\;", "").replace("\\:", "")
+					.replace("\\.", "").replace(",", "") + " ";
 			// .replaceAll("'s", "");
 		}
 		return line;

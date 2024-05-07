@@ -1,6 +1,10 @@
 package hstools;
 
-import java.io.PrintWriter;
+import java.awt.FlowLayout;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import javax.swing.JFrame;
 
@@ -13,11 +17,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import hstools.domain.components.ArtificialNeuralNetwork;
-import hstools.domain.components.CardComponent;
-import hstools.domain.components.DeckComponent;
 import hstools.domain.components.FilesComponent;
 import hstools.domain.components.NetworkComponent;
-import hstools.domain.components.SynergyBuilder;
 import hstools.domain.entities.RapidApiInfo;
 import hstools.ui.UIMain;
 
@@ -25,14 +26,14 @@ import hstools.ui.UIMain;
 //@ComponentScan("hstools.domain.components")
 //@EnableNeo4jRepositories("hstools.repositories")
 public class HearthstoneToolsApplication extends JFrame implements CommandLineRunner {
-	@Autowired
-	private CardComponent cardComp;
-
-	@Autowired
-	private DeckComponent deckComp;
-
-	@Autowired
-	private SynergyBuilder synComp;
+//	@Autowired
+//	private CardComponent cardComp;
+//
+//	@Autowired
+//	private DeckComponent deckComp;
+//
+//	@Autowired
+//	private SynergyBuilder synComp;
 
 //	@Autowired
 //	private DataScienceComponent scienceComp;
@@ -43,11 +44,11 @@ public class HearthstoneToolsApplication extends JFrame implements CommandLineRu
 //	@Autowired
 //	private CardRepository cRepo;
 
-	public static RapidApiInfo rapidApiInfo;
+	public RapidApiInfo rapidApiInfo;
 
 	@Autowired
 	private NetworkComponent net;
-	
+
 	@Autowired
 	private FilesComponent files;
 
@@ -76,28 +77,48 @@ public class HearthstoneToolsApplication extends JFrame implements CommandLineRu
 //		annComp.classifyDeck(deck);
 	}
 
-	private void updateData() throws JsonProcessingException {
+	private void updateData() {
 		rapidApiInfo = files.loadRapidApiInfoFile();
 		RapidApiInfo rapidApiInfoNew = net.rapidApiInfo();
-		if (!rapidApiInfoNew.getPatch().equals(rapidApiInfo.getPatch())) {
-			rapidApiInfo = rapidApiInfoNew;
-			files.updateRapidApiInfoFile(rapidApiInfo);
-			String jsonCards = net.rapidApiAllCollectibleCards();
-			// TODO flat antes de salvar em file?
-			files.updateCardsFile(jsonCards);
-		}
+//		try {
+//			String cbase = Files.readString(Path.of("cards.collectible.json"), Charset.defaultCharset());
+
+			if (/*cbase == null ||*/ rapidApiInfo == null || !rapidApiInfoNew.getPatch().equals(rapidApiInfo.getPatch())) {
+				ObjectMapper om = new ObjectMapper();
+				rapidApiInfo = rapidApiInfoNew;
+				files.updateRapidApiInfoFile(rapidApiInfo);
+				String jsonCards = net.rapidApiAllCollectibleCards();
+				try {
+					Object cards = om.readValue(jsonCards, Object.class);
+					//jsonCards = jsonCards.substring(1, jsonCards.lastIndexOf("\""));
+					//System.out.println(jsonCards);
+					//			jsonCards = jsonCards.replace("\\\"", "");
+					// TODO flat antes de salvar em file?
+					files.updateCardsFile(cards);
+				} catch (JsonProcessingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 
 	@Autowired
-	UIMain ui;
+	private UIMain ui;
 
 	private void init() {
-		setTitle("Hearthstone Tools");
-		setSize(1300, 300);
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		// UIMain ui = new UIMain();
+		this.setLayout(new FlowLayout());
+		this.setTitle("Hearthstone Tools");
+		// this.setSize(500, 300);
+		this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+//		ui = new UIMain();
 		ui.init();
 //		ui.add(new UITabs().getTabbedPane());
+//		this.getContentPane().add(ui, BorderLayout.CENTER);
 		this.setContentPane(ui);
 		setVisible(true);
 	}

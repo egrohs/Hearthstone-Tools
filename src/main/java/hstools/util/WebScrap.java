@@ -10,17 +10,17 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jsoup.Connection;
-import org.jsoup.Connection.Method;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import hstools.Constants.Format;
+import hstools.domain.components.CardComponent;
 import hstools.domain.entities.Deck;
 import hstools.domain.entities.Expansion;
-import hstools.domain.entities.Tag;
 
 /**
  * Scrap all online info about hs.
@@ -28,18 +28,30 @@ import hstools.domain.entities.Tag;
  * @author EGrohs
  *
  */
-//@Component("WebScrap")
+@Component("WebScrap")
 public class WebScrap {
 	// TODO download do meta atual wild
 	// https://tempostorm.com/hearthstone/meta-snapshot/wild
 	// https://www.vicioussyndicate.com/wild-drr
-	private LocalDate date;
-	private Format format;
-	private Map<Integer, Deck> decks = new LinkedHashMap<>();
+//	private LocalDate date;
+//	private Format format;
+//	private Map<Integer, Deck> decks = new LinkedHashMap<>();
+	
+	@Autowired
+	private CardComponent ccomp;
 
 	// @PostConstruct
 	public void init() {
 
+	}
+	
+	public void scrapCardRanks() {
+		Map<String, Float> ranks = WebScrap.hearthstonetopdecksCardRank();
+		for (String url : ranks.keySet()) {
+			String[] tks = url.split("/");
+			String cname = tks[tks.length - 1];
+			System.out.println(ccomp.getCard(cname));
+		}
 	}
 
 	private static Document getDocument(String url) {
@@ -195,6 +207,7 @@ public class WebScrap {
 		String url = "https://tempostorm.com/hearthstone/meta-snapshot/wild/2019-12-17";
 		Document docMeta = getDocument(url);
 		Elements tempostormDecks = docMeta.select("hs-snapshot-body div div div div div div div div a");
+		System.out.println(tempostormDecks);
 	}
 
 	public static void hearthstonetopdecksDecks() {
@@ -223,50 +236,5 @@ public class WebScrap {
 				e.printStackTrace();
 			}
 		}
-	}
-
-	private void login(String loginUrl, String url) throws IOException {
-		// First login. Take the cookies
-		Connection.Response res = Jsoup.connect(loginUrl).data("eid", "i110013").data("pw", "001")
-				.referrer("http://www.google.com")
-				.userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
-				.method(Method.POST).timeout(0).execute();
-
-		Map<String, String> loginCookies = res.cookies();
-
-		// Now you can parse any page you want, as long as you pass the
-		// cookies
-		Document doc = Jsoup.connect(url).timeout(0).cookies(loginCookies).referrer("http://www.google.com")
-				.userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
-				.get();
-
-		System.out.println("Title : " + doc.title());
-	}
-
-	// TODO armazenar localmente as tags evitando buscar se mesma versao ou sem
-	// internet.
-	/** Import tags from google spreadsheet. */
-	public static void importTags(Map<String, Tag> tags) {
-		if (tags.size() == 0) {
-			// Map<String, Tag> tags = new HashMap<String, Tag>();
-			List<List<Object>> values = GoogleSheets.getDados("1WNcRrDzxyoy_TRm9v15VSGwEiRPqJhUhReq0Wh8Jp14",
-					"TAGS!A2:C");
-//TODO remover linha vazias vazias null
-			if (values == null || values.isEmpty()) {
-				System.out.println("No data found.");
-			} else {
-				for (List<Object> row : values) {
-					String name = (String) row.get(0);
-					String regex = row.size() > 1 ? (String) row.get(1) : "";
-					String expr = row.size() > 2 ? (String) row.get(2) : "";
-					String desc = row.size() > 3 ? (String) row.get(3) : "";
-					Tag t = tags.get(name);
-					if (t == null) {
-						tags.put(name, new Tag(name, regex, expr, desc));
-					}
-				}
-			}
-		}
-		System.out.println(tags.size() + " tags imported.");
 	}
 }

@@ -1,11 +1,18 @@
 package hstools.domain.entities;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import hstools.Constants.Archtype;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Data
 //@NodeEntity
+@EqualsAndHashCode(of = "name")
 public class DeckStats {
+	private String name;
 	private Archtype archtype;
 	private int hard_removals;// hard 1 e 2 control|destroy|shuffle|transform
 	private int soft_removals;// soft 4 e 8 deal \d+ damage|silence|return to
@@ -24,6 +31,11 @@ public class DeckStats {
 	private int survs;
 	private int board_control;
 	private int med_cost_minions;
+	
+	//private Set<SynergyEdge<Deck, Card>> cards = new HashSet<>();
+	//private Map<Tag, Integer> suggests = new HashMap<>();
+	//private Set<SynergyEdge<Tag, Card>> suggests = new HashSet<>();
+	
 	// TODO Techs depende do meta
 	private int high_cost;// high cost cards > 5
 
@@ -72,4 +84,14 @@ public class DeckStats {
 		return card_adv + "\t" + low_cost_minions + "\t" + med_cost_minions + "\t" + high_cost + "\t" + survs + "\t"
 				+ board_control + "\t" + stats_cost + "\t" + archtype;
 	}
+
+	public DeckStats(String string) {
+		this.name = string;
+	}
+
+//	public void incCardSyn(Card card) {
+//		for (Tag t : suggests.keySet()) {
+//			
+//		}
+//	}
 }

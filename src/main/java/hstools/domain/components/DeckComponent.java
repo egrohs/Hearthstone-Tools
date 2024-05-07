@@ -7,9 +7,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.util.Base64;
-import java.util.HashSet;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -21,9 +25,12 @@ import org.springframework.stereotype.Service;
 import hstools.Constants.Archtype;
 import hstools.Constants.Format;
 import hstools.domain.entities.Card;
+import hstools.domain.entities.CardStats;
 import hstools.domain.entities.Deck;
-import hstools.domain.entities.SynergyEdge;
+import hstools.domain.entities.Node;
+import hstools.domain.entities.Tag;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Load/unload downloaded decks from local files.
@@ -31,6 +38,7 @@ import lombok.Getter;
  * @author egrohs
  *
  */
+@Slf4j
 @Service
 @DependsOn(value = { "Cards" })
 public class DeckComponent {
@@ -38,18 +46,58 @@ public class DeckComponent {
 	private CardComponent cardComp;
 
 	@Getter
-	private Set<Deck> decks = new LinkedHashSet<Deck>();
+	private Set<Deck> decks = new LinkedHashSet<>();
+
+	public List<Card> calcSuggestions(Deck d) {
+		Map<Tag, Integer> deckTags = new HashMap<>();// d.getStats().getSuggests();// TODO ordenado por freq?
+		for (Card c : d.getCards().keySet()) {
+			for (Tag t : c.getTags()) {
+				if (deckTags.get(t) == null) {
+					deckTags.put(t, 1);
+				} else {
+					deckTags.put(t, deckTags.get(t) + 1);
+				}
+			}
+		}
+		List<Card> possibles = cardComp.getCards().stream()
+				.filter(c -> c.getClasses().contains(d.getClasse()) || c.getClasses().contains("Neutral"))
+				.collect(Collectors.toList());
+		//d.getCards().keySet().stream().forEach(c -> possibles.remove(c));
+		for (Card card : possibles) {
+			card.getStats().setTempDeckFreq(0);
+			for (Tag t : deckTags.keySet()) {
+				if (card.getTags().contains(t)) {
+					card.getStats().setTempDeckFreq(card.getStats().getTempDeckFreq() + deckTags.get(t));
+				}
+			}
+		}
+
+		Map<Tag, Integer> topTen = deckTags.entrySet().stream()
+				.sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+
+		for (Tag t : topTen.keySet()) {
+			System.out.println(t.getName() + " - " + topTen.get(t));
+		}
+
+		// d.getStats().setSuggests(deckTags);
+		Collections.sort(possibles,
+				Comparator.comparing(Card::getStats, Comparator.comparing(CardStats::getTempDeckFreq)).reversed());
+		// c -> c.getStats().getTempDeckFreq()).reversed());
+		return possibles.subList(0, 20);
+	}
 
 	public void calcStats(Deck deck) {
 		// Build deck tags
-		for (SynergyEdge<Deck, Card> s : deck.getCards()) {
-			List<String> tags = s.getTarget().getTags().stream().map(t -> t.getName()).collect(Collectors.toList());
-			Card c = s.getTarget();
+		for (Card c : deck.getCards().keySet()) {
+			List<String> tags = c.getTags().stream().map(Node::getName).collect(Collectors.toList());
 			deck.getStats().incStats_cost(c.getStats().getStats_cost());
 			if ("MINION".equalsIgnoreCase(c.getType())) {
 				if (c.getCost() < 3) {
 					deck.getStats().incLow_cost_minions(1);
-				} else if (c.getCost() < 6 || tags.stream().anyMatch(List.of("COST_MODIFY")::contains)) {// TODO nao someente minions
+				} else if (c.getCost() < 6 || tags.stream().anyMatch(List.of("COST_MODIFY")::contains)) {// TODO nao
+																											// someente
+																											// minions
 					deck.getStats().incMed_cost_minions(1);
 				}
 			}
@@ -64,17 +112,18 @@ public class DeckComponent {
 //				// DD
 //				deck.getStats().incDd(s.getFreq());
 //			}
+			Integer freq = deck.getCards().get(c);
 			if (tags.stream().anyMatch(List.of("DRAW", "GENERATE")::contains)) {
 				// CARD_ADV
-				deck.getStats().incCard_adv(s.getFreq());
+				deck.getStats().incCard_adv(freq);
 			}
 			if (tags.stream().anyMatch(List.of("REMOVALS", "DAMAGE_ALL", "DAMAGE_ENEMIES", "DEAL_DAMAGE")::contains)) {
 				// BOARD CONTROL
-				deck.getStats().incBoard_control(s.getFreq());
+				deck.getStats().incBoard_control(freq);
 			}
 			if (tags.stream().anyMatch(List.of("TAUNT", "LIFESTEAL", "ARMOR", "HEALTH_RESTORE")::contains)) {
 				// SURVIVABILITY
-				deck.getStats().incSurv(s.getFreq());
+				deck.getStats().incSurv(freq);
 			}
 		}
 		// TODO FINISHER, spells
@@ -87,9 +136,10 @@ public class DeckComponent {
 	}
 
 	public void decodeDecksFromFile(String fname) {
-		Scanner sc = null;
-		try {
-			sc = new Scanner(new File("src/main/resources/decks/deckStrings/" + fname));
+		log.debug("decodificando decks...");
+		long ini = System.currentTimeMillis();
+		// Scanner sc = null;
+		try (Scanner sc = new Scanner(new File("src/main/resources/decks/deckStrings/" + fname))) {
 			while (sc.hasNextLine()) {
 				String[] line = sc.nextLine().split("\t");
 				// System.out.println(deckstr);
@@ -101,15 +151,14 @@ public class DeckComponent {
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} finally {
-			sc.close();
 		}
+		log.debug("decodificados, milis " + (System.currentTimeMillis() - ini));
 	}
 
 	/**
 	 * Load meta decks.
 	 */
-	public void loadDecks(File dir) {
+	public void loadDecksRecursive(File dir) {
 		File listOfFiles[] = dir.listFiles();
 //		Arrays.sort(listOfFiles, new Comparator<File>() {
 //			@Override
@@ -119,50 +168,50 @@ public class DeckComponent {
 //		});
 		for (File file : listOfFiles) {
 			if (file.isDirectory()) {
-				loadDecks(file);
+				loadDecksRecursive(file);
 			} else {
-				Set<SynergyEdge<Deck, Card>> cards = new HashSet<SynergyEdge<Deck, Card>>();
-				// Map<Card, Integer> cartas = new LinkedHashMap<Card, Integer>();
-				try {
-					Scanner sc = new Scanner(file);
-					String obs = null;
-					Deck deck = new Deck();
-					while (sc.hasNextLine()) {
-						// Apenas para ceitar ctrl-c-v do
-						// http://www.hearthstonetopdecks.com
-						String line = sc.nextLine().replaceAll("﻿", "").replaceAll("�", "'")
-								.replaceFirst("^(\\d+)(\\w)", "$1\t$2").replaceFirst("(\\w)(\\d+)$", "$1\t$2");// .toLowerCase();
-						if (line.startsWith("#")) {
-							obs = line.substring(1, line.length());
-						} else {
-							String[] vals = line.split("\t");
-							int i = 0;
-							if (vals.length == 1)
-								vals = line.split(";");
-							if (vals.length > 2)
-								i = 1;
-							if (vals.length > 1 && !"".equals(vals[i]) && !"".equals(vals[i + 1])) {
-								try {
-									cards.add(new SynergyEdge<Deck, Card>(deck, cardComp.getCard(vals[i]),
-											Integer.parseInt(vals[i + 1])));
-								} catch (Exception rt) {
-									cards.add(new SynergyEdge<Deck, Card>(deck, cardComp.getCard(vals[i + 1]),
-											Integer.parseInt(vals[i])));
-								}
-							}
-						}
-					}
-
-					deck.setCards(cards);
-					deck.getStats().setArchtype(Archtype.values()[Integer.parseInt(obs)]);
-					decks.add(deck);
-					sc.close();
-				} catch (FileNotFoundException e) {
-					e.printStackTrace();
-				}
+				parseDeckTGF(file);
 			}
 		}
 		System.out.println(decks.size() + " decks loaded.");
+	}
+
+	private void parseDeckTGF(File file) {
+		// Set<SynergyEdge<Deck, Card>> cards = new HashSet<>();
+		// Map<Card, Integer> cartas = new LinkedHashMap<Card, Integer>();
+		try {
+			Scanner sc = new Scanner(file);
+			String obs = null;
+			Deck deck = new Deck(file.getName(), "");
+			while (sc.hasNextLine()) {
+				// Apenas para ceitar ctrl-c-v do
+				// http://www.hearthstonetopdecks.com
+				String line = sc.nextLine().replace("�", "'").replaceFirst("^(\\d+)(\\w)", "$1\t$2")
+						.replaceFirst("(\\w)(\\d+)$", "$1\t$2");// .toLowerCase();
+				if (line.startsWith("#")) {
+					obs = line.substring(1, line.length());
+				} else {
+					String[] vals = line.split("\t");
+					int i = 0;
+					if (vals.length == 1)
+						vals = line.split(";");
+					if (vals.length > 2)
+						i = 1;
+					if (vals.length > 1 && !"".equals(vals[i]) && !"".equals(vals[i + 1])) {
+						try {
+							deck.getCards().put(cardComp.getCard(vals[i]), Integer.parseInt(vals[i + 1]));
+						} catch (Exception rt) {
+							deck.getCards().put(cardComp.getCard(vals[i + 1]), Integer.parseInt(vals[i]));
+						}
+					}
+				}
+			}
+			deck.getStats().setArchtype(Archtype.values()[Integer.parseInt(obs)]);
+			decks.add(deck);
+			sc.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -176,51 +225,58 @@ public class DeckComponent {
 	 */
 	// TODO calcular a expansao e epoca do deck pelas suas cartas mais recentes
 	public Deck decodeDeckString(String encodedString) {
-		if (encodedString.startsWith("AAEB")) {
-			byte[] data = Base64.getDecoder().decode(encodedString);
-			// String decodedString = new String(data);
-			ByteBuffer byteBuffer = ByteBuffer.wrap(data);
-			byteBuffer.get(); // reserverd
-			int version = byteBuffer.get();
-			if (version != 1) {
-				// throw new ParseException("bad version: " + version);
-			}
-			Deck deck = new Deck(encodedString);
-			Format formato = Format.getByValor(VarInt.getVarInt(byteBuffer));
-			// Map<Card, Integer> cards = new HashMap<>();
-			Set<SynergyEdge<Deck, Card>> cards = new HashSet<SynergyEdge<Deck, Card>>();
+		if (!encodedString.startsWith("AAE")) {
+			log.error("deck inválido: " + encodedString);
+			return null;
+		}
+		byte[] data = Base64.getDecoder().decode(encodedString);
+		// String decodedString = new String(data);
+		ByteBuffer byteBuffer = ByteBuffer.wrap(data);
+		byteBuffer.get(); // reserverd
+		int version = byteBuffer.get();
+		if (version != 1) {
+			// throw new ParseException("bad version: " + version);
+		}
+		Format formato = Format.getByValor(VarInt.getVarInt(byteBuffer));
+		// Map<Card, Integer> cards = new HashMap<>();
+//		Set<SynergyEdge<Deck, Card>> cards = new HashSet<SynergyEdge<Deck, Card>>();
 //		if (result.format != FT_STANDARD && result.format != FT_WILD) {
 //           throw new ParseException("bad format: " + result.format);
 //		}
 
-			int heroCount = VarInt.getVarInt(byteBuffer);
-			// result.heroes = new ArrayList<>();
-			for (int i = 0; i < heroCount; i++) {
-				int cInt = VarInt.getVarInt(byteBuffer);
-//			cards.add(new SynergyEdge<Deck, Card>(deck, cardComp.getCard(String.valueOf(cInt)),
-//					1));
+		int heroCount = VarInt.getVarInt(byteBuffer);
+		Deck deck = null;
+		for (int i = 0; i < heroCount; i++) {
+			int cInt = VarInt.getVarInt(byteBuffer);
+			if (i == 0) {
+				// TODO chage getClasses to list?
+				deck = new Deck("decoded deck", cardComp.getCard(String.valueOf(cInt)).getClasses().iterator().next(),
+						encodedString);
+			} else {
+				// heroes are one of a kind
+				deck.getCards().put(cardComp.getCard(String.valueOf(cInt)), 1);
 			}
-
-			for (int i = 1; i <= 3; i++) {
-				int c = VarInt.getVarInt(byteBuffer);
-				for (int j = 0; j < c; j++) {
-					int dbfId = VarInt.getVarInt(byteBuffer);
-					int count;
-					if (i == 3) {
-						count = VarInt.getVarInt(byteBuffer);
-					} else {
-						count = i;
-					}
-					cards.add(new SynergyEdge<Deck, Card>(deck, cardComp.getCard(String.valueOf(dbfId)), count));
-				}
-			}
-			deck.setCards(cards);
-			deck.setFormat(formato);
-			System.out.println(encodedString);
-			System.out.println("Deck decoded: " + deck);
-			return deck;
 		}
-		return null;
+
+		for (int i = 1; i <= 3; i++) {
+			int c = VarInt.getVarInt(byteBuffer);
+			for (int j = 0; j < c; j++) {
+				int dbfId = VarInt.getVarInt(byteBuffer);
+				int count;
+				if (i == 3) {
+					count = VarInt.getVarInt(byteBuffer);
+				} else {
+					count = i;
+				}
+				// cards.add(new SynergyEdge<>(deck,
+				deck.getCards().put(cardComp.getCard(String.valueOf(dbfId)), count);
+			}
+		}
+		// deck.setCards(cards);
+		deck.setFormat(formato);
+		// System.out.println(encodedString);
+		// System.out.println("Deck decoded: " + deck);
+		return deck;
 	}
 }
 

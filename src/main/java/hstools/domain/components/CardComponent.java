@@ -5,9 +5,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 //import javax.annotation.PostConstruct;
@@ -19,17 +21,15 @@ import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 
 import hstools.domain.entities.Card;
 import hstools.domain.entities.Expansion;
 import hstools.domain.entities.Tag;
 import hstools.util.GoogleSheets;
-import hstools.util.WebScrap;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * For load and build all hs cards, stores all synergies between two cards.
@@ -37,17 +37,18 @@ import lombok.Getter;
  * 
  * @author EGrohs
  */
+@Slf4j
 @Service("Cards")
 //TODO retrieve hearthstonetopdecksDecks cards rankings to salve in local file?
 //TODO https://hearthstoneapi.com/ retrieve GETInfo types, classes, patch, sets, std, wild, factions, rarity, races...
 public class CardComponent {
 	static ScriptEngine jsEngine = new ScriptEngineManager().getEngineByName("JavaScript");
 	@Getter
-	private List<Expansion> expansions = new ArrayList<Expansion>();
+	private List<Expansion> expansions = new ArrayList<>();
 	@Getter
-	private List<Card> cards = new ArrayList<Card>();
+	private List<Card> cards = new ArrayList<>();
 	@Getter
-	private static Map<String, Tag> tags = new HashMap<String, Tag>();
+	private Map<String, Tag> tags = new HashMap<>();
 
 //	@Autowired
 //	private CardRepository cRepo;
@@ -57,6 +58,36 @@ public class CardComponent {
 
 	@Autowired
 	private FilesComponent files;
+
+	// TODO armazenar localmente as tags evitando buscar se mesma versao ou sem
+	// internet.
+	/** Import tags from google spreadsheet. */
+	public Map<String, Tag> loadTags() {
+		// Map<String, Tag> tags = new HashMap<>();
+		// if (tags.size() == 0)
+		{
+			// Map<String, Tag> tags = new HashMap<String, Tag>();
+			List<List<Object>> values = GoogleSheets.getDados("1WNcRrDzxyoy_TRm9v15VSGwEiRPqJhUhReq0Wh8Jp14",
+					"TAGS!A2:C");
+			// TODO remover linha vazias null
+			if (values == null || values.isEmpty()) {
+				System.out.println("No data found.");
+			} else {
+				for (List<Object> row : values) {
+					String name = (String) row.get(0);
+					String regex = row.size() > 1 ? (String) row.get(1) : "";
+					String expr = row.size() > 2 ? (String) row.get(2) : "";
+					String desc = row.size() > 3 ? (String) row.get(3) : "";
+					Tag t = tags.get(name);
+					if (t == null) {
+						tags.put(name, new Tag(name, regex, expr, desc));
+					}
+				}
+			}
+		}
+		System.out.println(tags.size() + " tags imported.");
+		return tags;
+	}
 
 	public void importTags() {
 		if (tags.size() == 0) {
@@ -115,12 +146,12 @@ public class CardComponent {
 	 * Import all card ranks form google sheet
 	 */
 	public void importCardRanks() {
-		List<List<Object>> values = GoogleSheets.getDados("1WNcRrDzxyoy_TRm9v15VSGwEiRPqJhUhReq0Wh8Jp14", "CARDS!A2:E");
+		List<List<Object>> values = GoogleSheets.getDados("1WNcRrDzxyoy_TRm9v15VSGwEiRPqJhUhReq0Wh8Jp14", "CARDS!A2:F");
 		int count = 0;
 		// TODO buscar pelo nome do header da coluna
 		for (List<Object> row : values) {
 			String cardName = (String) row.get(0);
-			Float rank = (Float) row.get(3);
+			Float rank = Float.valueOf((String) row.get(2));
 			Card c1 = getCard(cardName);
 			if (c1 != null) {
 				c1.getStats().setRank(rank);
@@ -130,17 +161,17 @@ public class CardComponent {
 		System.out.println(count + " card ranks imported.");
 	}
 
-	private int containsTag(Tag tag) {
-		int i = 0;
-		for (Card card : cards) {
-			if (card.getTags().contains(tag)) {
-				i++;
-				System.out.println(card.getName());
-			}
-		}
-		System.out.println(i);
-		return i;
-	}
+//	private int containsTag(Tag tag) {
+//		int i = 0;
+//		for (Card card : cards) {
+//			if (card.getTags().contains(tag)) {
+//				i++;
+//				System.out.println(card.getName());
+//			}
+//		}
+//		System.out.println(i);
+//		return i;
+//	}
 
 	/**
 	 * Load json card db api in memory. Using hearthstonejson cause it has a
@@ -151,23 +182,41 @@ public class CardComponent {
 		// https://rapidapi.com/omgvamp/api/hearthstone
 		// final String api =
 		// "https://api.hearthstonejson.com/v1/latest/enUS/cards.collectible.json";
-		if (cards.size() == 0) {
+		if (cards.isEmpty()) {
 			try {
 				ObjectMapper om = new ObjectMapper();
+				// TODO esta lendo com aspas extras e cuidado com flavor: com aspas dentro
 				String jsonCards = Files.readString(Path.of("cards.collectible.json"), Charset.defaultCharset());
-				JsonNode rootNode = om.readTree(jsonCards);
-				Iterator<JsonNode> iter = rootNode.elements();
-				while (iter.hasNext()) {
-					ArrayNode ja = (ArrayNode) iter.next();
-					List<Card> pojos = om.readValue(ja.toString(), new TypeReference<List<Card>>() {
-					});
-					cards.addAll(pojos);
+				JsonNode root = om.readTree(jsonCards);
+				// Iterate over the nodes.
+				Set<String> cardNames = new HashSet<>();
+//				Set<String> notUsedSets = Set.of("Battlegrounds", "Mercenaries", "Missions", "Demo", "System", "Slush",
+//						"Hero Skins", "Tavern Brawl", "Credits", "Unknown");
+				//Set<String> notUsedTypes = Set.of("Enchantment", "Hero Power");
+				for (JsonNode sets : root) {
+					for (JsonNode n : sets) {
+						// System.out.println(n.get("name").asText());
+						JsonNode coll = n.get("collectible");
+						if (coll != null && coll.asBoolean()) {
+							//if (!notUsedSets.contains(n.get("cardSet").asText()))
+							{
+								Card card = om.readValue(n.toString(), Card.class);
+								card.setName(card.getName().trim());
+								addNonRepeatedCard(cardNames, card);
+							}
+//							else {
+//								break;
+//							}
+						}
+					}
 				}
+
 				cards.add(new Card("GAME_005", 1746, "the coin", "CORE", "ALLIANCE", "Neutral", "SPELL",
 						"Add 1 mana this turn...", 0L, null, null, null, "COMMON", "", ""));
 
 				cards.forEach(c -> {
-					if ("Minion".equalsIgnoreCase(c.getType())) {
+					if ("Minion".equalsIgnoreCase(c.getType()) && c.getAttack() != null && c.getHealth() != null
+							&& c.getCost() != null) {
 						c.getStats().setStats_cost((float) (c.getAttack() + c.getHealth()) / (c.getCost() + 1));
 					}
 				});
@@ -175,36 +224,26 @@ public class CardComponent {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-//			try {
-//				File file = new File("cards.collectible.json");
-//				if (!file.exists()) {
-//					// file.delete();
-//					Files.copy(new URL(api).openStream(), Paths.get("cards.collectible.json"));
-//				}
-			// JSONArray sets = (JSONArray) Util.file2JSONObject(file.getName());
-			// generateCards(sets);
-//				List<String> w = HearthstoneToolsApplication.rapidApiInfo.getWild();
-
-//				ObjectMapper objectMapper = new ObjectMapper();
-//for (String set : w) 
-			{
-//	JsonNode rootNode = objectMapper.readTree("jsonString");
-//	JsonNode nset = rootNode.get(set);
-				// HearthstoneToolsApplication.cs.
-//				CardSets cs = Util.file2Cards("cards.collectible.json");
-				// ModelMapper mm = new ModelMapper();
-				// mm.i
-				// Card[] cass = mm.map(cs, Card[].class);
-			}
-			// for... info.getSets()){
-			//
-			// TODO juntar todas listas e jogar em cards
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			}
 			System.out.println(cards.size() + " cards created.");
 		}
 		return cards;
+	}
+
+	private void addNonRepeatedCard(Set<String> cardNames, Card card) {
+		card.trimText(card.getText().toString());
+		if ("enUS".equals(card.getLocale())) {
+//						locale enUS, set wild, 
+//						"cardSet":"Basic"
+			String cn = card.getName().toLowerCase();
+			if (!cardNames.contains(cn)) {
+				cards.add(card);
+				// System.out.println(card);
+				cardNames.add(cn);
+			} else {
+				// System.out.println(card.getName());
+				getCard(card.getName()).getDbfIds().add(card.getDbfId());
+			}
+		}
 	}
 
 	/**
@@ -214,16 +253,20 @@ public class CardComponent {
 	 * @return Card.
 	 */
 	public Card getCard(String idsORname) {
-		idsORname = idsORname.trim().replaceAll("’", "'");
+		idsORname = idsORname.trim().replace("’", "'");
 		if (idsORname != null && !"".equals(idsORname)) {
 			for (Card c : cards) {
 				if (c.getName().equalsIgnoreCase(idsORname)
-						|| c.getName().replaceAll("'|\\.|\\,", "").equalsIgnoreCase(idsORname)
-						|| c.getName().replaceAll("'|\\.|\\,", "").equalsIgnoreCase(idsORname.replaceAll("-", " "))) {
+						|| c.getName().replace("'|\\.|\\,", "").equalsIgnoreCase(idsORname)
+						|| c.getName().replace("'|\\.|\\,", "").equalsIgnoreCase(idsORname.replace("-", " "))) {
 					return c;
 				}
-				if (c.getDbfId().toString().equalsIgnoreCase(idsORname)) {
-					return c;
+				try {
+					if (c.getDbfIds().contains(Integer.parseInt(idsORname))) {
+						return c;
+					}
+				} catch (NumberFormatException e) {
+					// deve ser busca por id
 				}
 				if (c.getId() != null && c.getId().toString().equalsIgnoreCase(idsORname)) {
 					return c;
@@ -236,23 +279,24 @@ public class CardComponent {
 		// TODO CS2_013t excess mana not found..
 		throw new RuntimeException("Card not found: " + idsORname);
 		// System.err.println("Card not found: " + idsORname);
-		// return getCard("The Coin");
+		// return getCard("idsORname");
 	}
 
 	/**
 	 * Generate all cards Tags.
 	 */
 	public void buildAllCardTags() {
+		long time = System.currentTimeMillis();
 		int acum = 0;
 		for (Card c : getCards()) {
 			acum += buildCardTags(c);
 		}
-		System.out.println(acum + " tags created.");
+		System.out.println(acum + " tags built in " + (System.currentTimeMillis() - time) + " milisecs.");
 	}
 
-	public static int buildCardTags(Card c) {
+	public int buildCardTags(Card c) {
 		int acum = 0;
-		if (c.getTags().size() == 0) {
+		if (c.getTags().isEmpty()) {
 			for (Tag tag : tags.values()) {
 				String expr = c.replaceVars(tag.getExpr());// .replaceAll("\\'", "\"");
 				try {
@@ -271,14 +315,5 @@ public class CardComponent {
 			}
 		}
 		return acum;
-	}
-
-	public void buildCardRanks() {
-		Map<String, Float> ranks = WebScrap.hearthstonetopdecksCardRank();
-		for (String url : ranks.keySet()) {
-			String[] tks = url.split("/");
-			String cname = tks[tks.length - 1];
-			System.out.println(getCard(cname));
-		}
 	}
 }
