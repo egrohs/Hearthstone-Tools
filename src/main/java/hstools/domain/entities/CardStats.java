@@ -1,5 +1,8 @@
 package hstools.domain.entities;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -11,7 +14,8 @@ public class CardStats extends Node {
 	private Integer popularity, combats, wins, draws, loses;
 	private boolean aggro/* , visited */;
 	private String function;
-	
+	private Set<String> category = new HashSet<>();
+
 	private Integer tempDeckFreq;
 
 	public void calcAggro(Card c) {

@@ -52,7 +52,7 @@ public class Card extends Node {
 	// @Relationship
 	private CardStats stats = new CardStats();
 	// @Relationship(type = "TAG")
-	private Set<Tag> tags = new HashSet<Tag>();
+	private Set<Tag> tags = new HashSet<>();
 	// @JsonProperty("mechanics.name")
 	// private Set<String> mechanics;
 	private Set<Mechanic> mechanics = new HashSet<>();
@@ -109,8 +109,9 @@ public class Card extends Node {
 			t += " - " + race;
 			// if ("WEAPON".equals(type))
 			t += " - " + type;
-			this.text = new StringBuilder(Jsoup.parse(t).text().toLowerCase().replace("\\$", "")
-					.replace("\\#", "").replace("�", " ").replace("_", " ").trim());
+			this.text = new StringBuilder(
+					Jsoup.parse(t).text().toLowerCase().replace("$", "").replace("\\<(\\/)?b\\>", " ")
+							.replace("[x]", "").replace("#", "").replace("�", " ").replace("_", " ").trim());
 		}
 	}
 

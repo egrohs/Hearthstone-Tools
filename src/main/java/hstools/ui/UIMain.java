@@ -291,7 +291,8 @@ public class UIMain extends JPanel {
 		b6.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				deckComp.decodeDecksFromFile("400_Pro_Decks.txt");
+				deckComp.decodeDecksFromFile("combo-decks.txt");
+				//deckComp.decodeDecksFromFile("400_Pro_Decks.txt");
 				// annComp.generateTrainFile();
 				System.out.println(deckComp.getDecks().size() + " decks loaded.");
 //				System.out.println("deckstring" + "\t" + "card_adv" + "\t" + "low_cost_minions" + "\t"

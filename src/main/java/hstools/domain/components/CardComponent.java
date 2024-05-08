@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 //import javax.annotation.PostConstruct;
 import javax.script.ScriptEngine;
@@ -58,6 +59,49 @@ public class CardComponent {
 
 	@Autowired
 	private FilesComponent files;
+
+	private void tagCategory() {
+		List<List<Object>> values = GoogleSheets.getDados("1WNcRrDzxyoy_TRm9v15VSGwEiRPqJhUhReq0Wh8Jp14",
+				"TAG_CATEG!A1:I");
+		if (values == null || values.isEmpty()) {
+			System.out.println("No data found.");
+		} else {
+			for (Card c : cards) {
+//System.out.println(values);
+				// StringBuilder cats = new StringBuilder();
+				List<Object> tts = values.stream().map(r -> r.get(0)).collect(Collectors.toList());
+				for (Tag t : c.getTags()) {
+					int i = tts.indexOf(t.getName());
+					if (i >= 0) {
+						List<Object> row = values.get(i);
+						for (int j = 1; j < row.size(); j++) {
+							String o = (String) row.get(j);
+							if (!o.isEmpty() 
+									&& ("2".equals(o) || "1".equals(o))
+									//&& Integer.parseInt(o)>0
+									) {
+								c.getStats().getCategory().add((String) values.get(0).get(j));
+							}
+						}
+					}
+				}
+//			String s = (String) values.get(0).get(j);
+//			for (int i = 1; i < values.size(); i++) {
+//				List<Object> row = values.get(i);
+//				for (int j = 1; j < row.size(); j++) {
+//					Object v = row.get(j);
+//					String s = (String) values.get(0).get(j);
+//					if (!c.getStats().getCategory().contains(s) && v != null && !((String) v).isEmpty()) {
+//						cats.append(s + ", ");
+//					}
+//				}
+//			}
+				// c.getStats().setCategory(cats.toString());
+				System.out.println(
+						c.getName() + "\t" + c.getStats().getCategory() + "\t" + c.getTags() + "\t" + c.getText());
+			}
+		}
+	}
 
 	// TODO armazenar localmente as tags evitando buscar se mesma versao ou sem
 	// internet.
@@ -178,6 +222,7 @@ public class CardComponent {
 	 * separated db file of only colletionable cards.
 	 */
 	public List<Card> buildCards() {
+		long time = System.currentTimeMillis();
 		// TODO nao usar mais essa api e sim
 		// https://rapidapi.com/omgvamp/api/hearthstone
 		// final String api =
@@ -191,14 +236,15 @@ public class CardComponent {
 				// Iterate over the nodes.
 				Set<String> cardNames = new HashSet<>();
 //				Set<String> notUsedSets = Set.of("Battlegrounds", "Mercenaries", "Missions", "Demo", "System", "Slush",
-//						"Hero Skins", "Tavern Brawl", "Credits", "Unknown");
-				//Set<String> notUsedTypes = Set.of("Enchantment", "Hero Power");
+//						"Tavern Brawl", "Credits", "Unknown");
+				// Set<String> notUsedTypes = Set.of("Enchantment", "Hero Power");
+//System.out.println("read file "+(time-System.currentTimeMillis()));
 				for (JsonNode sets : root) {
 					for (JsonNode n : sets) {
 						// System.out.println(n.get("name").asText());
 						JsonNode coll = n.get("collectible");
 						if (coll != null && coll.asBoolean()) {
-							//if (!notUsedSets.contains(n.get("cardSet").asText()))
+							// if (!notUsedSets.contains(n.get("cardSet").asText()))
 							{
 								Card card = om.readValue(n.toString(), Card.class);
 								card.setName(card.getName().trim());
@@ -211,7 +257,7 @@ public class CardComponent {
 					}
 				}
 
-				cards.add(new Card("GAME_005", 1746, "the coin", "CORE", "ALLIANCE", "Neutral", "SPELL",
+				cards.add(new Card("GAME_005", 1746, "The Coin", "CORE", "ALLIANCE", "Neutral", "SPELL",
 						"Add 1 mana this turn...", 0L, null, null, null, "COMMON", "", ""));
 
 				cards.forEach(c -> {
@@ -224,7 +270,7 @@ public class CardComponent {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			System.out.println(cards.size() + " cards created.");
+			System.out.println(cards.size() + " cards created in " + (System.currentTimeMillis() - time));
 		}
 		return cards;
 	}
@@ -236,12 +282,17 @@ public class CardComponent {
 //						"cardSet":"Basic"
 			String cn = card.getName().toLowerCase();
 			if (!cardNames.contains(cn)) {
+				if ("Hero".equalsIgnoreCase(card.getType()) && card.getText().isEmpty()) {
+					card.setName(card.getName() + "_skin");
+				}
 				cards.add(card);
 				// System.out.println(card);
-				cardNames.add(cn);
-			} else {
+				cardNames.add(card.getName());
+			}
+			// else
+			{
 				// System.out.println(card.getName());
-				getCard(card.getName()).getDbfIds().add(card.getDbfId());
+				card.getDbfIds().add(card.getDbfId());
 			}
 		}
 	}
@@ -253,7 +304,7 @@ public class CardComponent {
 	 * @return Card.
 	 */
 	public Card getCard(String idsORname) {
-		idsORname = idsORname.trim().replace("’", "'");
+		// idsORname = idsORname.trim().replace("’", "'");
 		if (idsORname != null && !"".equals(idsORname)) {
 			for (Card c : cards) {
 				if (c.getName().equalsIgnoreCase(idsORname)
@@ -291,6 +342,7 @@ public class CardComponent {
 		for (Card c : getCards()) {
 			acum += buildCardTags(c);
 		}
+		tagCategory();
 		System.out.println(acum + " tags built in " + (System.currentTimeMillis() - time) + " milisecs.");
 	}
 

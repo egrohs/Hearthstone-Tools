@@ -62,7 +62,7 @@ public class DeckComponent {
 		List<Card> possibles = cardComp.getCards().stream()
 				.filter(c -> c.getClasses().contains(d.getClasse()) || c.getClasses().contains("Neutral"))
 				.collect(Collectors.toList());
-		//d.getCards().keySet().stream().forEach(c -> possibles.remove(c));
+		// d.getCards().keySet().stream().forEach(c -> possibles.remove(c));
 		for (Card card : possibles) {
 			card.getStats().setTempDeckFreq(0);
 			for (Tag t : deckTags.keySet()) {
@@ -88,22 +88,23 @@ public class DeckComponent {
 	}
 
 	public void calcStats(Deck deck) {
-		// Build deck tags
-		for (Card c : deck.getCards().keySet()) {
-			List<String> tags = c.getTags().stream().map(Node::getName).collect(Collectors.toList());
-			deck.getStats().incStats_cost(c.getStats().getStats_cost());
-			if ("MINION".equalsIgnoreCase(c.getType())) {
-				if (c.getCost() < 3) {
-					deck.getStats().incLow_cost_minions(1);
-				} else if (c.getCost() < 6 || tags.stream().anyMatch(List.of("COST_MODIFY")::contains)) {// TODO nao
-																											// someente
-																											// minions
-					deck.getStats().incMed_cost_minions(1);
+		if (deck != null) {
+			// Build deck tags
+			for (Card c : deck.getCards().keySet()) {
+				List<String> tags = c.getTags().stream().map(Node::getName).collect(Collectors.toList());
+				deck.getStats().incStats_cost(c.getStats().getStats_cost());
+				if ("MINION".equalsIgnoreCase(c.getType())) {
+					if (c.getCost() < 3) {
+						deck.getStats().incLow_cost_minions(1);
+					} else if (c.getCost() < 6 || tags.stream().anyMatch(List.of("COST_MODIFY")::contains)) {// TODO nao
+																												// someente
+																												// minions
+						deck.getStats().incMed_cost_minions(1);
+					}
 				}
-			}
-			if (c.getCost() > 5) {
-				deck.getStats().incHigh_cost(1);
-			}
+				if (c.getCost() != null && c.getCost() > 5) {
+					deck.getStats().incHigh_cost(1);
+				}
 //			for (Tag t : c.getTags()) {
 //				// System.out.print("caard " + c+" ");
 //				deck.acumTagSynergy(t, s.getFreq());
@@ -112,22 +113,24 @@ public class DeckComponent {
 //				// DD
 //				deck.getStats().incDd(s.getFreq());
 //			}
-			Integer freq = deck.getCards().get(c);
-			if (tags.stream().anyMatch(List.of("DRAW", "GENERATE")::contains)) {
-				// CARD_ADV
-				deck.getStats().incCard_adv(freq);
+				Integer freq = deck.getCards().get(c);
+				if (tags.stream().anyMatch(List.of("DRAW", "GENERATE")::contains)) {
+					// CARD_ADV
+					deck.getStats().incCard_adv(freq);
+				}
+				if (tags.stream()
+						.anyMatch(List.of("REMOVALS", "DAMAGE_ALL", "DAMAGE_ENEMIES", "DEAL_DAMAGE")::contains)) {
+					// BOARD CONTROL
+					deck.getStats().incBoard_control(freq);
+				}
+				if (tags.stream().anyMatch(List.of("TAUNT", "LIFESTEAL", "ARMOR", "HEALTH_RESTORE")::contains)) {
+					// SURVIVABILITY
+					deck.getStats().incSurv(freq);
+				}
 			}
-			if (tags.stream().anyMatch(List.of("REMOVALS", "DAMAGE_ALL", "DAMAGE_ENEMIES", "DEAL_DAMAGE")::contains)) {
-				// BOARD CONTROL
-				deck.getStats().incBoard_control(freq);
-			}
-			if (tags.stream().anyMatch(List.of("TAUNT", "LIFESTEAL", "ARMOR", "HEALTH_RESTORE")::contains)) {
-				// SURVIVABILITY
-				deck.getStats().incSurv(freq);
-			}
+			// TODO FINISHER, spells
+			// System.out.println(deck.getStats());
 		}
-		// TODO FINISHER, spells
-		// System.out.println(deck.getStats());
 	}
 
 	public void unloadDeck(String deckString) {
@@ -146,13 +149,30 @@ public class DeckComponent {
 				Deck deck = decodeDeckString(line[0]);
 				if (line.length > 1)
 					deck.getStats().setArchtype(Archtype.valueOf(line[1]));
-				decks.add(deck);
+				if (deck != null)
+					decks.add(deck);
 			}
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		log.debug("decodificados, milis " + (System.currentTimeMillis() - ini));
+
+		Map<Card, Integer> qnts = new HashMap<>();
+		for (Deck deck : decks) {
+			for (Map.Entry<Card, Integer> e : deck.getCards().entrySet()) {
+				Card cc = e.getKey();
+				Integer i = e.getValue();
+				if (qnts.get(cc) != null) {
+					qnts.put(cc, qnts.get(cc) + i);
+				} else {
+					qnts.put(cc, i);
+				}
+			}
+		}
+		for (Map.Entry<Card, Integer> e : qnts.entrySet()) {
+			System.out.println(e.getKey().getName() + "\t" + e.getValue());
+		}
 	}
 
 	/**
@@ -250,11 +270,20 @@ public class DeckComponent {
 			int cInt = VarInt.getVarInt(byteBuffer);
 			if (i == 0) {
 				// TODO chage getClasses to list?
-				deck = new Deck("decoded deck", cardComp.getCard(String.valueOf(cInt)).getClasses().iterator().next(),
-						encodedString);
+				try {
+					deck = new Deck("decoded deck",
+							cardComp.getCard(String.valueOf(cInt)).getClasses().iterator().next(), encodedString);
+				} catch (RuntimeException e) {
+					log.error("Deck inválido. " + e.getLocalizedMessage() + ", DECK: " + encodedString);
+					return null;
+				}
 			} else {
 				// heroes are one of a kind
-				deck.getCards().put(cardComp.getCard(String.valueOf(cInt)), 1);
+				try {
+					deck.getCards().put(cardComp.getCard(String.valueOf(cInt)), 1);
+				} catch (RuntimeException e) {
+					log.error(e.getLocalizedMessage() + ", DECK: " + encodedString);
+				}
 			}
 		}
 
@@ -268,8 +297,12 @@ public class DeckComponent {
 				} else {
 					count = i;
 				}
-				// cards.add(new SynergyEdge<>(deck,
-				deck.getCards().put(cardComp.getCard(String.valueOf(dbfId)), count);
+				try {
+					// cards.add(new SynergyEdge<>(deck,
+					deck.getCards().put(cardComp.getCard(String.valueOf(dbfId)), count);
+				} catch (RuntimeException e) {
+					log.error(e.getLocalizedMessage() + ", DECK: " + encodedString);
+				}
 			}
 		}
 		// deck.setCards(cards);
