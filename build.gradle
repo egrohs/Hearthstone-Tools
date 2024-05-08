@@ -8,7 +8,7 @@ plugins {
 group = 'hstools'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility ='12'
-//targetCompatibility ='8'
+//targetCompatibility ='12'
 
 repositories {
 	mavenCentral()
@@ -55,6 +55,9 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok:1.18.6'
 
 	implementation group: 'nz.ac.waikato.cms.weka', name: 'weka-stable', version: '3.8.4'
+//implementation 'edu.stanford.nlp:stanford-corenlp:4.5.4'
+//implementation 'edu.stanford.nlp:stanford-corenlp:4.5.4:models'
+	
 }
 
 test {

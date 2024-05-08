@@ -1,6 +1,40 @@
 package hstools;
 
 public class Constants {
+	public static final String ACTION = "(lose|repeat|costs|unlock|take|spend|add|destroy|copy|deal|gain|draw|give|cost|summon|die|double|shuffle|discard|invoke|transform|reduce|swap|return|put|set|upgrade|resurrect|resummon|reveal|replace|fill|refresh|equip)";
+	public static final String MECHANIC = "(divine shield|lifesteal|poisonous|tradeable|twinspell|magnetic|windfury|stealth|charge|dredge|freeze|immune|reborn|adapt|taunt|echo|rush)";
+	public static final String QUANTIF = "(all|an|a|\\(?\\d+\\)?|one|two|three|four|five|six|seven)";
+	public static final String OPERATOR = "(\\+|not|equal)";
+	public static final String MECHANICX = "(dormant|recruit|silence|choose|spell damage " + OPERATOR + QUANTIF
+			+ "|restore|colossal|discover)";
+	public static final String MX = "battlecry|combo|inspire|outcast|overkill|deathrattle|frenzy|spellburst|honorable kill|finale|manathirst "
+			+ QUANTIF + "|infuse " + QUANTIF + "|corrupt|overload";
+	public static final String TRIGGER = "MX:|whenever|when|destroyed|revealed|played|died|damaged|kill|drawn|attacked";
+	public static final String RACE = "silver hand recruit|beast|demon|dragon|elemental|mech|mechs|naga|orc|pirate|quilboar|totem|undead|murloc|murlocs|lackey|treant|treants|imp|imps|jade golem|elemental|wolf|spider|skeleton|spirit|zombie|shadow";
+	public static final String TYPE = "weapon|spell|enchantment|hero power|power|location|minion|card|secret|concoction|class|relic fragment|hero";
+	public static final String TARGET = "to|at";// TODO ...
+//	static final String TARGET = "opponent|character|enemy|minion";
+	public static final String OWNER = "your|friendly|their|opponent";// owner == active player?
+	public static final String RANDOM = "random(ly)?";// choose a random one from a candidades list.
+	public static final String OTHER = "(an)?other";// other but this
+	public static final String ADJACENT = "adjacent";// active player board list+-1
+	public static final String DAMAGED = "(un)?damaged";// curHealth != health
+	public static final String TOKEN = QUANTIF + "\\/" + QUANTIF;
+	public static final String BONUS = "(" + OPERATOR + QUANTIF  + OPERATOR + QUANTIF +")";// "|" + OPERATOR + QUANTIF
+	//		+ ")";
+	// String overloaded;//mana crystals
+
+	public enum Operator {
+		// lowest = cost, health...
+		LOWEST("lowest");
+
+		private String regex;
+
+		private Operator(String string) {
+			this.regex = string;
+		}
+	}
+
 	public enum Archtype {
 		AGGRO, MIDRANGE, CONTROL, COMBO, FACE, TRIBAL, TEMPO, MILL, FATIGUE, TOKEN, RAMP,;
 	}
