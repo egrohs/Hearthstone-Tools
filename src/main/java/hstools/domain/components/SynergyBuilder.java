@@ -82,7 +82,7 @@ public class SynergyBuilder {
 		System.out.println("digraph DS {\r\n" + "node [shape  = box];\r\n" + "size = \"12,12\";\r\n" + "");
 		for (SynergyEdge<Tag, Tag> ts : tagsSynergies) {
 			if (ts.getSource() != null && ts.getTarget() != null && !ts.getSource().equals(ts.getTarget())) {
-				System.out.println(ts.getSource().getName() + " -> " + ts.getTarget().getName() + ";");
+				System.out.println(ts.getSource().getNome() + " -> " + ts.getTarget().getNome() + ";");
 			}
 		}
 		System.out.println("}");
@@ -126,7 +126,7 @@ public class SynergyBuilder {
 			if ((c1.getClasses().retainAll(c.getClasses()) || c1.getClasses().contains("Neutral"))
 					&& !c.getTags().stream().filter(tags::contains).collect(Collectors.toList()).isEmpty()) {
 				cards.add(c);
-				System.out.println(c.getName() + "\t\t" + c.getText());
+				System.out.println(c.getNome() + "\t\t" + c.getTexto());
 			}
 		}
 		return cards;
@@ -149,7 +149,7 @@ public class SynergyBuilder {
 					if ((everyCard || c1.getClasses().retainAll(c2.getClasses()) || c2.getClasses().contains("Neutral"))
 							&& c2.getTags().contains(tag)) {
 						SynergyEdge<Card, Card> cs = new SynergyEdge<Card, Card>(c1, c2,
-								c2.getText() + "\t" + tag1.getRegex() + " + " + tag2.getRegex(), ts.getWeight());
+								c2.getTexto() + "\t" + tag1.getRegex() + " + " + tag2.getRegex(), ts.getWeight());
 						cardsSynergies.add(cs);
 						System.out.println(cs);
 					}
@@ -201,7 +201,7 @@ public class SynergyBuilder {
 			for (SynergyEdge<Card, Card> s : cardsSynergies) {
 				Card c1 = (Card) s.getSource();
 				Card c2 = (Card) s.getTarget();
-				fw.write(c1.getName() + "\t" + c2.getName() + "\r\n");
+				fw.write(c1.getNome() + "\t" + c2.getNome() + "\r\n");
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -472,7 +472,7 @@ public class SynergyBuilder {
 			for (Tag t1 : cardComp.getTags().values()) {
 				if (t1.getRegex() != null && !"".equals(t1.getRegex())) {
 					// Almost every tag synergies with itself.
-					tagsSynergies.add(new SynergyEdge<>(t1, t1, t1.getName(), 0.0f));
+					tagsSynergies.add(new SynergyEdge<>(t1, t1, t1.getNome(), 0.0f));
 				}
 			}
 			System.out.println(tagsSynergies.size() + " tags-synergies imported.");

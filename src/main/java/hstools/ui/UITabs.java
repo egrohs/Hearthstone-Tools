@@ -464,8 +464,8 @@ public class UITabs {
 		Object[][] dataVector = new Object[cards.size()][2];
 		for (int i = 0; i < dataVector.length; i++) {
 			Card card = cards.get(i);
-			dataVector[i][0] = card.getName();
-			dataVector[i][1] = card.getText();
+			dataVector[i][0] = card.getNome();
+			dataVector[i][1] = card.getTexto();
 		}
 		String[] columnIdentifiers = { "Name", "Text" };
 		tmodel.setDataVector(dataVector, columnIdentifiers);

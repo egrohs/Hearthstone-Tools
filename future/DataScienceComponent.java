@@ -52,7 +52,7 @@ public class DataScienceComponent {
 //		}
 //		for (String key : tagSins.keySet()) {
 //			SynergyEdge<Tag> s = tagSins.get(key);
-//			System.out.println(s.getE1().getName() + "\t" + s.getE2().getName() + "\t" + s.getFreq());
+//			System.out.println(s.getE1().getNome() + "\t" + s.getE2().getNome() + "\t" + s.getFreq());
 //		}
 	}
 
@@ -68,7 +68,7 @@ public class DataScienceComponent {
 		for (Deck k : probs.keySet()) {
 			// TODO buscar a classe do opo no log?
 			if (k.getClasse() == opponent.getClasse()) {
-				sbb.append(k.getName() + " = " + probs.get(k) + "%\n");
+				sbb.append(k.getNome() + " = " + probs.get(k) + "%\n");
 			}
 		}
 		return sbb;
@@ -77,8 +77,8 @@ public class DataScienceComponent {
 	private Map<Deck, Double> similaridade(Collection<Card> searched) {
 		List<String> nomes = new ArrayList<String>();
 		for (Card carta : searched) {
-			// System.out.println("similaridade: " +carta.getName());
-			nomes.add(carta.getName());
+			// System.out.println("similaridade: " +carta.getNome());
+			nomes.add(carta.getNome());
 		}
 		return similaridade(nomes.toArray(new String[searched.size()]));
 	}
@@ -97,7 +97,7 @@ public class DataScienceComponent {
 				}
 			}
 			if (prob.get(deck) != null) {
-				System.out.println(deck.getName() + ": " + prob.get(deck));
+				System.out.println(deck.getNome() + ": " + prob.get(deck));
 			}
 		}
 		return prob;
@@ -128,7 +128,7 @@ public class DataScienceComponent {
 //				c = (Card) sinergia.getE1();
 //			}
 //			if (!temp.containsKey(c)) {
-//				String t = c.getName() + " f:" + sinergia.getFreq() + " v:" + sinergia.getWeight();
+//				String t = c.getNome() + " f:" + sinergia.getFreq() + " v:" + sinergia.getWeight();
 //				temp.put(c, t);
 //			}
 //		}

@@ -1,5 +1,6 @@
 package hstools.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sun.istack.NotNull;
 
 import lombok.Data;
@@ -15,13 +16,14 @@ import lombok.EqualsAndHashCode;
  *
  */
 @Data
-@EqualsAndHashCode(of = "name")//"id")
+@EqualsAndHashCode(of = "nome")//"id")
 public abstract class Node implements Comparable<Node> {
 //	@Id
 //	@GeneratedValue
 	protected Long id; // temp id used by neo4j at runtime, must never be set by app
 	@NotNull
-	protected String name;
+	@JsonProperty("nameEn_US")
+	protected String nome;
 	protected Double size;
 
 	protected Node() {
@@ -35,6 +37,6 @@ public abstract class Node implements Comparable<Node> {
 
 	@Override
 	public int compareTo(Node o) {
-		return this.name.compareTo((o).name);
+		return this.nome.compareTo((o).nome);
 	}
 }

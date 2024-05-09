@@ -288,12 +288,12 @@ public class PEG {
 	// for (Card card : cards) {
 	// if (card.playerClass == null || card.playerClass.equals("Warlock")) {
 	// if (card.triggers.contains("deathrattle")) {
-	// System.out.println("DEATH: " + card.getName() + " = " + card.getText());
+	// System.out.println("DEATH: " + card.getNome() + " = " + card.getTexto());
 	// }
 	// if (card.triggers.contains("deal") && card.triggers.contains("all")
 	// && (card.triggers.contains("minion") ||
 	// card.triggers.contains("character"))) {
-	// System.out.println("SELF DAMAGE: " + card.getName() + " = " + card.getText());
+	// System.out.println("SELF DAMAGE: " + card.getNome() + " = " + card.getTexto());
 	// }
 	// }
 	// }

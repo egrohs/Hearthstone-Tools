@@ -114,7 +114,7 @@ public class GameService extends Thread {
 //				break;
 //			}
 //		}
-		System.out.println("ACERTO: " + card.getName() + " " + acerto + "%");
+		System.out.println("ACERTO: " + card.getNome() + " " + acerto + "%");
 	}
 
 	/**
@@ -156,9 +156,9 @@ public class GameService extends Thread {
 		FileReader fr = null;
 		JSONObject jo = null;
 		for (File file : listOfFiles) {
-			System.out.println("Reading " + file.getName() + "...");
+			System.out.println("Reading " + file.getNome() + "...");
 //			try {
-			jo = (JSONObject) files.file2JSONObject(file.getName());
+			jo = (JSONObject) files.file2JSONObject(file.getNome());
 			games.addAll((JSONArray) jo.get("games"));
 			System.out.println(games.size() + " games caregados.");
 //			} catch (ParseException e1) {

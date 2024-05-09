@@ -28,7 +28,7 @@ public class SynergyEdge<S extends Node, T extends Node> extends Node {// implem
 		this.freq = freq;
 		this.weight = v;
 		this.mechs = mm;
-		this.name = e1.getName() + v + e2.getName();
+		this.nome = e1.getNome() + v + e2.getNome();
 	}
 
 	public SynergyEdge(S e1, T e2, String label, Float v) {
@@ -36,7 +36,7 @@ public class SynergyEdge<S extends Node, T extends Node> extends Node {// implem
 		this.target = e2;
 		this.label = label;
 		this.weight = v;
-		this.name = e1.getName() + v + e2.getName();
+		this.nome = e1.getNome() + v + e2.getNome();
 	}
 
 	public SynergyEdge(S e1, T e2, float v, String mm) {
@@ -44,7 +44,7 @@ public class SynergyEdge<S extends Node, T extends Node> extends Node {// implem
 		this.target = e2;
 		this.weight = v;
 		this.mechs = mm;
-		this.name = e1.getName() + v + e2.getName();
+		this.nome = e1.getNome() + v + e2.getNome();
 	}
 
 	public SynergyEdge(S e1, T e2, int v) {
@@ -53,7 +53,7 @@ public class SynergyEdge<S extends Node, T extends Node> extends Node {// implem
 		this.source = e1;
 		this.target = e2;
 		this.freq = v;
-		this.name = e1.getName() + v + e2.getName();
+		this.nome = e1.getNome() + v + e2.getNome();
 	}
 
 	// TODO verificar se esse equals n�o esta duplicando os resultados e
@@ -92,6 +92,6 @@ public class SynergyEdge<S extends Node, T extends Node> extends Node {// implem
 
 	@Override
 	public String toString() {
-		return source.getName() + "\t" + target.getName() + "\t" + label;
+		return source.getNome() + "\t" + target.getNome() + "\t" + label;
 	}
 }

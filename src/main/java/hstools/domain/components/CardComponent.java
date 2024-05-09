@@ -71,7 +71,7 @@ public class CardComponent {
 				// StringBuilder cats = new StringBuilder();
 				List<Object> tts = values.stream().map(r -> r.get(0)).collect(Collectors.toList());
 				for (Tag t : c.getTags()) {
-					int i = tts.indexOf(t.getName());
+					int i = tts.indexOf(t.getNome());
 					if (i >= 0) {
 						List<Object> row = values.get(i);
 						for (int j = 1; j < row.size(); j++) {
@@ -98,7 +98,7 @@ public class CardComponent {
 //			}
 				// c.getStats().setCategory(cats.toString());
 				System.out.println(
-						c.getName() + "\t" + c.getStats().getCategory() + "\t" + c.getTags() + "\t" + c.getText());
+						c.getNome() + "\t" + c.getStats().getCategory() + "\t" + c.getTags() + "\t" + c.getTexto());
 			}
 		}
 	}
@@ -163,7 +163,7 @@ public class CardComponent {
 	public void printNodesJson() {
 		System.out.println("{\r\n" + "  \"nodes\":  [");
 		for (Tag t : tags.values()) {
-			System.out.println("{ \"name\": \"" + t.getName() + "\",     \"group\":  1 },");
+			System.out.println("{ \"name\": \"" + t.getNome() + "\",     \"group\":  1 },");
 		}
 		System.out.println(" ],");
 	}
@@ -210,7 +210,7 @@ public class CardComponent {
 //		for (Card card : cards) {
 //			if (card.getTags().contains(tag)) {
 //				i++;
-//				System.out.println(card.getName());
+//				System.out.println(card.getNome());
 //			}
 //		}
 //		System.out.println(i);
@@ -247,7 +247,7 @@ public class CardComponent {
 							// if (!notUsedSets.contains(n.get("cardSet").asText()))
 							{
 								Card card = om.readValue(n.toString(), Card.class);
-								card.setName(card.getName().trim());
+								card.setNome(card.getNome().trim());
 								addNonRepeatedCard(cardNames, card);
 							}
 //							else {
@@ -276,22 +276,22 @@ public class CardComponent {
 	}
 
 	private void addNonRepeatedCard(Set<String> cardNames, Card card) {
-		card.trimText(card.getText().toString());
+		card.trimText(card.getTexto().toString());
 		if ("enUS".equals(card.getLocale())) {
 //						locale enUS, set wild, 
 //						"cardSet":"Basic"
-			String cn = card.getName().toLowerCase();
+			String cn = card.getNome().toLowerCase();
 			if (!cardNames.contains(cn)) {
-				if ("Hero".equalsIgnoreCase(card.getType()) && card.getText().isEmpty()) {
-					card.setName(card.getName() + "_skin");
+				if ("Hero".equalsIgnoreCase(card.getType()) && card.getTexto().isEmpty()) {
+					card.setNome(card.getNome() + "_skin");
 				}
 				cards.add(card);
 				// System.out.println(card);
-				cardNames.add(card.getName());
+				cardNames.add(card.getNome());
 			}
 			// else
 			{
-				// System.out.println(card.getName());
+				// System.out.println(card.getNome());
 				card.getDbfIds().add(card.getDbfId());
 			}
 		}
@@ -307,9 +307,9 @@ public class CardComponent {
 		// idsORname = idsORname.trim().replace("’", "'");
 		if (idsORname != null && !"".equals(idsORname)) {
 			for (Card c : cards) {
-				if (c.getName().equalsIgnoreCase(idsORname)
-						|| c.getName().replace("'|\\.|\\,", "").equalsIgnoreCase(idsORname)
-						|| c.getName().replace("'|\\.|\\,", "").equalsIgnoreCase(idsORname.replace("-", " "))) {
+				if (c.getNome().equalsIgnoreCase(idsORname)
+						|| c.getNome().replace("'|\\.|\\,", "").equalsIgnoreCase(idsORname)
+						|| c.getNome().replace("'|\\.|\\,", "").equalsIgnoreCase(idsORname.replace("-", " "))) {
 					return c;
 				}
 				try {
@@ -355,7 +355,7 @@ public class CardComponent {
 					if (
 					// (expr == null || expr.equals("") || (boolean) jsEngine.eval(expr) == true)&&
 					tag.getRegex() != null && !tag.getRegex().equals("")
-							&& Pattern.compile(tag.getRegex()).matcher(c.getText()).find()) {
+							&& Pattern.compile(tag.getRegex()).matcher(c.getTexto()).find()) {
 						c.addTag(tag);
 						acum++;
 						// System.out.println(c + "\thas\t" + tag);

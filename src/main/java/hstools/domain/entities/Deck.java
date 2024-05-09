@@ -18,7 +18,7 @@ public class Deck extends Node {
 	// @Relationship
 	private Expansion expansion;
 	// @Relationship
-	private DeckStats stats = new DeckStats(this.name + "-deckstats");
+	private DeckStats stats = new DeckStats(this.nome + "-deckstats");
 	// @Relationship
 	// private Set<SynergyEdge<Deck, Card>> cards = new HashSet<>();
 	private Map<Card, Integer> cards = new HashMap<>();
@@ -26,7 +26,7 @@ public class Deck extends Node {
 	// private Set<SynergyEdge<Deck, Tag>> tags = new HashSet<>();
 
 	public Deck(String nome, String classe) {
-		this.name = nome;
+		this.nome = nome;
 		this.classe = classe;
 	}
 	
@@ -61,10 +61,10 @@ public class Deck extends Node {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(name + "\r\n");
+		sb.append(nome + "\r\n");
 		sb.append(classe + "\r\n");
 		for (Card s : cards.keySet()) {
-			sb.append(s.getName() + "\t" + cards.get(s) + "\r\n");
+			sb.append(s.getNome() + "\t" + cards.get(s) + "\r\n");
 		}
 		return sb.toString();
 	}

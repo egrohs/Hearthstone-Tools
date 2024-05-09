@@ -26,7 +26,7 @@ public class Tag extends Node {
 
 	public Tag(String name, String regex, String expr, String description) {
 		id = idc++;
-		this.name = name;
+		this.nome = name;
 		this.regex = regex;
 		this.expr = expr;
 		this.description = description;
@@ -34,13 +34,13 @@ public class Tag extends Node {
 
 	public Tag(String name, String regex) {
 		id = idc++;
-		this.name = name;
+		this.nome = name;
 		this.regex = regex;
 	}
 
 	public Tag geyByName(String name) {
 		for (Tag tag : tags) {
-			if (name.equals(tag.getName())) {
+			if (name.equals(tag.getNome())) {
 				return tag;
 			}
 		}
@@ -49,6 +49,6 @@ public class Tag extends Node {
 
 	@Override
 	public String toString() {
-		return name;
+		return nome;
 	}
 }

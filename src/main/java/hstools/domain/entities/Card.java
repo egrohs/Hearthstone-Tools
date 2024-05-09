@@ -41,14 +41,16 @@ public class Card extends Node {
 	}
 
 	private Set<String> classes = new HashSet<>();
-	private StringBuilder text = new StringBuilder();
+	private StringBuilder texto = new StringBuilder();
 	private String cardId, race, type, rarity, mechs, refTags, locale;
 	@JsonProperty("cardSet")
 	private Expansion expansion;
 	private Set<Integer> dbfIds = new HashSet<>();
 	@JsonProperty("durability")
 	private Integer dur;
-	private Integer dbfId, cost, attack, health;
+	@JsonProperty("manaCost")
+	private Integer cost;
+	private Integer dbfId, attack, health;
 	// @Relationship
 	private CardStats stats = new CardStats();
 	// @Relationship(type = "TAG")
@@ -76,7 +78,7 @@ public class Card extends Node {
 		this.dbfIds.add(dbfId);
 //		this.getChildren().add(new ImageView(new Image("file:res/cards/" + this.id + ".png")));
 //		StackPane.setAlignment(this, Pos.CENTER_LEFT);
-		this.name = name.toLowerCase().trim();
+		this.nome = name.toLowerCase().trim();
 		this.expansion = null;
 		this.race = faction == null ? "" : faction;
 		// this.classe = classe;
@@ -109,7 +111,7 @@ public class Card extends Node {
 			t += " - " + race;
 			// if ("WEAPON".equals(type))
 			t += " - " + type;
-			this.text = new StringBuilder(
+			this.texto = new StringBuilder(
 					Jsoup.parse(t).text().toLowerCase().replace("$", "").replace("\\<(\\/)?b\\>", " ")
 							.replace("[x]", "").replace("#", "").replace("�", " ").replace("_", " ").trim());
 		}

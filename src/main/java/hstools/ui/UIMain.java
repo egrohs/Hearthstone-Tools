@@ -122,7 +122,7 @@ public class UIMain extends JPanel {
 						}
 						dataDTOJList.setListData(new Vector<>(deckComp.calcSuggestions(deck).stream().map(
 								// Node::getName
-								c -> c.getName() + "=" + c.getStats().getTempDeckFreq())
+								c -> c.getNome() + "=" + c.getStats().getTempDeckFreq())
 								.collect(Collectors.toList())));
 					}
 				}
@@ -161,7 +161,7 @@ public class UIMain extends JPanel {
 						}
 						dataDTOJList.setListData(new Vector<>(deckComp.calcSuggestions(deck).stream().map(
 								// Node::getName
-								c -> c.getName() + "=" + c.getStats().getTempDeckFreq())
+								c -> c.getNome() + "=" + c.getStats().getTempDeckFreq())
 								.collect(Collectors.toList())));
 					}
 				}
@@ -181,9 +181,9 @@ public class UIMain extends JPanel {
 					int selectedIndex = dataDTOJList.getSelectedIndex();
 					if (selectedIndex != -1) {
 						Card c = cardComp.getCard(dataDTOJList.getSelectedValue().split("=")[0]);
-						Object name = c.getName();
+						Object name = c.getNome();
 						Object rank = c.getStats().getRank();
-						Object text = c.getText();
+						Object text = c.getTexto();
 
 						int foundRow = findStringInColumn(bottomTable, (String) name, 1);
 						if (foundRow == -1) {
@@ -200,7 +200,7 @@ public class UIMain extends JPanel {
 						
 						dataDTOJList.setListData(new Vector<>(deckComp.calcSuggestions(deck).stream().map(
 								// Node::getName
-								c1 -> c1.getName() + "=" + c1.getStats().getTempDeckFreq())
+								c1 -> c1.getNome() + "=" + c1.getStats().getTempDeckFreq())
 								.collect(Collectors.toList())));
 					}
 				}
@@ -324,7 +324,7 @@ public class UIMain extends JPanel {
 		b.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// Deck deck = deckComp.decodeDeckString(t.getText());
+				// Deck deck = deckComp.decodeDeckString(t.getTexto());
 //				annComp.classifyDeck(deck);
 				System.out.println(CountDeckWords.keyWords);
 				// List<Integer> results = new ArrayList<>();
@@ -405,9 +405,9 @@ public class UIMain extends JPanel {
 //				Card c = cardComp.getCard("carnivorous cube");
 //				synComp.sinergias(c);
 //				for (Card c : cardComp.getCards()) {
-//					if (c.getText() != null && !"".equals(c.getText().toString())) {
-//						System.out.println(synComp.sinergias(c).size() + "\t" + c.getName() + "\t" + c.getTags() + "\t"
-//								+ c.getText());
+//					if (c.getTexto() != null && !"".equals(c.getTexto().toString())) {
+//						System.out.println(synComp.sinergias(c).size() + "\t" + c.getNome() + "\t" + c.getTags() + "\t"
+//								+ c.getTexto());
 //					}
 //				}
 			}
@@ -420,7 +420,7 @@ public class UIMain extends JPanel {
 		topTableModel.setDataVector(new Vector<>(), new Vector<>(List.of("Has", "Name", "Rank", "Text")));
 		for (Card dto : cardList) {
 			topTableModel
-					.addRow(new Object[] { "", dto.getName(), dto.getStats().getRank(), dto.getText().toString() });
+					.addRow(new Object[] { "", dto.getNome(), dto.getStats().getRank(), dto.getTexto().toString() });
 		}
 	}
 

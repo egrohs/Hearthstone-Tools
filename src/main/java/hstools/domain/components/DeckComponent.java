@@ -77,7 +77,7 @@ public class DeckComponent {
 				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
 
 		for (Tag t : topTen.keySet()) {
-			System.out.println(t.getName() + " - " + topTen.get(t));
+			System.out.println(t.getNome() + " - " + topTen.get(t));
 		}
 
 		// d.getStats().setSuggests(deckTags);
@@ -91,7 +91,7 @@ public class DeckComponent {
 		if (deck != null) {
 			// Build deck tags
 			for (Card c : deck.getCards().keySet()) {
-				List<String> tags = c.getTags().stream().map(Node::getName).collect(Collectors.toList());
+				List<String> tags = c.getTags().stream().map(Node::getNome).collect(Collectors.toList());
 				deck.getStats().incStats_cost(c.getStats().getStats_cost());
 				if ("MINION".equalsIgnoreCase(c.getType())) {
 					if (c.getCost() < 3) {
@@ -171,7 +171,7 @@ public class DeckComponent {
 			}
 		}
 		for (Map.Entry<Card, Integer> e : qnts.entrySet()) {
-			System.out.println(e.getKey().getName() + "\t" + e.getValue());
+			System.out.println(e.getKey().getNome() + "\t" + e.getValue());
 		}
 	}
 
@@ -183,7 +183,7 @@ public class DeckComponent {
 //		Arrays.sort(listOfFiles, new Comparator<File>() {
 //			@Override
 //			public int compare(File o1, File o2) {
-//				return o1.getName().compareTo(o2.getName());
+//				return o1.getNome().compareTo(o2.getNome());
 //			}
 //		});
 		for (File file : listOfFiles) {

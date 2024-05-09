@@ -21,7 +21,7 @@ public class SemanticParser {
 	public static void main(String[] args) {
 		Token state = null;
 		for (Card c : cb.getCards()) {
-			String tokens[] = c.getText().toString().replace("\\:", " \\:").replace("\\.", " \\.")
+			String tokens[] = c.getTexto().toString().replace("\\:", " \\:").replace("\\.", " \\.")
 					.replace("\\-(\\w)", " $1")// "6-cost minion"
 					.replace("\\[x\\]", "").split("\\s");// [x] deathrattle
 			for (int i = 0; i < tokens.length; i++) {
@@ -44,7 +44,7 @@ public class SemanticParser {
 				// TODO se nao encontrou deve zerar o estado ou abortar a linha?
 				System.out.print(tokens[i] + " ");
 			}
-			System.out.println(c.getText());
+			System.out.println(c.getTexto());
 			state = null;
 		}
 	}

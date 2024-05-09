@@ -19,8 +19,8 @@ public class GraphJson implements Serializable {
 	public GraphJson(List<SynergyEdge<Card, Card>> syns) {
 		Map<String, GNode> ns = new HashMap<String, GNode>();
 		for (SynergyEdge<Card, Card> s : syns) {
-			String so = s.getSource().getName();
-			String tg = s.getTarget().getName();
+			String so = s.getSource().getNome();
+			String tg = s.getTarget().getNome();
 			GNode n = ns.get(so);
 			if (n == null) {
 				n = new GNode(so);
@@ -64,8 +64,8 @@ class GLink implements Serializable {
 	private static final long serialVersionUID = -8050748768561328048L;
 
 	public GLink(SynergyEdge s) {
-		this.source = s.getSource().getName();
-		this.target = s.getTarget().getName();
+		this.source = s.getSource().getNome();
+		this.target = s.getTarget().getNome();
 		this.label = s.getLabel();
 		this.value = 1;
 	}

@@ -851,7 +851,7 @@ public class CardsTest {
 		for (String string : HAND) {
 			Card c = cb.getCard(string);
 			if (c != null && !c.getTags().contains(cb.getTags().get("HAND"))) {
-				System.out.println(c.getName());
+				System.out.println(c.getNome());
 				// break;
 			}
 		}
@@ -859,7 +859,7 @@ public class CardsTest {
 		// Templar", "Shudderwock", "Tess Greymane",
 //				"Enhance-o Mechano", "Shaku, the Collector", "Master Jouster", "Gral, the Shark" };
 //		for (Card c : cb.getCards()) {
-//			System.out.println(c.getTags().size() + "\t" + c + "\t" + c.getText() + "\t" + c.getTags());
+//			System.out.println(c.getTags().size() + "\t" + c + "\t" + c.getTexto() + "\t" + c.getTags());
 //		}
 	}
 }
