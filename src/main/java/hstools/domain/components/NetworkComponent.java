@@ -2,10 +2,10 @@ package hstools.domain.components;
 
 import java.util.Arrays;
 import java.util.Base64;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -17,7 +17,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import hstools.domain.entities.Card;
+import hstools.domain.entities.CardBNetDTO;
 import hstools.domain.entities.RapidApiInfo;
 import lombok.Data;
 import lombok.Getter;
@@ -32,16 +32,18 @@ public class NetworkComponent {
 
 	String bNETClientID = "121e0dd9cccb413da3924481f079418d";
 	String bNETClientSecret = "Pxw7S3pT1I2DIev2gdEFTdK0vYAaMXv1";
-	// curl -u {client_id}:{client_secret} -d grant_type=client_credentials
-	// https://oauth.battle.net/token
+	// curl -u 121e0dd9cccb413da3924481f079418d:Pxw7S3pT1I2DIev2gdEFTdK0vYAaMXv1 -d
+	// grant_type=client_credentials https://oauth.battle.net/token
 	String bNEToauthURL = "https://oauth.battle.net/token";
 
 	String api = "https://us.api.blizzard.com";
-	String token = "EUqFJTZslul5F4yOw5VOowIaL72BA6lCa5";
+	String token = "EUIqqyfezw04Kta7kO8LFWdiUxwpW8W6mP";
 
 	public NetworkComponent() {
-		headers.set("X-RapidAPI-Key", "MpVxk1YV1GmshautO7ajo2MGPknxp1Y1ovXjsnsfl9vhykCnsf");
-		headers.set("X-RapidAPI-Host", "omgvamp-hearthstone-v1.p.rapidapi.com");
+		// new ObjectMapper().registerModule(new JsonWrappedModule());
+
+//		headers.set("X-RapidAPI-Key", "MpVxk1YV1GmshautO7ajo2MGPknxp1Y1ovXjsnsfl9vhykCnsf");
+//		headers.set("X-RapidAPI-Host", "omgvamp-hearthstone-v1.p.rapidapi.com");
 
 		String encoding = Base64.getEncoder().encodeToString((bNETClientID + ":" + bNETClientSecret).getBytes());
 		headers.set("Authorization", "Basic " + encoding);
@@ -52,7 +54,8 @@ public class NetworkComponent {
 
 	public static void main(String[] args) {
 		NetworkComponent nc = new NetworkComponent();
-		nc.bNEToauthURL();
+		// nc.bNETOauth();
+		nc.bNETCards();
 		// nc.bNETMetadata();
 	}
 
@@ -88,38 +91,31 @@ public class NetworkComponent {
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	@Data
 	static class BNetCard {
-//	private Integer collectible;
-//	private Integer classId;
-//	private Integer cardTypeId;
-//	private Integer cardSetId;
-//	private Integer rarityId;
-//	private Boolean isZilliaxFunctionalModule;
-//	private Set<Integer> multiClassIds;
-//	private Set<Integer> keywordIds;
-		private Set<Card> cards;
+		private Set<CardBNetDTO> cards;
 	}
-	
-	private void bNEToauthURL() {
-		// HttpEntity<String> requestEntity2 = new
-		// HttpEntity<>("grant_type=client_credentials", headers);
-//		ResponseEntity<BNetOauth> response = rest.postForEntity(bNEToauthURL, requestEntity2, BNetOauth.class);
-//		System.out.println(response);
-//		String token = response.getBody().getAccess_token();
+
+	private void bNETOauth() {
+		ResponseEntity<BNetOauth> response2 = rest.postForEntity(bNEToauthURL, requestEntity, BNetOauth.class);
+		System.out.println(response2);
+		token = response2.getBody().getAccess_token();
 //		<200,{"access_token":"EUqFJTZslul5F4yOw5VOowIaL72BA6lCa5","token_type":"bearer","expires_in":86399,
 //			"sub":"121e0dd9cccb413da3924481f079418d"},[Date:"Wed, 08 May 2024 14:56:56 GMT", Content-Type:"application/json;"
 //			"charset=UTF-8", Transfer-Encoding:"chunked", Connection:"keep-alive", Vary:"Origin", "Access-Control-Request-Method", 
 //			"Access-Control-Request-Headers", Cache-Control:"no-store", Pragma:"no-cache"]>
+	}
 
-		String url = "/hearthstone/cards";// ?locale=en_US&name=A Light in the Darkness&set=descent-of-dragons";
+	private void bNETCards() {
+		String url = "/hearthstone/cards";
 		// URI (URL) parameters
 		// O map eh usado ("/{var1}/path1/{var2}") usados em paramentros entre {} na url
-		// Map<String, String> urlParams = new HashMap<>();
-		//// urlParams.put(":region","us");
-		// urlParams.put("locale", "en_US");
+		Map<String, String> urlParams = new HashMap<>();
+		// urlParams.put(":region","us");
+		urlParams.put("locale", "en_US");
 		// urlParams.put(":idorslug","52119-arch-villain-rafaam");
+		urlParams.put("set", "descent-of-dragons");
 
 		// Query parameters
-		// Acho q sao paramentros passados no=a url
+		// Acho q sao parametros passados no=a url
 		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(api + url)
 				// Add query parameter
 				.queryParam("locale", "en_US")
@@ -139,13 +135,16 @@ public class NetworkComponent {
 		// textFilter=give%20your%20minions returns all cards that include text such as
 		// Give your minions +1/+1.
 
-		System.out.println(builder.buildAndExpand(/* urlParams */).toUri());
+		System.out.println(builder.buildAndExpand(urlParams).toUri());
 
 //		ResponseEntity<String> response2 = rest.exchange(builder.buildAndExpand().toUri(), HttpMethod.POST, requestEntity,
 //				String.class);
 
-		ResponseEntity<BNetCard> response2 = rest.postForEntity(builder.buildAndExpand().toUri(),
-				requestEntity, BNetCard.class/*new ParameterizedTypeReference<List<BNetCard>>() {}*/);
+//		ResponseEntity<String> response = rest.exchange(builder.buildAndExpand().toUri(), HttpMethod.POST, requestEntity, String.class);
+//		System.out.println(response);
+
+		ResponseEntity<BNetCard> response2 = rest.postForEntity(builder.buildAndExpand(urlParams).toUri(),
+				requestEntity, BNetCard.class);
 
 //		URIs follow a standard syntax using the format of {region}.api.blizzard.com/{API path}
 //		ResponseEntity<String> response2 = rest.postForEntity(url, requestEntity2, String.class);

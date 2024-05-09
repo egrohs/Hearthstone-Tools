@@ -35,6 +35,7 @@ dependencies {
 //  Only add if you're using the Embedded driver
 //implementation 'org.neo4j:neo4j:3.5.14'//4.0.6'//3.4.16'//3.2.12'//
 //implementation 'org.neo4j:neo4j-ogm-embedded-driver:3.2.4' // Only add if you're using the Embedded driver
+implementation 'com.fasterxml.jackson.core:jackson-annotations:2.17.1'
 	
     // This dependency is used internally, and not exposed to consumers on their own compile classpath.
     implementation 'com.google.guava:guava:23.0'
